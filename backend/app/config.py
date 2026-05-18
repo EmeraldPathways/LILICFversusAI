@@ -1,0 +1,95 @@
+from __future__ import annotations
+
+import os
+from functools import lru_cache
+from pathlib import Path
+
+from pydantic import Field
+from pydantic_settings import BaseSettings, SettingsConfigDict
+
+
+BASE_DIR = Path(__file__).resolve().parent
+RAW_DATA_DIR = BASE_DIR / "data" / "raw"
+PROCESSED_DATA_DIR = BASE_DIR / "data" / "processed"
+
+
+class Settings(BaseSettings):
+    model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8", extra="ignore")
+
+    app_name: str = "Agentic AI Recommendation Demo API"
+    dataset_name: str = "H&M Personalized Fashion Recommendations"
+    frontend_origin: str = Field(
+        default="http://localhost:3000,http://127.0.0.1:3000",
+        alias="FRONTEND_ORIGIN",
+    )
+    openai_api_key: str | None = Field(default=None, alias="OPENAI_API_KEY")
+    openai_model: str = Field(default="gpt-4.1-mini", alias="OPENAI_MODEL")
+    sample_size: int = Field(default=20_000, alias="SAMPLE_SIZE")
+    top_n: int = Field(default=10, alias="TOP_N")
+    candidate_pool_size: int = Field(default=100, alias="CANDIDATE_POOL_SIZE")
+    min_user_interactions: int = Field(default=3, alias="MIN_USER_INTERACTIONS")
+    min_product_interactions: int = Field(default=2, alias="MIN_PRODUCT_INTERACTIONS")
+    max_eval_users: int = Field(default=50, alias="MAX_EVAL_USERS")
+    llm_timeout_seconds: float = Field(default=40.0, alias="LLM_TIMEOUT_SECONDS")
+
+    @property
+    def transactions_path(self) -> Path:
+        return RAW_DATA_DIR / "transactions_train.csv"
+
+    @property
+    def articles_path(self) -> Path:
+        return RAW_DATA_DIR / "articles.csv"
+
+    @property
+    def customers_path(self) -> Path:
+        return RAW_DATA_DIR / "customers.csv"
+
+    @property
+    def frontend_origins(self) -> list[str]:
+        return [origin.strip() for origin in self.frontend_origin.split(",") if origin.strip()]
+
+    @property
+    def interactions_path(self) -> Path:
+        return PROCESSED_DATA_DIR / "interactions_sample.csv"
+
+    @property
+    def train_path(self) -> Path:
+        return PROCESSED_DATA_DIR / "train.csv"
+
+    @property
+    def test_path(self) -> Path:
+        return PROCESSED_DATA_DIR / "test.csv"
+
+    @property
+    def summary_path(self) -> Path:
+        return PROCESSED_DATA_DIR / "experiment_summary.json"
+
+    @property
+    def cf_output_path(self) -> Path:
+        return PROCESSED_DATA_DIR / "cf_recommendations.json"
+
+    @property
+    def agentic_output_path(self) -> Path:
+        return PROCESSED_DATA_DIR / "agentic_recommendations.json"
+
+    @property
+    def metrics_path(self) -> Path:
+        return PROCESSED_DATA_DIR / "metrics.json"
+
+    @property
+    def experiment_state_path(self) -> Path:
+        return PROCESSED_DATA_DIR / "experiment_state.json"
+
+    @property
+    def feedback_state_path(self) -> Path:
+        return PROCESSED_DATA_DIR / "feedback_state.json"
+
+
+@lru_cache(maxsize=1)
+def get_settings() -> Settings:
+    RAW_DATA_DIR.mkdir(parents=True, exist_ok=True)
+    PROCESSED_DATA_DIR.mkdir(parents=True, exist_ok=True)
+    env_file = os.getenv("BACKEND_ENV_FILE")
+    if env_file:
+        return Settings(_env_file=env_file)
+    return Settings()
