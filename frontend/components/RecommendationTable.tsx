@@ -61,9 +61,7 @@ export function RecommendationTable({
                   </td>
                   <td>
                     {item.product_type}
-                    <div className="muted">
-                      {item.colour} · {item.appearance}
-                    </div>
+                    <div className="muted">{item.colour} | {item.appearance}</div>
                   </td>
                   <td>{item.score.toFixed(3)}</td>
                   {showReasons ? <td>{reason}</td> : null}
@@ -88,4 +86,3 @@ export function RecommendationTable({
     </section>
   );
 }
-

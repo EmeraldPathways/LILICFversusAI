@@ -3,7 +3,7 @@ import { getSetup } from "@/lib/api";
 
 export default async function ComparisonPage() {
   const setup = await getSetup();
-  const userIds = setup?.summary?.sample_user_ids ?? [];
+  const userIds = setup?.summary?.evaluated_user_ids ?? setup?.summary?.sample_user_ids ?? [];
 
   return (
     <div className="stack">
@@ -12,11 +12,11 @@ export default async function ComparisonPage() {
         <h2 className="section-title">Collaborative Filtering vs Agentic AI</h2>
         <p className="muted">
           The benchmark returns similarity-based products. The agentic model returns products with
-          explicit reasons and supports simulated feedback adaptation.
+          explicit reasons, exposes the five-agent pipeline, and supports simulated feedback
+          adaptation.
         </p>
       </section>
       <ComparisonExplorer userIds={userIds} />
     </div>
   );
 }
-

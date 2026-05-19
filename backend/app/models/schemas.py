@@ -29,6 +29,13 @@ class AgenticRecommendationItem(RecommendationItem):
     behavioural_signal: float
 
 
+class AgentProcessStage(BaseModel):
+    agent: str
+    title: str
+    summary: str
+    payload: dict[str, object]
+
+
 class UserIntentResponse(BaseModel):
     user_id: str
     inferred_intent: str
@@ -43,6 +50,7 @@ class RecommendationComparisonResponse(BaseModel):
     user_id: str
     cf_recommendations: list[RecommendationItem]
     agentic_recommendations: list[AgenticRecommendationItem]
+    agentic_process: list[AgentProcessStage]
 
 
 class ModelMetrics(BaseModel):
@@ -107,4 +115,3 @@ class ProcessingSummaryResponse(BaseModel):
     train_size: int
     test_size: int
     split_boundary_date: str
-

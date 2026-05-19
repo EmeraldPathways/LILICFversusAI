@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 
+import { AgentProcessPanel } from "@/components/AgentProcessPanel";
 import { RecommendationTable } from "@/components/RecommendationTable";
 import type { RecommendationComparison } from "@/lib/api";
 import { getRecommendationComparison } from "@/lib/api";
@@ -47,21 +48,31 @@ export function ComparisonExplorer({ userIds }: ComparisonExplorerProps) {
       </div>
       {error ? <section className="card muted">{error}</section> : null}
       {comparison ? (
-        <div className="grid two">
-          <RecommendationTable
-            title="Collaborative Filtering Benchmark"
-            userId={comparison.user_id}
-            items={comparison.cf_recommendations}
-          />
-          <RecommendationTable
-            title="Agentic AI Recommendation Framework"
-            userId={comparison.user_id}
-            items={comparison.agentic_recommendations}
-            showReasons
-          />
+        <div className="stack">
+          <div className="grid two">
+            <RecommendationTable
+              title="Collaborative Filtering Benchmark"
+              userId={comparison.user_id}
+              items={comparison.cf_recommendations}
+            />
+            <RecommendationTable
+              title="Agentic AI Recommendation Framework"
+              userId={comparison.user_id}
+              items={comparison.agentic_recommendations}
+              showReasons
+            />
+          </div>
+          <section className="card">
+            <span className="eyebrow">Five-Agent Trace</span>
+            <h3 className="section-title">What each agent returned for this user</h3>
+            <p className="muted">
+              This trace exposes the decision-making steps behind the final agentic recommendations,
+              from inferred shopping intention through feedback adaptation state.
+            </p>
+          </section>
+          <AgentProcessPanel stages={comparison.agentic_process} />
         </div>
       ) : null}
     </div>
   );
 }
-

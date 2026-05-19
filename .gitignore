@@ -12,6 +12,9 @@ backend/backend-server*.log
 frontend/frontend-server*.log
 frontend/.next/
 frontend/tsconfig.tsbuildinfo
+.logs/
+backend/.logs/
+frontend/.logs/
 .vscode/
 backend/app/data/raw/*.csv
 backend/app/data/processed/*

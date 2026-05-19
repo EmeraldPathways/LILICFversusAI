@@ -102,18 +102,26 @@ class DataService:
         sampled.to_csv(self.settings.interactions_path, index=False)
 
         train_df, test_df, boundary_date = self.create_time_based_split(sampled)
+        user_counts = sampled["customer_id"].value_counts()
+        product_counts = sampled["article_id"].value_counts()
         summary = {
             "dataset": self.settings.dataset_name,
             "sample_size": int(len(sampled)),
             "distinct_users": int(sampled["customer_id"].nunique()),
             "distinct_products": int(sampled["article_id"].nunique()),
+            "repeat_user_ratio": round(float((user_counts >= 2).mean()), 4) if not user_counts.empty else 0.0,
+            "average_interactions_per_user": round(float(user_counts.mean()), 2) if not user_counts.empty else 0.0,
+            "average_interactions_per_product": round(float(product_counts.mean()), 2) if not product_counts.empty else 0.0,
             "top_product_groups": self._top_counts(sampled, "product_group"),
+            "top_product_types": self._top_counts(sampled, "product_type"),
             "top_colours": self._top_counts(sampled, "colour"),
             "top_appearances": self._top_counts(sampled, "appearance"),
             "train_size": int(len(train_df)),
             "test_size": int(len(test_df)),
             "split_boundary_date": boundary_date,
             "sample_user_ids": [str(user_id) for user_id in sampled["customer_id"].drop_duplicates().head(20)],
+            "evaluated_user_ids": [],
+            "evaluated_users": 0,
         }
 
         self.settings.summary_path.write_text(json.dumps(summary, indent=2), encoding="utf-8")

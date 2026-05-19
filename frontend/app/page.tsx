@@ -1,10 +1,8 @@
-import Link from "next/link";
-
 import { MetricCard } from "@/components/MetricCard";
-import { getMetrics, getSetup } from "@/lib/api";
+import { getSetup } from "@/lib/api";
 
 export default async function HomePage() {
-  const [setup, metrics] = await Promise.all([getSetup(), getMetrics()]);
+  const setup = await getSetup();
 
   return (
     <div className="stack">
@@ -40,28 +38,10 @@ export default async function HomePage() {
         />
         <MetricCard
           label="Evaluated Users"
-          value={String(metrics?.evaluated_users ?? "0")}
+          value={String(setup?.summary?.evaluated_users ?? "0")}
           detail="Users compared across both models"
         />
-      </section>
-
-      <section className="card">
-        <strong>Dashboard Sections</strong>
-        <div className="grid two" style={{ marginTop: 16 }}>
-          {[
-            ["/research-setup", "Research setup and experiment framing"],
-            ["/data-processing", "Sample summary and metadata distributions"],
-            ["/user-intention", "LLM-inferred user intent and preference profile"],
-            ["/comparison", "Side-by-side CF and Agentic recommendations"],
-            ["/evaluation", "Comparative proxy metrics and business meaning"],
-          ].map(([href, text]) => (
-            <Link key={href} href={href} className="card" style={{ background: "var(--card-strong)" }}>
-              {text}
-            </Link>
-          ))}
-        </div>
       </section>
     </div>
   );
 }
-

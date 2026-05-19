@@ -16,6 +16,7 @@ def test_setup_endpoint(client, isolated_env, sample_interactions: pd.DataFrame)
     payload = response.json()
     assert payload["dataset"] == isolated_env.dataset_name
     assert payload["summary"]["sample_size"] == len(sample_interactions)
+    assert payload["summary"]["evaluated_user_ids"] == ["u1"]
 
 
 def test_metrics_endpoint(client, isolated_env):
@@ -52,3 +53,14 @@ def test_metrics_endpoint(client, isolated_env):
 
     assert response.status_code == 200
     assert response.json()["agentic_ai_framework"]["diversity"] == 0.5
+
+
+def test_recommendation_comparison_includes_agent_process(client, isolated_env, sample_interactions: pd.DataFrame):
+    write_processed_artifacts(isolated_env, sample_interactions)
+
+    response = client.get("/recommendations/compare/u1")
+
+    assert response.status_code == 200
+    payload = response.json()
+    assert payload["agentic_recommendations"][0]["article_id"] == "a5"
+    assert payload["agentic_process"][0]["agent"] == "Agent 1"

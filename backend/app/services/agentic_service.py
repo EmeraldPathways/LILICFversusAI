@@ -210,19 +210,37 @@ class AgenticRecommendationService:
 
     def generate_all(self, train_df: pd.DataFrame, user_ids: list[str]) -> dict[str, list[dict[str, Any]]]:
         outputs: dict[str, list[dict[str, Any]]] = {}
+        traces: dict[str, list[dict[str, Any]]] = {}
         for user_id in user_ids:
-            profile = self.infer_user_intent(user_id, train_df)
-            candidates = self.retrieve_candidate_products(profile, train_df)
-            scored = self.score_candidates(profile, candidates, train_df)
-            enriched = []
-            for item in scored:
-                enriched_item = dict(item)
-                enriched_item["reason"] = self.generate_explanation(profile, item)
-                enriched.append(enriched_item)
+            enriched, trace = self.generate_for_user(user_id, train_df)
             outputs[user_id] = enriched
+            traces[user_id] = trace
 
         self.settings.agentic_output_path.write_text(json.dumps(outputs, indent=2), encoding="utf-8")
+        self.settings.agentic_trace_path.write_text(json.dumps(traces, indent=2), encoding="utf-8")
         return outputs
+
+    def generate_for_user(
+        self,
+        user_id: str,
+        train_df: pd.DataFrame,
+    ) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
+        profile = self.infer_user_intent(user_id, train_df)
+        candidates = self.retrieve_candidate_products(profile, train_df)
+        scored = self.score_candidates(profile, candidates, train_df)
+        enriched = []
+        for item in scored:
+            enriched_item = dict(item)
+            enriched_item["reason"] = self.generate_explanation(profile, item)
+            enriched.append(enriched_item)
+        trace = self._build_agent_trace(user_id, profile, candidates, scored, enriched)
+        return enriched, trace
+
+    def load_traces(self) -> dict[str, list[dict[str, Any]]]:
+        return self._read_json_file(self.settings.agentic_trace_path, default={})
+
+    def load_outputs(self) -> dict[str, list[dict[str, Any]]]:
+        return self._read_json_file(self.settings.agentic_output_path, default={})
 
     def _load_feedback_weights(self, user_id: str) -> dict[str, float]:
         state = self._read_json_file(self.settings.feedback_state_path, default={})
@@ -339,3 +357,97 @@ class AgenticRecommendationService:
             return default
         return json.loads(path.read_text(encoding="utf-8"))
 
+    def _build_agent_trace(
+        self,
+        user_id: str,
+        user_profile: dict[str, Any],
+        candidates: pd.DataFrame,
+        scored_items: list[dict[str, Any]],
+        enriched_items: list[dict[str, Any]],
+    ) -> list[dict[str, Any]]:
+        candidate_preview = [
+            {
+                "article_id": str(row["article_id"]),
+                "product_name": str(row["product_name"]),
+                "product_type": str(row["product_type"]),
+                "colour": str(row["colour"]),
+                "retrieval_score": round(float(row["retrieval_score"]), 4),
+            }
+            for _, row in candidates.head(5).iterrows()
+        ]
+        reasoning_preview = [
+            {
+                "article_id": item["article_id"],
+                "product_name": item["product_name"],
+                "final_score": item["score"],
+                "intent_match": item["intent_match"],
+                "preference_alignment": item["preference_alignment"],
+                "product_relevance": item["product_relevance"],
+                "diversity": item["diversity"],
+                "behavioural_signal": item["behavioural_signal"],
+            }
+            for item in scored_items[:5]
+        ]
+        explanation_preview = [
+            {
+                "article_id": item["article_id"],
+                "product_name": item["product_name"],
+                "reason": item["reason"],
+            }
+            for item in enriched_items[:3]
+        ]
+        feedback_state = self._read_json_file(self.settings.feedback_state_path, default={}).get(user_id, {})
+        weights = self._load_feedback_weights(user_id)
+
+        return [
+            {
+                "agent": "Agent 1",
+                "title": "User Shopping Intention Understanding",
+                "summary": "The framework converts observed category, colour, type, and appearance patterns into a structured shopping-intent profile.",
+                "payload": {
+                    "user_profile": user_profile,
+                },
+            },
+            {
+                "agent": "Agent 2",
+                "title": "Product Retrieval",
+                "summary": f"{len(candidates)} candidate products were retrieved from the filtered catalogue before ranking.",
+                "payload": {
+                    "candidate_count": len(candidates),
+                    "candidate_preview": candidate_preview,
+                },
+            },
+            {
+                "agent": "Agent 3",
+                "title": "Recommendation Reasoning",
+                "summary": "Candidates are ranked with an explicit weighted score covering intent match, alignment, relevance, diversity, and behavioural signal.",
+                "payload": {
+                    "scoring_formula": "0.30*Intent Match + 0.25*Preference Alignment + 0.20*Product Relevance + 0.15*Diversity + 0.10*Behavioural Signal",
+                    "top_scored_items": reasoning_preview,
+                },
+            },
+            {
+                "agent": "Agent 4",
+                "title": "Recommendation Explanation",
+                "summary": "The LLM generates one grounded explanation per top recommendation without changing ranking scores.",
+                "payload": {
+                    "explanation_preview": explanation_preview,
+                },
+            },
+            {
+                "agent": "Agent 5",
+                "title": "Feedback Adaptation",
+                "summary": "Per-user feedback weights are stored separately so the demo can show how future recommendations would adapt.",
+                "payload": {
+                    "current_weights": weights,
+                    "last_feedback": feedback_state.get("last_feedback"),
+                    "last_article_id": feedback_state.get("last_article_id"),
+                    "adaptation_rules": {
+                        "click": "Slightly increase category and colour weight.",
+                        "add_to_cart": "Strongly increase product type and appearance weight.",
+                        "ignore": "Increase diversity penalty to reduce similar-item priority.",
+                        "purchase": "Treat as a strong category and product-type preference signal.",
+                    },
+                },
+            },
+        ]

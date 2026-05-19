@@ -20,6 +20,7 @@ def isolated_env(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
                 "OPENAI_API_KEY=test-key",
                 "OPENAI_MODEL=test-model",
                 "FRONTEND_ORIGIN=http://localhost:3000",
+                f"BACKEND_DATA_DIR={tmp_path.as_posix()}/data",
             ]
         ),
         encoding="utf-8",
@@ -74,6 +75,70 @@ def write_processed_artifacts(settings, interactions: pd.DataFrame) -> None:
     test_df = interactions.iloc[split_index:].copy()
     train_df.to_csv(settings.train_path, index=False)
     test_df.to_csv(settings.test_path, index=False)
+    settings.cf_output_path.write_text(
+        json.dumps(
+            {
+                "u1": [
+                    {
+                        "article_id": "a4",
+                        "product_name": "Oxford Shirt",
+                        "product_type": "Shirt",
+                        "product_group": "Garment Upper body",
+                        "colour": "Blue",
+                        "appearance": "Solid",
+                        "score": 0.81,
+                        "model": "collaborative_filtering",
+                    }
+                ]
+            }
+        ),
+        encoding="utf-8",
+    )
+    settings.agentic_output_path.write_text(
+        json.dumps(
+            {
+                "u1": [
+                    {
+                        "article_id": "a5",
+                        "product_name": "Jersey Top",
+                        "product_type": "Top",
+                        "product_group": "Garment Upper body",
+                        "colour": "White",
+                        "appearance": "Patterned",
+                        "score": 0.91,
+                        "model": "agentic_ai_framework",
+                        "reason": "Recommended because it aligns with the user's preference for upper-body garments and light colours.",
+                        "intent_match": 0.9,
+                        "preference_alignment": 0.8,
+                        "product_relevance": 0.7,
+                        "diversity": 0.6,
+                        "behavioural_signal": 0.5,
+                    }
+                ]
+            }
+        ),
+        encoding="utf-8",
+    )
+    settings.agentic_trace_path.write_text(
+        json.dumps(
+            {
+                "u1": [
+                    {
+                        "agent": "Agent 1",
+                        "title": "User Shopping Intention Understanding",
+                        "summary": "Structured user profile.",
+                        "payload": {
+                            "user_profile": {
+                                "user_id": "u1",
+                                "inferred_intent": "casual daily clothing",
+                            }
+                        },
+                    }
+                ]
+            }
+        ),
+        encoding="utf-8",
+    )
     settings.summary_path.write_text(
         json.dumps(
             {
@@ -81,13 +146,19 @@ def write_processed_artifacts(settings, interactions: pd.DataFrame) -> None:
                 "sample_size": len(interactions),
                 "distinct_users": interactions["customer_id"].nunique(),
                 "distinct_products": interactions["article_id"].nunique(),
+                "repeat_user_ratio": 1.0,
+                "average_interactions_per_user": 4.0,
+                "average_interactions_per_product": 2.0,
                 "top_product_groups": [{"label": "Garment Upper body", "value": 8}],
+                "top_product_types": [{"label": "Shirt", "value": 4}],
                 "top_colours": [{"label": "White", "value": 4}],
                 "top_appearances": [{"label": "Solid", "value": 8}],
                 "train_size": len(train_df),
                 "test_size": len(test_df),
                 "split_boundary_date": str(train_df["transaction_date"].iloc[-1]),
                 "sample_user_ids": ["u1", "u2", "u3"],
+                "evaluated_user_ids": ["u1"],
+                "evaluated_users": 1,
             }
         ),
         encoding="utf-8",

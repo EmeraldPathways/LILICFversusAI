@@ -1,20 +1,11 @@
 import "./globals.css";
 import type { Metadata } from "next";
-import Link from "next/link";
+import { TopNav } from "@/components/TopNav";
 
 export const metadata: Metadata = {
   title: "Agentic AI Recommendation Demo",
   description: "Academic dashboard comparing collaborative filtering and agentic AI recommendations.",
 };
-
-const links = [
-  ["/", "Overview"],
-  ["/research-setup", "Research Setup"],
-  ["/data-processing", "Data Processing"],
-  ["/user-intention", "User Intention"],
-  ["/comparison", "Comparison"],
-  ["/evaluation", "Evaluation"],
-] as const;
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -29,13 +20,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 A research demo comparing collaborative filtering against an explainable,
                 feedback-aware recommendation decision layer built on the H&amp;M dataset.
               </p>
-              <nav className="nav">
-                {links.map(([href, label]) => (
-                  <Link key={href} href={href}>
-                    {label}
-                  </Link>
-                ))}
-              </nav>
+              <TopNav />
             </header>
             {children}
           </div>

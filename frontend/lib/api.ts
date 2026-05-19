@@ -8,13 +8,19 @@ export type ExperimentSummary = {
   sample_size: number;
   distinct_users: number;
   distinct_products: number;
+  repeat_user_ratio: number;
+  average_interactions_per_user: number;
+  average_interactions_per_product: number;
   top_product_groups: SummaryCount[];
+  top_product_types: SummaryCount[];
   top_colours: SummaryCount[];
   top_appearances: SummaryCount[];
   train_size: number;
   test_size: number;
   split_boundary_date: string;
   sample_user_ids?: string[];
+  evaluated_user_ids?: string[];
+  evaluated_users?: number;
 };
 
 export type ExperimentSetup = {
@@ -61,6 +67,14 @@ export type RecommendationComparison = {
   user_id: string;
   cf_recommendations: RecommendationItem[];
   agentic_recommendations: AgenticRecommendationItem[];
+  agentic_process: AgentProcessStage[];
+};
+
+export type AgentProcessStage = {
+  agent: string;
+  title: string;
+  summary: string;
+  payload: Record<string, unknown>;
 };
 
 export type ModelMetrics = {

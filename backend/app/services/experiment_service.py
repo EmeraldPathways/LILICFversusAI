@@ -25,6 +25,9 @@ class ExperimentService:
         train_df = self.data_service.load_train()
         test_df = self.data_service.load_test()
         user_ids = self._select_evaluable_users(train_df, test_df)
+        summary["evaluated_user_ids"] = user_ids
+        summary["evaluated_users"] = len(user_ids)
+        self.settings.summary_path.write_text(json.dumps(summary, indent=2), encoding="utf-8")
 
         cf_recommendations = self.cf_service.generate_all(train_df, user_ids)
         agentic_recommendations = self.agentic_service.generate_all(train_df, user_ids)
@@ -75,8 +78,17 @@ class ExperimentService:
         return json.loads(self.settings.experiment_state_path.read_text(encoding="utf-8"))
 
     def _select_evaluable_users(self, train_df, test_df) -> list[str]:
-        train_users = set(train_df["customer_id"].astype(str))
-        test_users = set(test_df["customer_id"].astype(str))
-        common = sorted(train_users & test_users)
-        return common[: self.settings.max_eval_users]
+        train_counts = train_df.groupby("customer_id").size()
+        test_counts = test_df.groupby("customer_id").size()
+        common_users = set(train_counts.index.astype(str)) & set(test_counts.index.astype(str))
 
+        ranked_users = sorted(
+            common_users,
+            key=lambda user_id: (
+                int(test_counts.get(user_id, 0)),
+                int(train_counts.get(user_id, 0)),
+                user_id,
+            ),
+            reverse=True,
+        )
+        return ranked_users[: self.settings.max_eval_users]
