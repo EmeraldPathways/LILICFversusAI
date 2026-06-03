@@ -24,16 +24,14 @@ class ExperimentService:
         summary = self.data_service.preprocess()
         train_df = self.data_service.load_train()
         test_df = self.data_service.load_test()
-        user_ids = self._select_evaluable_users(train_df, test_df)
+        user_ids = self._select_evaluable_users(test_df)
         summary["evaluated_user_ids"] = user_ids
         summary["evaluated_users"] = len(user_ids)
         self.settings.summary_path.write_text(json.dumps(summary, indent=2), encoding="utf-8")
 
         cf_recommendations = self.cf_service.generate_all(train_df, user_ids)
         agentic_recommendations = self.agentic_service.generate_all(train_df, user_ids)
-        metrics = self.evaluation_service.evaluate(
-            train_df, test_df, cf_recommendations, agentic_recommendations
-        )
+        metrics = self.evaluation_service.evaluate(test_df, cf_recommendations, agentic_recommendations)
 
         state = ExperimentState(
             status="completed",
@@ -44,7 +42,7 @@ class ExperimentService:
             evaluated_users=len(user_ids),
             models=["collaborative_filtering", "agentic_ai_framework"],
             metrics_ready=True,
-            split_boundary_date=str(summary["split_boundary_date"]),
+            split_boundary_date="leave_one_out",
             artifacts={
                 "interactions": str(self.settings.interactions_path),
                 "train": str(self.settings.train_path),
@@ -77,18 +75,31 @@ class ExperimentService:
             return None
         return json.loads(self.settings.experiment_state_path.read_text(encoding="utf-8"))
 
-    def _select_evaluable_users(self, train_df, test_df) -> list[str]:
-        train_counts = train_df.groupby("customer_id").size()
-        test_counts = test_df.groupby("customer_id").size()
-        common_users = set(train_counts.index.astype(str)) & set(test_counts.index.astype(str))
+    def get_ground_truth_map(self, test_df) -> dict[str, str]:
+        return {
+            str(row["customer_id"]): str(row["article_id"])
+            for _, row in test_df.iterrows()
+        }
 
-        ranked_users = sorted(
-            common_users,
-            key=lambda user_id: (
-                int(test_counts.get(user_id, 0)),
-                int(train_counts.get(user_id, 0)),
-                user_id,
-            ),
-            reverse=True,
+    def get_training_history_preview(self, user_id: str, train_df) -> list[dict[str, object]]:
+        history = (
+            train_df[train_df["customer_id"] == user_id]
+            .sort_values(["transaction_date", "article_id"], ascending=[False, False])
+            .head(5)
         )
-        return ranked_users[: self.settings.max_eval_users]
+        return [
+            {
+                "article_id": str(row["article_id"]),
+                "product_name": str(row["product_name"]),
+                "product_type": str(row["product_type"]),
+                "product_group": str(row["product_group"]),
+                "colour": str(row["colour"]),
+                "appearance": str(row["appearance"]),
+                "transaction_date": str(row["transaction_date"]),
+            }
+            for _, row in history.iterrows()
+        ]
+
+    def _select_evaluable_users(self, test_df) -> list[str]:
+        user_ids = sorted(str(user_id) for user_id in test_df["customer_id"].drop_duplicates().tolist())
+        return user_ids[: self.settings.max_eval_users]

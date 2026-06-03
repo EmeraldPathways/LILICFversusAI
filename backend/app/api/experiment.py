@@ -44,15 +44,14 @@ def get_setup(
     settings: Settings = Depends(get_settings),
     service: ExperimentService = Depends(get_experiment_service),
 ) -> dict[str, object]:
-    state = service.load_state()
-    sample_size = int(state["sample_size"]) if state else settings.sample_size
+    summary = DataService(settings).load_summary()
+    sample_size = int(summary["sample_size"]) if summary else settings.sample_size
     return {
         "dataset": settings.dataset_name,
         "sample_size": sample_size,
-        "split_method": "80% historical behaviour / 20% future behaviour",
+        "split_method": "Leave-one-out next-item evaluation",
         "benchmark": "Collaborative Filtering",
-        "proposed_framework": "Agentic AI Recommendation Framework",
-        "evaluation_metrics": ["Hit Rate@10", "Preference Alignment", "Diversity"],
-        "summary": DataService(settings).load_summary(),
+        "proposed_framework": "3-Agent Agentic AI Recommendation Framework",
+        "evaluation_metrics": ["Hit@5"],
+        "summary": summary,
     }
-

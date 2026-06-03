@@ -15,4 +15,3 @@ def get_metrics(service: ExperimentService = Depends(get_experiment_service)) ->
     if metrics is None:
         raise FileNotFoundError("Run the experiment first to generate evaluation metrics.")
     return metrics
-

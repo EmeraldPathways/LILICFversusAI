@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import re
 from collections import Counter
 from dataclasses import dataclass
 from typing import Any
@@ -28,159 +29,264 @@ class AgenticRecommendationService:
         "diversity_penalty": 1.0,
     }
 
-    def infer_user_intent(self, user_id: str, train_df: pd.DataFrame) -> dict[str, Any]:
-        history = train_df[train_df["customer_id"] == user_id].copy()
-        if history.empty:
-            raise AgenticServiceError(f"User {user_id} has no training history.")
+    def infer_user_intent(
+        self,
+        user_id: str,
+        train_df: pd.DataFrame,
+        user_request: str = "",
+    ) -> dict[str, Any]:
+        history = self._user_history(user_id, train_df)
+        hard_constraints = self._extract_hard_constraints(user_request)
+        weighted_types = self._weighted_preferences(history["product_type"])
+        weighted_groups = self._weighted_preferences(history["product_group"])
+        weighted_colours = self._weighted_preferences(history["colour"])
+        weighted_appearances = self._weighted_preferences(history["appearance"])
 
-        dominant_groups = self._top_values(history["product_group"])
-        dominant_types = self._top_values(history["product_type"])
-        dominant_colours = self._top_values(history["colour"])
-        dominant_appearance = self._top_values(history["appearance"])
-
-        prompt_payload = {
-            "user_id": user_id,
-            "dominant_product_groups": dominant_groups,
-            "dominant_product_types": dominant_types,
-            "dominant_colours": dominant_colours,
-            "dominant_appearance": dominant_appearance,
-        }
         llm_result = self._request_structured_completion(
             system_prompt=(
-                "You are an e-commerce recommendation analyst. "
-                "Return JSON only with keys: inferred_intent, preferred_categories, "
-                "preferred_product_types, preferred_colours, preferred_appearance, shopping_context."
+                "You are the Preference Agent in a fashion recommendation experiment. "
+                "Infer only soft preferences from the user's historical purchases. "
+                "Never convert historical behavior into hard constraints. "
+                "Return JSON only with keys soft_preferences and preference_summary."
             ),
-            user_payload=prompt_payload,
+            user_payload={
+                "user_id": user_id,
+                "explicit_request": user_request,
+                "hard_constraints": hard_constraints,
+                "history_preview": history[
+                    [
+                        "article_id",
+                        "product_name",
+                        "product_type",
+                        "product_group",
+                        "colour",
+                        "appearance",
+                        "product_description",
+                    ]
+                ].head(15).to_dict(orient="records"),
+                "weighted_preferences": {
+                    "product_type_name": weighted_types,
+                    "product_group_name": weighted_groups,
+                    "colour_group_name": weighted_colours,
+                    "graphical_appearance_name": weighted_appearances,
+                },
+            },
         )
-
-        required_keys = {
-            "inferred_intent",
-            "preferred_categories",
-            "preferred_product_types",
-            "preferred_colours",
-            "preferred_appearance",
-            "shopping_context",
-        }
-        if not required_keys.issubset(llm_result):
-            raise AgenticServiceError("LLM response was missing one or more required user-intent fields.")
 
         return {
             "user_id": user_id,
-            "inferred_intent": str(llm_result["inferred_intent"]),
-            "preferred_categories": [str(item) for item in llm_result["preferred_categories"]],
-            "preferred_product_types": [str(item) for item in llm_result["preferred_product_types"]],
-            "preferred_colours": [str(item) for item in llm_result["preferred_colours"]],
-            "preferred_appearance": [str(item) for item in llm_result["preferred_appearance"]],
-            "shopping_context": str(llm_result["shopping_context"]),
+            "preferred_product_type_name_values": weighted_types,
+            "preferred_product_group_name_values": weighted_groups,
+            "preferred_colour_group_name_values": weighted_colours,
+            "preferred_graphical_appearance_name_values": weighted_appearances,
+            "soft_preferences": [str(item) for item in llm_result.get("soft_preferences", [])],
+            "hard_constraints": hard_constraints,
+            "preference_summary": str(
+                llm_result.get(
+                    "preference_summary",
+                    "Historical behavior was converted into weighted soft preferences only.",
+                )
+            ),
         }
 
     def retrieve_candidate_products(
         self,
         user_profile: dict[str, Any],
         train_df: pd.DataFrame,
-    ) -> pd.DataFrame:
-        user_history = set(
-            train_df.loc[train_df["customer_id"] == user_profile["user_id"], "article_id"].astype(str)
+    ) -> list[dict[str, Any]]:
+        history = self._user_history(user_profile["user_id"], train_df)
+        seen_articles = set(history["article_id"].astype(str))
+        catalogue = self._catalogue(train_df)
+        candidates = catalogue[~catalogue["article_id"].astype(str).isin(seen_articles)].copy()
+
+        type_weights = self._to_weight_map(user_profile["preferred_product_type_name_values"])
+        group_weights = self._to_weight_map(user_profile["preferred_product_group_name_values"])
+        colour_weights = self._to_weight_map(user_profile["preferred_colour_group_name_values"])
+        appearance_weights = self._to_weight_map(
+            user_profile["preferred_graphical_appearance_name_values"]
         )
-        catalogue = train_df.drop_duplicates("article_id").copy()
-        catalogue = catalogue[~catalogue["article_id"].astype(str).isin(user_history)].copy()
+        description_terms = self._description_terms(user_profile)
 
-        preferred_groups = set(user_profile["preferred_categories"])
-        preferred_types = set(user_profile["preferred_product_types"])
-        preferred_colours = set(user_profile["preferred_colours"])
-        preferred_appearance = set(user_profile["preferred_appearance"])
-        intent_terms = set(str(user_profile["inferred_intent"]).lower().split())
+        evidence = []
+        for _, row in candidates.iterrows():
+            matched_fields = self._matched_fields(
+                row, type_weights, group_weights, colour_weights, appearance_weights, description_terms
+            )
+            if not matched_fields:
+                continue
+            evidence.append(
+                {
+                    "article_id": str(row["article_id"]),
+                    "product_type_name": str(row["product_type"]),
+                    "product_group_name": str(row["product_group"]),
+                    "graphical_appearance_name": str(row["appearance"]),
+                    "colour_group_name": str(row["colour"]),
+                    "product_description": str(row["product_description"]),
+                    "image_url": str(row["image_url"]),
+                    "matched_preference_fields": matched_fields,
+                    "evidence_summary": f"Matched {len(matched_fields)} preference signals: {', '.join(matched_fields)}.",
+                    "match_count": len(matched_fields),
+                    "missing_evidence": self._missing_evidence(row),
+                }
+            )
 
-        def retrieval_score(row: pd.Series) -> float:
-            name_terms = set(str(row["product_name"]).lower().split())
-            score = 0.0
-            score += 2.0 if row["product_group"] in preferred_groups else 0.0
-            score += 2.5 if row["product_type"] in preferred_types else 0.0
-            score += 1.5 if row["colour"] in preferred_colours else 0.0
-            score += 1.5 if row["appearance"] in preferred_appearance else 0.0
-            score += min(1.0, len(intent_terms & name_terms) * 0.3)
-            return score
-
-        catalogue["retrieval_score"] = catalogue.apply(retrieval_score, axis=1)
-        ranked = catalogue.sort_values(
-            ["retrieval_score", "transaction_date"], ascending=[False, False]
-        ).head(self.settings.candidate_pool_size)
-        return ranked
+        evidence.sort(key=lambda item: (item["match_count"], item["article_id"]), reverse=True)
+        return evidence[: self.settings.candidate_pool_size]
 
     def score_candidates(
         self,
         user_profile: dict[str, Any],
-        candidates: pd.DataFrame,
+        candidates: list[dict[str, Any]],
         train_df: pd.DataFrame,
     ) -> list[dict[str, Any]]:
-        if candidates.empty:
-            return []
+        type_weights = self._to_weight_map(user_profile["preferred_product_type_name_values"])
+        group_weights = self._to_weight_map(user_profile["preferred_product_group_name_values"])
+        colour_weights = self._to_weight_map(user_profile["preferred_colour_group_name_values"])
+        appearance_weights = self._to_weight_map(
+            user_profile["preferred_graphical_appearance_name_values"]
+        )
+        description_terms = self._description_terms(user_profile)
+        hard_constraints = user_profile["hard_constraints"]
 
-        preferences = self._load_feedback_weights(user_profile["user_id"])
-        profile_history = train_df[train_df["customer_id"] == user_profile["user_id"]]
-        type_counts = Counter(profile_history["product_type"])
-        group_counts = Counter(profile_history["product_group"])
-        colour_counts = Counter(profile_history["colour"])
-        appearance_counts = Counter(profile_history["appearance"])
-
-        seen_types: set[str] = set()
-        scored_items: list[dict[str, Any]] = []
-        intent_terms = set(user_profile["inferred_intent"].lower().split())
-
-        for _, row in candidates.iterrows():
-            intent_match = self._intent_match(row, user_profile, intent_terms)
-            preference_alignment = self._preference_alignment(row, user_profile, preferences)
-            product_relevance = self._product_relevance(
-                row, group_counts, type_counts, colour_counts, appearance_counts
+        ranked = []
+        for candidate in candidates:
+            if self._violates_constraints(candidate, hard_constraints):
+                continue
+            description_score = self._description_similarity(
+                candidate["product_description"], description_terms
             )
-            diversity = 1.0 if row["product_type"] not in seen_types else 0.4 / preferences["diversity_penalty"]
-            behavioural_signal = self._behavioural_signal(row, group_counts, type_counts)
-            final_score = (
-                0.30 * intent_match
-                + 0.25 * preference_alignment
-                + 0.20 * product_relevance
-                + 0.15 * diversity
-                + 0.10 * behavioural_signal
+            match_score = round(
+                (
+                    0.30 * type_weights.get(candidate["product_type_name"], 0.0)
+                    + 0.25 * group_weights.get(candidate["product_group_name"], 0.0)
+                    + 0.20 * colour_weights.get(candidate["colour_group_name"], 0.0)
+                    + 0.15 * appearance_weights.get(candidate["graphical_appearance_name"], 0.0)
+                    + 0.10 * description_score
+                ),
+                4,
             )
-            seen_types.add(str(row["product_type"]))
-            scored_items.append(
+            ranked.append(
                 {
-                    "article_id": str(row["article_id"]),
-                    "product_name": str(row["product_name"]),
-                    "product_type": str(row["product_type"]),
-                    "product_group": str(row["product_group"]),
-                    "colour": str(row["colour"]),
-                    "appearance": str(row["appearance"]),
-                    "score": round(float(final_score), 4),
-                    "model": "agentic_ai_framework",
-                    "intent_match": round(float(intent_match), 4),
-                    "preference_alignment": round(float(preference_alignment), 4),
-                    "product_relevance": round(float(product_relevance), 4),
-                    "diversity": round(float(diversity), 4),
-                    "behavioural_signal": round(float(behavioural_signal), 4),
+                    **candidate,
+                    "match_score": match_score,
+                    "matched_evidence": list(candidate["matched_preference_fields"]),
+                    "constraint_status": "passed"
+                    if hard_constraints
+                    else "not_applied",
                 }
             )
 
-        scored_items.sort(key=lambda item: item["score"], reverse=True)
-        return scored_items[: self.settings.top_n]
-
-    def generate_explanation(self, user_profile: dict[str, Any], scored_item: dict[str, Any]) -> str:
+        ranked.sort(key=lambda item: item["match_score"], reverse=True)
         llm_result = self._request_structured_completion(
             system_prompt=(
-                "You explain why an e-commerce product was recommended. "
-                "Return JSON only with a single key called explanation. "
-                "Keep the explanation to one sentence and ground it in the provided profile and scores."
+                "You are the Decision Agent in a fashion recommendation experiment. "
+                "Use the already computed ranking and matched evidence to explain each recommendation. "
+                "Return JSON only with key recommendations as a list of objects containing article_id and recommendation_reason."
             ),
             user_payload={
                 "user_profile": user_profile,
-                "recommendation": scored_item,
+                "ranked_candidates": ranked[: self.settings.top_n],
             },
         )
-        explanation = llm_result.get("explanation")
-        if not explanation:
-            raise AgenticServiceError("LLM response did not include an explanation field.")
-        return str(explanation)
+        reasons = {
+            str(item["article_id"]): str(item["recommendation_reason"])
+            for item in llm_result.get("recommendations", [])
+            if item.get("article_id") and item.get("recommendation_reason")
+        }
+
+        final = []
+        for index, item in enumerate(ranked[: self.settings.top_n], start=1):
+            final.append(
+                {
+                    "rank": index,
+                    "article_id": item["article_id"],
+                    "match_score": item["match_score"],
+                    "recommendation_reason": reasons.get(
+                        item["article_id"],
+                        f"{item['article_id']} ranked well from product, group, colour, appearance, and description overlap.",
+                    ),
+                    "matched_evidence": item["matched_evidence"],
+                    "constraint_status": item["constraint_status"],
+                    "product_type_name": item["product_type_name"],
+                    "product_group_name": item["product_group_name"],
+                    "graphical_appearance_name": item["graphical_appearance_name"],
+                    "colour_group_name": item["colour_group_name"],
+                    "product_description": item["product_description"],
+                    "image_url": item["image_url"],
+                }
+            )
+        return final
+
+    def run_three_agent_pipeline(
+        self,
+        user_id: str,
+        user_request: str,
+        train_df: pd.DataFrame,
+    ) -> dict[str, Any]:
+        preference_profile = self.infer_user_intent(user_id, train_df, user_request)
+        candidate_evidence_set = self.retrieve_candidate_products(preference_profile, train_df)
+        final_recommendations = self.score_candidates(preference_profile, candidate_evidence_set, train_df)
+        return {
+            "preference_profile": preference_profile,
+            "candidate_evidence_set": candidate_evidence_set[:12],
+            "final_recommendations": final_recommendations[:5],
+            "process_trace": [
+                {
+                    "agent": "Preference Agent",
+                    "title": "Preference Profile",
+                    "summary": "Real purchase history was summarized into weighted soft preferences.",
+                    "payload": preference_profile,
+                },
+                {
+                    "agent": "Evidence Agent",
+                    "title": "Candidate Evidence",
+                    "summary": "Candidate products were matched against the inferred soft preferences.",
+                    "payload": {"candidate_count": len(candidate_evidence_set), "candidate_preview": candidate_evidence_set[:5]},
+                },
+                {
+                    "agent": "Decision Agent",
+                    "title": "Final Recommendations",
+                    "summary": "Candidates were filtered by explicit hard constraints and ranked with the fixed weighted score.",
+                    "payload": {"recommendation_preview": final_recommendations[:5]},
+                },
+            ],
+        }
+
+    def generate_all(self, train_df: pd.DataFrame, user_ids: list[str]) -> dict[str, list[dict[str, Any]]]:
+        outputs = {}
+        traces = {}
+        for user_id in user_ids:
+            result = self.run_three_agent_pipeline(user_id, "", train_df)
+            outputs[user_id] = [
+                {
+                    "article_id": item["article_id"],
+                    "product_name": item["product_description"][:80],
+                    "product_type": item["product_type_name"],
+                    "product_group": item["product_group_name"],
+                    "colour": item["colour_group_name"],
+                    "appearance": item["graphical_appearance_name"],
+                    "score": item["match_score"],
+                    "model": "agentic_ai_framework",
+                    "reason": item["recommendation_reason"],
+                }
+                for item in result["final_recommendations"]
+            ]
+            traces[user_id] = result["process_trace"]
+        self.settings.agentic_output_path.write_text(json.dumps(outputs, indent=2), encoding="utf-8")
+        self.settings.agentic_trace_path.write_text(json.dumps(traces, indent=2), encoding="utf-8")
+        return outputs
+
+    def generate_for_user(
+        self, user_id: str, train_df: pd.DataFrame, user_request: str = ""
+    ) -> tuple[dict[str, Any], list[dict[str, Any]]]:
+        result = self.run_three_agent_pipeline(user_id, user_request, train_df)
+        return result, result["process_trace"]
+
+    def load_traces(self) -> dict[str, list[dict[str, Any]]]:
+        return self._read_json_file(self.settings.agentic_trace_path, default={})
+
+    def load_outputs(self) -> dict[str, list[dict[str, Any]]]:
+        return self._read_json_file(self.settings.agentic_output_path, default={})
 
     def adapt_from_feedback(
         self,
@@ -208,50 +314,125 @@ class AgenticRecommendationService:
         self.settings.feedback_state_path.write_text(json.dumps(state, indent=2), encoding="utf-8")
         return weights
 
-    def generate_all(self, train_df: pd.DataFrame, user_ids: list[str]) -> dict[str, list[dict[str, Any]]]:
-        outputs: dict[str, list[dict[str, Any]]] = {}
-        traces: dict[str, list[dict[str, Any]]] = {}
-        for user_id in user_ids:
-            enriched, trace = self.generate_for_user(user_id, train_df)
-            outputs[user_id] = enriched
-            traces[user_id] = trace
-
-        self.settings.agentic_output_path.write_text(json.dumps(outputs, indent=2), encoding="utf-8")
-        self.settings.agentic_trace_path.write_text(json.dumps(traces, indent=2), encoding="utf-8")
-        return outputs
-
-    def generate_for_user(
-        self,
-        user_id: str,
-        train_df: pd.DataFrame,
-    ) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
-        profile = self.infer_user_intent(user_id, train_df)
-        candidates = self.retrieve_candidate_products(profile, train_df)
-        scored = self.score_candidates(profile, candidates, train_df)
-        enriched = []
-        for item in scored:
-            enriched_item = dict(item)
-            enriched_item["reason"] = self.generate_explanation(profile, item)
-            enriched.append(enriched_item)
-        trace = self._build_agent_trace(user_id, profile, candidates, scored, enriched)
-        return enriched, trace
-
-    def load_traces(self) -> dict[str, list[dict[str, Any]]]:
-        return self._read_json_file(self.settings.agentic_trace_path, default={})
-
-    def load_outputs(self) -> dict[str, list[dict[str, Any]]]:
-        return self._read_json_file(self.settings.agentic_output_path, default={})
-
     def _load_feedback_weights(self, user_id: str) -> dict[str, float]:
         state = self._read_json_file(self.settings.feedback_state_path, default={})
         weights = state.get(user_id, {}).get("weights", {})
         return {key: float(weights.get(key, value)) for key, value in self.BASE_WEIGHTS.items()}
 
+    @staticmethod
+    def _weighted_preferences(series: pd.Series, limit: int = 5) -> list[dict[str, Any]]:
+        counts = Counter(str(value) for value in series.dropna().tolist())
+        total = sum(counts.values())
+        if total == 0:
+            return []
+        return [
+            {"value": label, "weight": round(count / total, 4)}
+            for label, count in counts.most_common(limit)
+        ]
+
+    @staticmethod
+    def _extract_hard_constraints(user_request: str) -> dict[str, str]:
+        normalized = user_request.lower()
+        constraints: dict[str, str] = {}
+        if (
+            "only black" in normalized
+            or "black only" in normalized
+            or re.search(r"\bonly want black\b", normalized)
+        ):
+            constraints["colour_group_name"] = "Black"
+        if (
+            "only dresses" in normalized
+            or "dress only" in normalized
+            or "black dresses" in normalized
+            or re.search(r"\bonly want .*dresses\b", normalized)
+        ):
+            constraints["product_type_name"] = "Dress"
+        if "only trousers" in normalized or "trousers only" in normalized:
+            constraints["product_type_name"] = "Trousers"
+        return constraints
+
+    @staticmethod
+    def _to_weight_map(values: list[dict[str, Any]]) -> dict[str, float]:
+        return {str(item["value"]): float(item["weight"]) for item in values}
+
+    @staticmethod
+    def _description_terms(user_profile: dict[str, Any]) -> set[str]:
+        terms = set()
+        for sentence in user_profile.get("soft_preferences", []):
+            terms.update(re.findall(r"[a-z0-9]+", sentence.lower()))
+        terms.update(re.findall(r"[a-z0-9]+", user_profile.get("preference_summary", "").lower()))
+        return terms
+
+    @staticmethod
+    def _description_similarity(description: str, terms: set[str]) -> float:
+        if not terms:
+            return 0.0
+        description_terms = set(re.findall(r"[a-z0-9]+", description.lower()))
+        return min(len(description_terms & terms) / len(terms), 1.0)
+
+    @staticmethod
+    def _matched_fields(
+        row: pd.Series,
+        type_weights: dict[str, float],
+        group_weights: dict[str, float],
+        colour_weights: dict[str, float],
+        appearance_weights: dict[str, float],
+        description_terms: set[str],
+    ) -> list[str]:
+        matched = []
+        if row["product_type"] in type_weights:
+            matched.append("product_type_name")
+        if row["product_group"] in group_weights:
+            matched.append("product_group_name")
+        if row["colour"] in colour_weights:
+            matched.append("colour_group_name")
+        if row["appearance"] in appearance_weights:
+            matched.append("graphical_appearance_name")
+        if AgenticRecommendationService._description_similarity(str(row["product_description"]), description_terms) > 0:
+            matched.append("product_description")
+        return matched
+
+    @staticmethod
+    def _missing_evidence(row: pd.Series) -> list[str]:
+        missing = []
+        for field in ["product_description", "image_url"]:
+            if not str(row.get(field, "")).strip():
+                missing.append(field)
+        return missing
+
+    @staticmethod
+    def _violates_constraints(candidate: dict[str, Any], constraints: dict[str, str]) -> bool:
+        for field, value in constraints.items():
+            if candidate.get(field) != value:
+                return True
+        return False
+
+    @staticmethod
+    def _catalogue(train_df: pd.DataFrame) -> pd.DataFrame:
+        catalogue = train_df.drop_duplicates("article_id").copy()
+        if "product_description" not in catalogue.columns:
+            catalogue["product_description"] = catalogue["product_name"]
+        if "image_url" not in catalogue.columns:
+            catalogue["image_url"] = catalogue["article_id"].astype(str).map(
+                lambda article_id: f"https://placehold.co/300x400?text={article_id}"
+            )
+        return catalogue
+
+    def _user_history(self, user_id: str, train_df: pd.DataFrame) -> pd.DataFrame:
+        history = train_df[train_df["customer_id"] == user_id].copy()
+        if history.empty:
+            raise AgenticServiceError(f"User {user_id} has no training history.")
+        if "product_description" not in history.columns:
+            history["product_description"] = history["product_name"]
+        if "image_url" not in history.columns:
+            history["image_url"] = history["article_id"].astype(str).map(
+                lambda article_id: f"https://placehold.co/300x400?text={article_id}"
+            )
+        return history
+
     def _request_structured_completion(self, system_prompt: str, user_payload: dict[str, Any]) -> dict[str, Any]:
         if not self.settings.openai_api_key:
-            raise AgenticServiceError(
-                "OPENAI_API_KEY is required for the agentic intention and explanation services."
-            )
+            raise AgenticServiceError("OPENAI_API_KEY is required for the Agentic AI method.")
 
         request_body = {
             "model": self.settings.openai_model,
@@ -261,7 +442,6 @@ class AgenticRecommendationService:
                 {"role": "user", "content": json.dumps(user_payload)},
             ],
         }
-
         headers = {
             "Authorization": f"Bearer {self.settings.openai_api_key}",
             "Content-Type": "application/json",
@@ -279,175 +459,12 @@ class AgenticRecommendationService:
 
         payload = response.json()
         try:
-            content = payload["choices"][0]["message"]["content"]
-            return json.loads(content)
+            return json.loads(payload["choices"][0]["message"]["content"])
         except (KeyError, IndexError, json.JSONDecodeError) as exc:
             raise AgenticServiceError("Unable to parse structured JSON from OpenAI response.") from exc
-
-    @staticmethod
-    def _top_values(series: pd.Series, limit: int = 3) -> list[str]:
-        return [str(value) for value in series.value_counts().head(limit).index.tolist()]
-
-    @staticmethod
-    def _intent_match(row: pd.Series, user_profile: dict[str, Any], intent_terms: set[str]) -> float:
-        score = 0.0
-        if row["product_group"] in user_profile["preferred_categories"]:
-            score += 0.35
-        if row["product_type"] in user_profile["preferred_product_types"]:
-            score += 0.35
-        if row["colour"] in user_profile["preferred_colours"]:
-            score += 0.15
-        if row["appearance"] in user_profile["preferred_appearance"]:
-            score += 0.1
-        score += min(0.05, len(intent_terms & set(str(row["product_name"]).lower().split())) * 0.02)
-        return min(score, 1.0)
-
-    @staticmethod
-    def _preference_alignment(
-        row: pd.Series,
-        user_profile: dict[str, Any],
-        preferences: dict[str, float],
-    ) -> float:
-        score = 0.0
-        score += 0.25 * preferences["category_weight"] if row["product_group"] in user_profile["preferred_categories"] else 0.0
-        score += 0.25 * preferences["product_type_weight"] if row["product_type"] in user_profile["preferred_product_types"] else 0.0
-        score += 0.25 * preferences["colour_weight"] if row["colour"] in user_profile["preferred_colours"] else 0.0
-        score += 0.25 * preferences["appearance_weight"] if row["appearance"] in user_profile["preferred_appearance"] else 0.0
-        return min(score / max(preferences["product_type_weight"], 1.0), 1.0)
-
-    @staticmethod
-    def _product_relevance(
-        row: pd.Series,
-        group_counts: Counter[str],
-        type_counts: Counter[str],
-        colour_counts: Counter[str],
-        appearance_counts: Counter[str],
-    ) -> float:
-        def normalized(counter: Counter[str], key: str) -> float:
-            if not counter:
-                return 0.0
-            return counter.get(str(key), 0) / max(counter.values())
-
-        return min(
-            1.0,
-            (
-                normalized(group_counts, row["product_group"])
-                + normalized(type_counts, row["product_type"])
-                + normalized(colour_counts, row["colour"])
-                + normalized(appearance_counts, row["appearance"])
-            )
-            / 4,
-        )
-
-    @staticmethod
-    def _behavioural_signal(row: pd.Series, group_counts: Counter[str], type_counts: Counter[str]) -> float:
-        total = sum(group_counts.values()) + sum(type_counts.values())
-        if total == 0:
-            return 0.0
-        return min(
-            1.0,
-            (group_counts.get(str(row["product_group"]), 0) + type_counts.get(str(row["product_type"]), 0))
-            / total
-            * 2,
-        )
 
     @staticmethod
     def _read_json_file(path, default: dict[str, Any]) -> dict[str, Any]:
         if not path.exists():
             return default
         return json.loads(path.read_text(encoding="utf-8"))
-
-    def _build_agent_trace(
-        self,
-        user_id: str,
-        user_profile: dict[str, Any],
-        candidates: pd.DataFrame,
-        scored_items: list[dict[str, Any]],
-        enriched_items: list[dict[str, Any]],
-    ) -> list[dict[str, Any]]:
-        candidate_preview = [
-            {
-                "article_id": str(row["article_id"]),
-                "product_name": str(row["product_name"]),
-                "product_type": str(row["product_type"]),
-                "colour": str(row["colour"]),
-                "retrieval_score": round(float(row["retrieval_score"]), 4),
-            }
-            for _, row in candidates.head(5).iterrows()
-        ]
-        reasoning_preview = [
-            {
-                "article_id": item["article_id"],
-                "product_name": item["product_name"],
-                "final_score": item["score"],
-                "intent_match": item["intent_match"],
-                "preference_alignment": item["preference_alignment"],
-                "product_relevance": item["product_relevance"],
-                "diversity": item["diversity"],
-                "behavioural_signal": item["behavioural_signal"],
-            }
-            for item in scored_items[:5]
-        ]
-        explanation_preview = [
-            {
-                "article_id": item["article_id"],
-                "product_name": item["product_name"],
-                "reason": item["reason"],
-            }
-            for item in enriched_items[:3]
-        ]
-        feedback_state = self._read_json_file(self.settings.feedback_state_path, default={}).get(user_id, {})
-        weights = self._load_feedback_weights(user_id)
-
-        return [
-            {
-                "agent": "Agent 1",
-                "title": "User Shopping Intention Understanding",
-                "summary": "The framework converts observed category, colour, type, and appearance patterns into a structured shopping-intent profile.",
-                "payload": {
-                    "user_profile": user_profile,
-                },
-            },
-            {
-                "agent": "Agent 2",
-                "title": "Product Retrieval",
-                "summary": f"{len(candidates)} candidate products were retrieved from the filtered catalogue before ranking.",
-                "payload": {
-                    "candidate_count": len(candidates),
-                    "candidate_preview": candidate_preview,
-                },
-            },
-            {
-                "agent": "Agent 3",
-                "title": "Recommendation Reasoning",
-                "summary": "Candidates are ranked with an explicit weighted score covering intent match, alignment, relevance, diversity, and behavioural signal.",
-                "payload": {
-                    "scoring_formula": "0.30*Intent Match + 0.25*Preference Alignment + 0.20*Product Relevance + 0.15*Diversity + 0.10*Behavioural Signal",
-                    "top_scored_items": reasoning_preview,
-                },
-            },
-            {
-                "agent": "Agent 4",
-                "title": "Recommendation Explanation",
-                "summary": "The LLM generates one grounded explanation per top recommendation without changing ranking scores.",
-                "payload": {
-                    "explanation_preview": explanation_preview,
-                },
-            },
-            {
-                "agent": "Agent 5",
-                "title": "Feedback Adaptation",
-                "summary": "Per-user feedback weights are stored separately so the demo can show how future recommendations would adapt.",
-                "payload": {
-                    "current_weights": weights,
-                    "last_feedback": feedback_state.get("last_feedback"),
-                    "last_article_id": feedback_state.get("last_article_id"),
-                    "adaptation_rules": {
-                        "click": "Slightly increase category and colour weight.",
-                        "add_to_cart": "Strongly increase product type and appearance weight.",
-                        "ignore": "Increase diversity penalty to reduce similar-item priority.",
-                        "purchase": "Treat as a strong category and product-type preference signal.",
-                    },
-                },
-            },
-        ]

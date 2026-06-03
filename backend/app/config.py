@@ -26,7 +26,7 @@ class Settings(BaseSettings):
     openai_model: str = Field(default="gpt-4.1-mini", alias="OPENAI_MODEL")
     backend_data_dir: Path | None = Field(default=None, alias="BACKEND_DATA_DIR")
     sample_size: int = Field(default=20_000, alias="SAMPLE_SIZE")
-    top_n: int = Field(default=10, alias="TOP_N")
+    top_n: int = Field(default=5, alias="TOP_N")
     candidate_pool_size: int = Field(default=100, alias="CANDIDATE_POOL_SIZE")
     min_user_interactions: int = Field(default=3, alias="MIN_USER_INTERACTIONS")
     min_product_interactions: int = Field(default=2, alias="MIN_PRODUCT_INTERACTIONS")

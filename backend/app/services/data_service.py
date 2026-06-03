@@ -17,6 +17,8 @@ REQUIRED_COLUMNS = [
     "colour",
     "appearance",
     "product_name",
+    "product_description",
+    "image_url",
     "transaction_date",
 ]
 
@@ -52,10 +54,7 @@ class DataService:
             dtype={"article_id": "string", "customer_id": "string"},
             parse_dates=["t_dat"],
         )
-        articles = pd.read_csv(
-            self.settings.articles_path,
-            dtype={"article_id": "string"},
-        )
+        articles = pd.read_csv(self.settings.articles_path, dtype={"article_id": "string"})
         _customers = pd.read_csv(self.settings.customers_path, dtype={"customer_id": "string"})
 
         merged = transactions.merge(articles, on="article_id", how="inner")
@@ -68,6 +67,7 @@ class DataService:
                 "colour_group_name",
                 "graphical_appearance_name",
                 "prod_name",
+                "detail_desc",
                 "t_dat",
             ]
         ].rename(
@@ -77,8 +77,13 @@ class DataService:
                 "colour_group_name": "colour",
                 "graphical_appearance_name": "appearance",
                 "prod_name": "product_name",
+                "detail_desc": "product_description",
                 "t_dat": "transaction_date",
             }
+        )
+        renamed["product_description"] = renamed["product_description"].fillna(renamed["product_name"])
+        renamed["image_url"] = renamed["article_id"].astype(str).map(
+            lambda article_id: f"https://placehold.co/300x400?text={article_id}"
         )
 
         cleaned = renamed.dropna(subset=REQUIRED_COLUMNS).copy()
@@ -97,51 +102,50 @@ class DataService:
 
         filtered = filtered.sort_values("transaction_date")
         sampled = self._sample_dense_user_histories(filtered)
-
-        sampled["transaction_date"] = sampled["transaction_date"].dt.strftime("%Y-%m-%d")
+        sampled["transaction_date"] = pd.to_datetime(sampled["transaction_date"]).dt.strftime("%Y-%m-%d")
         sampled.to_csv(self.settings.interactions_path, index=False)
 
-        train_df, test_df, boundary_date = self.create_time_based_split(sampled)
-        user_counts = sampled["customer_id"].value_counts()
-        product_counts = sampled["article_id"].value_counts()
+        train_df, test_df, boundary = self.create_leave_one_out_split(sampled)
         summary = {
             "dataset": self.settings.dataset_name,
             "sample_size": int(len(sampled)),
             "distinct_users": int(sampled["customer_id"].nunique()),
             "distinct_products": int(sampled["article_id"].nunique()),
-            "repeat_user_ratio": round(float((user_counts >= 2).mean()), 4) if not user_counts.empty else 0.0,
-            "average_interactions_per_user": round(float(user_counts.mean()), 2) if not user_counts.empty else 0.0,
-            "average_interactions_per_product": round(float(product_counts.mean()), 2) if not product_counts.empty else 0.0,
+            "repeat_user_ratio": 1.0,
+            "average_interactions_per_user": round(float(sampled["customer_id"].value_counts().mean()), 2),
+            "average_interactions_per_product": round(float(sampled["article_id"].value_counts().mean()), 2),
             "top_product_groups": self._top_counts(sampled, "product_group"),
             "top_product_types": self._top_counts(sampled, "product_type"),
             "top_colours": self._top_counts(sampled, "colour"),
             "top_appearances": self._top_counts(sampled, "appearance"),
             "train_size": int(len(train_df)),
             "test_size": int(len(test_df)),
-            "split_boundary_date": boundary_date,
+            "split_boundary_date": boundary,
             "sample_user_ids": [str(user_id) for user_id in sampled["customer_id"].drop_duplicates().head(20)],
             "evaluated_user_ids": [],
             "evaluated_users": 0,
         }
-
         self.settings.summary_path.write_text(json.dumps(summary, indent=2), encoding="utf-8")
         return summary
 
-    def create_time_based_split(self, interactions: pd.DataFrame | None = None) -> tuple[pd.DataFrame, pd.DataFrame, str]:
+    def create_leave_one_out_split(
+        self, interactions: pd.DataFrame | None = None
+    ) -> tuple[pd.DataFrame, pd.DataFrame, str]:
         if interactions is None:
-            interactions = pd.read_csv(
-                self.settings.interactions_path,
-                dtype={"article_id": "string", "customer_id": "string"},
-            )
-        ordered = interactions.sort_values("transaction_date").reset_index(drop=True)
-        split_index = max(1, int(len(ordered) * 0.8))
-        train_df = ordered.iloc[:split_index].copy()
-        test_df = ordered.iloc[split_index:].copy()
-        boundary_date = str(train_df["transaction_date"].iloc[-1])
-
+            interactions = self.load_interactions()
+        ordered = interactions.copy()
+        ordered["transaction_date"] = pd.to_datetime(ordered["transaction_date"])
+        ordered = ordered.sort_values(["customer_id", "transaction_date", "article_id"]).reset_index(drop=True)
+        eligible_users = ordered["customer_id"].value_counts()
+        eligible_ids = eligible_users[eligible_users >= 2].index
+        eligible = ordered[ordered["customer_id"].isin(eligible_ids)].copy()
+        test_df = eligible.groupby("customer_id", group_keys=False).tail(1).reset_index(drop=True)
+        train_df = eligible.groupby("customer_id", group_keys=False).apply(lambda group: group.iloc[:-1]).reset_index(drop=True)
+        train_df["transaction_date"] = pd.to_datetime(train_df["transaction_date"]).dt.strftime("%Y-%m-%d")
+        test_df["transaction_date"] = pd.to_datetime(test_df["transaction_date"]).dt.strftime("%Y-%m-%d")
         train_df.to_csv(self.settings.train_path, index=False)
         test_df.to_csv(self.settings.test_path, index=False)
-        return train_df, test_df, boundary_date
+        return train_df, test_df, "leave_one_out"
 
     def load_train(self) -> pd.DataFrame:
         return pd.read_csv(self.settings.train_path, dtype={"article_id": "string", "customer_id": "string"})
@@ -199,9 +203,8 @@ class DataService:
         sampled = pd.concat(sampled_parts, ignore_index=True)
 
         if len(sampled) < self.settings.sample_size:
-            remainder = (
-                pd.concat(remainder_parts, ignore_index=True)
-                .sort_values(["transaction_date", "customer_id", "article_id"])
+            remainder = pd.concat(remainder_parts, ignore_index=True).sort_values(
+                ["transaction_date", "customer_id", "article_id"]
             )
             needed = self.settings.sample_size - len(sampled)
             sampled = pd.concat([sampled, remainder.head(needed)], ignore_index=True)

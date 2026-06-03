@@ -3,7 +3,7 @@ from __future__ import annotations
 from datetime import datetime
 from typing import Literal
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 
 
 FeedbackType = Literal["click", "add_to_cart", "ignore", "purchase"]
@@ -20,13 +20,9 @@ class RecommendationItem(BaseModel):
     model: str
 
 
-class AgenticRecommendationItem(RecommendationItem):
-    reason: str
-    intent_match: float
-    preference_alignment: float
-    product_relevance: float
-    diversity: float
-    behavioural_signal: float
+class WeightedPreferenceItem(BaseModel):
+    value: str
+    weight: float
 
 
 class AgentProcessStage(BaseModel):
@@ -38,33 +34,102 @@ class AgentProcessStage(BaseModel):
 
 class UserIntentResponse(BaseModel):
     user_id: str
-    inferred_intent: str
-    preferred_categories: list[str]
-    preferred_product_types: list[str]
-    preferred_colours: list[str]
-    preferred_appearance: list[str]
-    shopping_context: str
+    preferred_product_type_name_values: list[WeightedPreferenceItem]
+    preferred_product_group_name_values: list[WeightedPreferenceItem]
+    preferred_colour_group_name_values: list[WeightedPreferenceItem]
+    preferred_graphical_appearance_name_values: list[WeightedPreferenceItem]
+    soft_preferences: list[str]
+    hard_constraints: dict[str, str]
+    preference_summary: str
 
 
-class RecommendationComparisonResponse(BaseModel):
+class CandidateEvidenceItem(BaseModel):
+    article_id: str
+    product_type_name: str
+    product_group_name: str
+    graphical_appearance_name: str
+    colour_group_name: str
+    product_description: str
+    image_url: str
+    matched_preference_fields: list[str]
+    evidence_summary: str
+    match_count: int
+    missing_evidence: list[str]
+
+
+class FinalRecommendationItem(BaseModel):
+    rank: int
+    article_id: str
+    match_score: float
+    recommendation_reason: str
+    matched_evidence: list[str]
+    constraint_status: str
+    product_type_name: str
+    product_group_name: str
+    graphical_appearance_name: str
+    colour_group_name: str
+    product_description: str
+    image_url: str
+
+
+class RecommendationRunRequest(BaseModel):
     user_id: str
-    cf_recommendations: list[RecommendationItem]
-    agentic_recommendations: list[AgenticRecommendationItem]
-    agentic_process: list[AgentProcessStage]
+    user_request: str = ""
 
 
-class ModelMetrics(BaseModel):
-    hit_rate_at_10: float
-    preference_alignment: float
-    diversity: float
-    explanation_quality: float | None = None
-    feedback_adaptability: float | None = None
+class TrainingHistoryItem(BaseModel):
+    article_id: str
+    product_name: str
+    product_type: str
+    product_group: str
+    colour: str
+    appearance: str
+    transaction_date: str
+
+
+class CFRecommendationResponse(BaseModel):
+    user_id: str
+    ground_truth_article_id: str
+    hit_at_5: bool
+    training_history_count: int
+    training_history_preview: list[TrainingHistoryItem]
+    recommendations: list[RecommendationItem]
+
+
+class AgenticRunResponse(BaseModel):
+    user_id: str
+    user_request: str
+    ground_truth_article_id: str
+    hit_at_5: bool
+    training_history_count: int
+    training_history_preview: list[TrainingHistoryItem]
+    preference_profile: UserIntentResponse
+    candidate_evidence_set: list[CandidateEvidenceItem]
+    final_recommendations: list[FinalRecommendationItem]
+    process_trace: list[AgentProcessStage]
+
+
+class ComparisonModelOutput(BaseModel):
+    hit_at_5: bool
+    recommendations: list[dict[str, object]]
+
+
+class ComparisonResponse(BaseModel):
+    user_id: str
+    ground_truth_article_id: str
+    training_history_count: int
+    training_history_preview: list[TrainingHistoryItem]
+    cf: ComparisonModelOutput
+    agentic: ComparisonModelOutput
+
+
+class ModelMetric(BaseModel):
+    hit_at_5: float
 
 
 class MetricsResponse(BaseModel):
-    collaborative_filtering: ModelMetrics
-    agentic_ai_framework: ModelMetrics
-    business_mapping: dict[str, str]
+    collaborative_filtering: ModelMetric
+    agentic_ai_framework: ModelMetric
     evaluated_users: int
     generated_at: datetime
 

@@ -5,25 +5,19 @@ import pandas as pd
 from app.services.agentic_service import AgenticRecommendationService
 
 
-def test_agentic_scoring_uses_expected_fields(isolated_env, sample_interactions: pd.DataFrame):
-    train_df = sample_interactions.iloc[:9].copy()
+def test_three_agent_pipeline_returns_profile_candidates_and_ranked_output(
+    isolated_env, sample_interactions: pd.DataFrame
+):
+    train_df = sample_interactions.groupby("customer_id", group_keys=False).apply(lambda group: group.iloc[:-1]).reset_index(drop=True)
     service = AgenticRecommendationService(isolated_env)
-    user_profile = {
-        "user_id": "u1",
-        "inferred_intent": "casual daily clothing",
-        "preferred_categories": ["Garment Upper body"],
-        "preferred_product_types": ["Shirt", "Top"],
-        "preferred_colours": ["White", "Beige", "Blue"],
-        "preferred_appearance": ["Solid", "Plain"],
-        "shopping_context": "daily wear",
-    }
-    candidates = service.retrieve_candidate_products(user_profile, train_df)
 
-    scored = service.score_candidates(user_profile, candidates, train_df)
+    result = service.run_three_agent_pipeline("u1", "I only want black dresses", train_df)
 
-    assert scored
-    assert {"intent_match", "preference_alignment", "product_relevance", "diversity", "behavioural_signal"} <= set(scored[0])
-    assert scored[0]["model"] == "agentic_ai_framework"
+    assert result["preference_profile"]["hard_constraints"]["colour_group_name"] == "Black"
+    assert result["preference_profile"]["hard_constraints"]["product_type_name"] == "Dress"
+    assert result["candidate_evidence_set"]
+    assert len(result["final_recommendations"]) <= 5
+    assert result["process_trace"][0]["agent"] == "Preference Agent"
 
 
 def test_feedback_updates_weights(isolated_env):
@@ -32,4 +26,3 @@ def test_feedback_updates_weights(isolated_env):
 
     assert weights["product_type_weight"] > 1.0
     assert weights["appearance_weight"] > 1.0
-

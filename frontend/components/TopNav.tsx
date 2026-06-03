@@ -4,17 +4,14 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const links = [
-  ["/", "Overview"],
-  ["/research-setup", "Research Setup"],
-  ["/data-processing", "Data Processing"],
-  ["/user-intention", "User Intention"],
+  ["/", "Agentic AI"],
+  ["/cf", "CF"],
   ["/comparison", "Comparison"],
-  ["/evaluation", "Evaluation"],
 ] as const;
 
 export function TopNav() {
   const pathname = usePathname();
-  const currentLabel = links.find(([href]) => href === pathname)?.[1] ?? "Overview";
+  const currentLabel = links.find(([href]) => href === pathname)?.[1] ?? "Agentic AI";
 
   return (
     <>

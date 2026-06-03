@@ -14,8 +14,8 @@ def test_setup_endpoint(client, isolated_env, sample_interactions: pd.DataFrame)
 
     assert response.status_code == 200
     payload = response.json()
-    assert payload["dataset"] == isolated_env.dataset_name
-    assert payload["summary"]["sample_size"] == len(sample_interactions)
+    assert payload["split_method"] == "Leave-one-out next-item evaluation"
+    assert payload["evaluation_metrics"] == ["Hit@5"]
     assert payload["summary"]["evaluated_user_ids"] == ["u1"]
 
 
@@ -23,25 +23,8 @@ def test_metrics_endpoint(client, isolated_env):
     isolated_env.metrics_path.write_text(
         json.dumps(
             {
-                "collaborative_filtering": {
-                    "hit_rate_at_10": 0.1,
-                    "preference_alignment": 0.5,
-                    "diversity": 0.4,
-                    "explanation_quality": None,
-                    "feedback_adaptability": None,
-                },
-                "agentic_ai_framework": {
-                    "hit_rate_at_10": 0.2,
-                    "preference_alignment": 0.6,
-                    "diversity": 0.5,
-                    "explanation_quality": 0.8,
-                    "feedback_adaptability": 0.75,
-                },
-                "business_mapping": {
-                    "hit_rate_at_10": "Potential CTR improvement",
-                    "preference_alignment": "Potential CVR improvement",
-                    "diversity": "Potential engagement depth improvement",
-                },
+                "collaborative_filtering": {"hit_at_5": 0.1},
+                "agentic_ai_framework": {"hit_at_5": 0.2},
                 "evaluated_users": 1,
                 "generated_at": "2026-01-01T00:00:00+00:00",
             }
@@ -52,15 +35,48 @@ def test_metrics_endpoint(client, isolated_env):
     response = client.get("/metrics")
 
     assert response.status_code == 200
-    assert response.json()["agentic_ai_framework"]["diversity"] == 0.5
+    assert response.json()["agentic_ai_framework"]["hit_at_5"] == 0.2
 
 
-def test_recommendation_comparison_includes_agent_process(client, isolated_env, sample_interactions: pd.DataFrame):
+def test_cf_recommendation_endpoint_returns_ground_truth_and_hit_at_5(client, isolated_env, sample_interactions: pd.DataFrame):
     write_processed_artifacts(isolated_env, sample_interactions)
 
-    response = client.get("/recommendations/compare/u1")
+    response = client.get("/recommendations/cf/u1")
 
     assert response.status_code == 200
     payload = response.json()
-    assert payload["agentic_recommendations"][0]["article_id"] == "a5"
-    assert payload["agentic_process"][0]["agent"] == "Agent 1"
+    assert payload["ground_truth_article_id"] == "a4"
+    assert payload["training_history_count"] == 3
+    assert "recommendations" in payload
+    assert "hit_at_5" in payload
+
+
+def test_agentic_run_endpoint_returns_three_agent_outputs(client, isolated_env, sample_interactions: pd.DataFrame):
+    write_processed_artifacts(isolated_env, sample_interactions)
+
+    response = client.post(
+        "/recommendations/agentic/run",
+        json={"user_id": "u1", "user_request": "I only want black dresses"},
+    )
+
+    assert response.status_code == 200
+    payload = response.json()
+    assert payload["ground_truth_article_id"] == "a4"
+    assert payload["preference_profile"]["hard_constraints"]["colour_group_name"] == "Black"
+    assert "candidate_evidence_set" in payload
+    assert "final_recommendations" in payload
+    assert "hit_at_5" in payload
+
+
+def test_comparison_endpoint_returns_both_model_outputs(client, isolated_env, sample_interactions: pd.DataFrame):
+    write_processed_artifacts(isolated_env, sample_interactions)
+
+    response = client.get("/comparison/u1")
+
+    assert response.status_code == 200
+    payload = response.json()
+    assert payload["ground_truth_article_id"] == "a4"
+    assert "cf" in payload
+    assert "agentic" in payload
+    assert "hit_at_5" in payload["cf"]
+    assert "hit_at_5" in payload["agentic"]

@@ -9,6 +9,7 @@ from fastapi.testclient import TestClient
 
 from app.config import get_settings
 from app.main import app
+from app.services.agentic_service import AgenticRecommendationService
 
 
 @pytest.fixture(autouse=True)
@@ -68,11 +69,40 @@ def sample_interactions() -> pd.DataFrame:
     )
 
 
+@pytest.fixture(autouse=True)
+def stub_agentic_llm(monkeypatch: pytest.MonkeyPatch):
+    def fake_completion(self, system_prompt: str, user_payload: dict[str, object]):
+        if "soft_preferences" in system_prompt:
+            return {
+                "soft_preferences": [
+                    "Prefers upper-body categories from repeated purchases.",
+                    "Shows a recurring preference for lighter neutral colours.",
+                ],
+                "preference_summary": "Historical purchases suggest soft preferences for upper-body garments, light neutrals, and simple appearances.",
+            }
+        if "recommendation_reason" in system_prompt or "recommendations" in system_prompt:
+            return {
+                "recommendations": [
+                    {
+                        "article_id": item["article_id"],
+                        "recommendation_reason": f"{item['article_id']} is ranked from explicit preference and evidence overlap.",
+                    }
+                    for item in user_payload.get("ranked_candidates", [])
+                ]
+            }
+        return {}
+
+    monkeypatch.setattr(
+        AgenticRecommendationService,
+        "_request_structured_completion",
+        fake_completion,
+    )
+
+
 def write_processed_artifacts(settings, interactions: pd.DataFrame) -> None:
     interactions.to_csv(settings.interactions_path, index=False)
-    split_index = int(len(interactions) * 0.8)
-    train_df = interactions.iloc[:split_index].copy()
-    test_df = interactions.iloc[split_index:].copy()
+    train_df = interactions.groupby("customer_id", group_keys=False).apply(lambda group: group.iloc[:-1]).reset_index(drop=True)
+    test_df = interactions.groupby("customer_id", group_keys=False).tail(1).reset_index(drop=True)
     train_df.to_csv(settings.train_path, index=False)
     test_df.to_csv(settings.test_path, index=False)
     settings.cf_output_path.write_text(
@@ -139,6 +169,17 @@ def write_processed_artifacts(settings, interactions: pd.DataFrame) -> None:
         ),
         encoding="utf-8",
     )
+    settings.metrics_path.write_text(
+        json.dumps(
+            {
+                "collaborative_filtering": {"hit_at_5": 0.5},
+                "agentic_ai_framework": {"hit_at_5": 1.0},
+                "evaluated_users": 1,
+                "generated_at": "2026-01-01T00:00:00+00:00",
+            }
+        ),
+        encoding="utf-8",
+    )
     settings.summary_path.write_text(
         json.dumps(
             {
@@ -155,7 +196,7 @@ def write_processed_artifacts(settings, interactions: pd.DataFrame) -> None:
                 "top_appearances": [{"label": "Solid", "value": 8}],
                 "train_size": len(train_df),
                 "test_size": len(test_df),
-                "split_boundary_date": str(train_df["transaction_date"].iloc[-1]),
+                "split_boundary_date": "leave_one_out",
                 "sample_user_ids": ["u1", "u2", "u3"],
                 "evaluated_user_ids": ["u1"],
                 "evaluated_users": 1,

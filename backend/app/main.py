@@ -4,7 +4,7 @@ from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
-from app.api import experiment, metrics, recommendations, users
+from app.api import comparison, experiment, metrics, recommendations, users
 from app.config import get_settings
 from app.services.agentic_service import AgenticServiceError
 from app.services.data_service import DataValidationError
@@ -37,4 +37,5 @@ def healthcheck() -> dict[str, str]:
 app.include_router(experiment.router)
 app.include_router(users.router)
 app.include_router(recommendations.router)
+app.include_router(comparison.router)
 app.include_router(metrics.router)

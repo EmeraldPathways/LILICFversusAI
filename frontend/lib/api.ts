@@ -33,14 +33,19 @@ export type ExperimentSetup = {
   summary: ExperimentSummary | null;
 };
 
-export type UserIntent = {
-  user_id: string;
-  inferred_intent: string;
-  preferred_categories: string[];
-  preferred_product_types: string[];
-  preferred_colours: string[];
-  preferred_appearance: string[];
-  shopping_context: string;
+export type WeightedPreferenceItem = {
+  value: string;
+  weight: number;
+};
+
+export type TrainingHistoryItem = {
+  article_id: string;
+  product_name: string;
+  product_type: string;
+  product_group: string;
+  colour: string;
+  appearance: string;
+  transaction_date: string;
 };
 
 export type RecommendationItem = {
@@ -54,20 +59,44 @@ export type RecommendationItem = {
   model: string;
 };
 
-export type AgenticRecommendationItem = RecommendationItem & {
-  reason: string;
-  intent_match: number;
-  preference_alignment: number;
-  product_relevance: number;
-  diversity: number;
-  behavioural_signal: number;
+export type UserPreferenceProfile = {
+  user_id: string;
+  preferred_product_type_name_values: WeightedPreferenceItem[];
+  preferred_product_group_name_values: WeightedPreferenceItem[];
+  preferred_colour_group_name_values: WeightedPreferenceItem[];
+  preferred_graphical_appearance_name_values: WeightedPreferenceItem[];
+  soft_preferences: string[];
+  hard_constraints: Record<string, string>;
+  preference_summary: string;
 };
 
-export type RecommendationComparison = {
-  user_id: string;
-  cf_recommendations: RecommendationItem[];
-  agentic_recommendations: AgenticRecommendationItem[];
-  agentic_process: AgentProcessStage[];
+export type CandidateEvidenceItem = {
+  article_id: string;
+  product_type_name: string;
+  product_group_name: string;
+  graphical_appearance_name: string;
+  colour_group_name: string;
+  product_description: string;
+  image_url: string;
+  matched_preference_fields: string[];
+  evidence_summary: string;
+  match_count: number;
+  missing_evidence: string[];
+};
+
+export type FinalRecommendationItem = {
+  rank: number;
+  article_id: string;
+  match_score: number;
+  recommendation_reason: string;
+  matched_evidence: string[];
+  constraint_status: string;
+  product_type_name: string;
+  product_group_name: string;
+  graphical_appearance_name: string;
+  colour_group_name: string;
+  product_description: string;
+  image_url: string;
 };
 
 export type AgentProcessStage = {
@@ -77,20 +106,40 @@ export type AgentProcessStage = {
   payload: Record<string, unknown>;
 };
 
-export type ModelMetrics = {
-  hit_rate_at_10: number;
-  preference_alignment: number;
-  diversity: number;
-  explanation_quality?: number | null;
-  feedback_adaptability?: number | null;
+export type CFRecommendationResponse = {
+  user_id: string;
+  ground_truth_article_id: string;
+  hit_at_5: boolean;
+  training_history_count: number;
+  training_history_preview: TrainingHistoryItem[];
+  recommendations: RecommendationItem[];
 };
 
-export type MetricsResponse = {
-  collaborative_filtering: ModelMetrics;
-  agentic_ai_framework: ModelMetrics;
-  business_mapping: Record<string, string>;
-  evaluated_users: number;
-  generated_at: string;
+export type AgenticRunResponse = {
+  user_id: string;
+  user_request: string;
+  ground_truth_article_id: string;
+  hit_at_5: boolean;
+  training_history_count: number;
+  training_history_preview: TrainingHistoryItem[];
+  preference_profile: UserPreferenceProfile;
+  candidate_evidence_set: CandidateEvidenceItem[];
+  final_recommendations: FinalRecommendationItem[];
+  process_trace: AgentProcessStage[];
+};
+
+export type ComparisonModelOutput = {
+  hit_at_5: boolean;
+  recommendations: Array<Record<string, unknown>>;
+};
+
+export type ComparisonResponse = {
+  user_id: string;
+  ground_truth_article_id: string;
+  training_history_count: number;
+  training_history_preview: TrainingHistoryItem[];
+  cf: ComparisonModelOutput;
+  agentic: ComparisonModelOutput;
 };
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8000";
@@ -123,32 +172,20 @@ export async function getSetup(): Promise<ExperimentSetup | null> {
   }
 }
 
-export async function getMetrics(): Promise<MetricsResponse | null> {
-  try {
-    return await apiFetch<MetricsResponse>("/metrics");
-  } catch {
-    return null;
-  }
+export async function getCFRecommendations(userId: string): Promise<CFRecommendationResponse> {
+  return apiFetch<CFRecommendationResponse>(`/recommendations/cf/${userId}`);
 }
 
-export async function getUserIntent(userId: string): Promise<UserIntent> {
-  return apiFetch<UserIntent>(`/users/${userId}/intent`);
-}
-
-export async function getRecommendationComparison(userId: string): Promise<RecommendationComparison> {
-  return apiFetch<RecommendationComparison>(`/recommendations/compare/${userId}`);
-}
-
-export async function sendFeedback(
+export async function runAgenticRecommendations(
   userId: string,
-  articleId: string,
-  feedbackType: "click" | "add_to_cart" | "ignore" | "purchase",
-): Promise<{ message: string; updated_weights: Record<string, number> }> {
-  return apiFetch(`/users/${userId}/feedback`, {
+  userRequest: string,
+): Promise<AgenticRunResponse> {
+  return apiFetch<AgenticRunResponse>("/recommendations/agentic/run", {
     method: "POST",
-    body: JSON.stringify({
-      article_id: articleId,
-      feedback_type: feedbackType,
-    }),
+    body: JSON.stringify({ user_id: userId, user_request: userRequest }),
   });
+}
+
+export async function getComparison(userId: string): Promise<ComparisonResponse> {
+  return apiFetch<ComparisonResponse>(`/comparison/${userId}`);
 }

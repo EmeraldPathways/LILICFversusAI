@@ -3,8 +3,8 @@ import type { Metadata } from "next";
 import { TopNav } from "@/components/TopNav";
 
 export const metadata: Metadata = {
-  title: "Agentic AI Recommendation Demo",
-  description: "Academic dashboard comparing collaborative filtering and agentic AI recommendations.",
+  title: "H&M Recommendation Experiment",
+  description: "Real-data H&M recommendation experiment comparing collaborative filtering and a 3-agent workflow.",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -13,13 +13,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body>
         <div className="shell">
           <div className="container">
-            <header className="hero">
-              <span className="eyebrow">Offline E-commerce Experiment</span>
-              <h1>Agentic AI Recommendation Framework</h1>
-              <p>
-                A research demo comparing collaborative filtering against an explainable,
-                feedback-aware recommendation decision layer built on the H&amp;M dataset.
-              </p>
+            <header className="masthead">
+              <div>
+                <span className="eyebrow">Offline Recommendation Experiment</span>
+                <h1 className="masthead-title">H&amp;M Next-Item Recommendation Study</h1>
+                <p className="masthead-copy">
+                  Real H&amp;M transaction data, leave-one-out evaluation, collaborative filtering,
+                  and an OpenAI-backed 3-agent ranking workflow on one dashboard.
+                </p>
+              </div>
               <TopNav />
             </header>
             {children}
