@@ -68,23 +68,20 @@ function HistoryPreview({ items }: { items: TrainingHistoryItem[] }) {
 
 function DecisionCard({ item }: { item: FinalRecommendationItem }) {
   return (
-    <article className="recommendation-card">
-      <div className="recommendation-media">
-        <img src={item.image_url} alt={item.article_id} />
-      </div>
-      <div className="recommendation-body">
-        <div className="recommendation-header">
+    <article className="candidate-card recommendation-card">
+      <img src={item.image_url} alt={item.article_id} />
+      <div className="candidate-body">
+        <div className="candidate-head">
           <div>
             <div className="meta-label">Rank #{item.rank}</div>
-            <h3>
-              {item.product_type_name} · {item.article_id}
-            </h3>
+            <h4>{item.product_type_name}</h4>
           </div>
           <div className="score-pill">
             <span>Match Score</span>
             <strong>{item.match_score}</strong>
           </div>
         </div>
+        <p className="body-copy recommendation-code">{item.article_id}</p>
         <dl className="detail-grid">
           <div>
             <dt>Group</dt>
@@ -103,7 +100,6 @@ function DecisionCard({ item }: { item: FinalRecommendationItem }) {
             <dd>{item.constraint_status}</dd>
           </div>
         </dl>
-        <p className="body-copy">{item.recommendation_reason}</p>
         <div className="tag-row">
           {item.matched_evidence.map((entry) => (
             <span key={entry} className="tag subdued-tag">
@@ -111,6 +107,7 @@ function DecisionCard({ item }: { item: FinalRecommendationItem }) {
             </span>
           ))}
         </div>
+        <p className="body-copy">{item.recommendation_reason}</p>
       </div>
     </article>
   );
@@ -118,7 +115,7 @@ function DecisionCard({ item }: { item: FinalRecommendationItem }) {
 
 export function AgenticExplorer({ setup, userIds }: AgenticExplorerProps) {
   const [selectedUserId, setSelectedUserId] = useState(userIds[0] ?? "");
-  const [userRequest, setUserRequest] = useState("I only want black dresses");
+  const [userRequest, setUserRequest] = useState("");
   const [result, setResult] = useState<AgenticRunResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -183,7 +180,7 @@ export function AgenticExplorer({ setup, userIds }: AgenticExplorerProps) {
             <input
               value={userRequest}
               onChange={(event) => setUserRequest(event.target.value)}
-              placeholder='Example: "I only want black dresses"'
+              placeholder='Optional: "I only want black dresses"'
             />
           </label>
           <button className="primary-button" onClick={handleRun} disabled={isLoading}>

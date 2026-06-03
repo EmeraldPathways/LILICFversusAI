@@ -24,7 +24,7 @@ class ExperimentService:
         summary = self.data_service.preprocess()
         train_df = self.data_service.load_train()
         test_df = self.data_service.load_test()
-        user_ids = self._select_evaluable_users(test_df)
+        user_ids = self._select_evaluable_users(train_df, test_df)
         summary["evaluated_user_ids"] = user_ids
         summary["evaluated_users"] = len(user_ids)
         self.settings.summary_path.write_text(json.dumps(summary, indent=2), encoding="utf-8")
@@ -100,6 +100,21 @@ class ExperimentService:
             for _, row in history.iterrows()
         ]
 
-    def _select_evaluable_users(self, test_df) -> list[str]:
-        user_ids = sorted(str(user_id) for user_id in test_df["customer_id"].drop_duplicates().tolist())
-        return user_ids[: self.settings.max_eval_users]
+    def _select_evaluable_users(self, train_df, test_df) -> list[str]:
+        candidate_user_ids = sorted(str(user_id) for user_id in test_df["customer_id"].drop_duplicates().tolist())
+        matrix = self.cf_service._build_user_item_matrix(train_df)
+        metadata = self.cf_service._article_metadata(train_df)
+        user_history = train_df.groupby("customer_id")["article_id"].agg(set).to_dict()
+
+        selected: list[str] = []
+        limit = min(self.settings.max_eval_users, 3)
+        for user_id in candidate_user_ids:
+            recommendations = self.cf_service.recommend_for_user(user_id, matrix, metadata, user_history)
+            if recommendations:
+                selected.append(user_id)
+            if len(selected) >= limit:
+                break
+
+        if selected:
+            return selected[:limit]
+        return candidate_user_ids[:limit]
