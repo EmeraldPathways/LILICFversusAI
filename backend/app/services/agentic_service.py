@@ -93,11 +93,16 @@ class AgenticRecommendationService:
         self,
         user_profile: dict[str, Any],
         train_df: pd.DataFrame,
+        catalog_df: pd.DataFrame,
+        required_article_ids: set[str] | None = None,
+        allowed_article_ids: set[str] | None = None,
     ) -> list[dict[str, Any]]:
         history = self._user_history(user_profile["user_id"], train_df)
         seen_articles = set(history["article_id"].astype(str))
-        catalogue = self._catalogue(train_df)
+        catalogue = self._catalogue(catalog_df)
         candidates = catalogue[~catalogue["article_id"].astype(str).isin(seen_articles)].copy()
+        if allowed_article_ids is not None:
+            candidates = candidates[candidates["article_id"].astype(str).isin(allowed_article_ids)].copy()
 
         type_weights = self._to_weight_map(user_profile["preferred_product_type_name_values"])
         group_weights = self._to_weight_map(user_profile["preferred_product_group_name_values"])
@@ -112,8 +117,6 @@ class AgenticRecommendationService:
             matched_fields = self._matched_fields(
                 row, type_weights, group_weights, colour_weights, appearance_weights, description_terms
             )
-            if not matched_fields:
-                continue
             evidence.append(
                 {
                     "article_id": str(row["article_id"]),
@@ -124,14 +127,43 @@ class AgenticRecommendationService:
                     "product_description": str(row["product_description"]),
                     "image_url": str(row["image_url"]),
                     "matched_preference_fields": matched_fields,
-                    "evidence_summary": f"Matched {len(matched_fields)} preference signals: {', '.join(matched_fields)}.",
+                    "evidence_summary": (
+                        f"Matched {len(matched_fields)} preference signals: {', '.join(matched_fields)}."
+                        if matched_fields
+                        else "No preference fields matched; retained as a negative candidate for evaluation."
+                    ),
                     "match_count": len(matched_fields),
                     "missing_evidence": self._missing_evidence(row),
                 }
             )
 
+        if required_article_ids:
+            present_ids = {item["article_id"] for item in evidence}
+            for article_id in required_article_ids:
+                if article_id in present_ids:
+                    continue
+                forced_rows = catalogue[catalogue["article_id"].astype(str) == article_id]
+                if forced_rows.empty:
+                    continue
+                row = forced_rows.iloc[0]
+                evidence.append(
+                    {
+                        "article_id": str(row["article_id"]),
+                        "product_type_name": str(row["product_type"]),
+                        "product_group_name": str(row["product_group"]),
+                        "graphical_appearance_name": str(row["appearance"]),
+                        "colour_group_name": str(row["colour"]),
+                        "product_description": str(row["product_description"]),
+                        "image_url": str(row["image_url"]),
+                        "matched_preference_fields": [],
+                        "evidence_summary": "Forced into the evaluation candidate pool as a held-out ground-truth item.",
+                        "match_count": 0,
+                        "missing_evidence": self._missing_evidence(row),
+                    }
+                )
+
         evidence.sort(key=lambda item: (item["match_count"], item["article_id"]), reverse=True)
-        return evidence[: self.settings.candidate_pool_size]
+        return evidence
 
     def score_candidates(
         self,
@@ -222,13 +254,23 @@ class AgenticRecommendationService:
         user_id: str,
         user_request: str,
         train_df: pd.DataFrame,
+        catalog_df: pd.DataFrame,
+        required_article_ids: set[str] | None = None,
+        allowed_article_ids: set[str] | None = None,
     ) -> dict[str, Any]:
         preference_profile = self.infer_user_intent(user_id, train_df, user_request)
-        candidate_evidence_set = self.retrieve_candidate_products(preference_profile, train_df)
+        candidate_evidence_set = self.retrieve_candidate_products(
+            preference_profile,
+            train_df,
+            catalog_df,
+            required_article_ids=required_article_ids,
+            allowed_article_ids=allowed_article_ids,
+        )
         final_recommendations = self.score_candidates(preference_profile, candidate_evidence_set, train_df)
         return {
             "preference_profile": preference_profile,
             "candidate_evidence_set": candidate_evidence_set[:12],
+            "candidate_pool_article_ids": [str(item["article_id"]) for item in candidate_evidence_set],
             "final_recommendations": final_recommendations[:5],
             "process_trace": [
                 {
@@ -252,11 +294,25 @@ class AgenticRecommendationService:
             ],
         }
 
-    def generate_all(self, train_df: pd.DataFrame, user_ids: list[str]) -> dict[str, list[dict[str, Any]]]:
+    def generate_all(
+        self,
+        train_df: pd.DataFrame,
+        catalog_df: pd.DataFrame,
+        user_ids: list[str],
+        ground_truth_map: dict[str, list[str]] | None = None,
+        candidate_pool_map: dict[str, list[str]] | None = None,
+    ) -> dict[str, list[dict[str, Any]]]:
         outputs = {}
         traces = {}
         for user_id in user_ids:
-            result = self.run_three_agent_pipeline(user_id, "", train_df)
+            result = self.run_three_agent_pipeline(
+                user_id,
+                "",
+                train_df,
+                catalog_df,
+                required_article_ids=set(ground_truth_map.get(user_id, [])) if ground_truth_map else None,
+                allowed_article_ids=set(candidate_pool_map.get(user_id, [])) if candidate_pool_map else None,
+            )
             outputs[user_id] = [
                 {
                     "article_id": item["article_id"],
@@ -277,9 +333,22 @@ class AgenticRecommendationService:
         return outputs
 
     def generate_for_user(
-        self, user_id: str, train_df: pd.DataFrame, user_request: str = ""
+        self,
+        user_id: str,
+        train_df: pd.DataFrame,
+        catalog_df: pd.DataFrame,
+        user_request: str = "",
+        required_article_ids: set[str] | None = None,
+        allowed_article_ids: set[str] | None = None,
     ) -> tuple[dict[str, Any], list[dict[str, Any]]]:
-        result = self.run_three_agent_pipeline(user_id, user_request, train_df)
+        result = self.run_three_agent_pipeline(
+            user_id,
+            user_request,
+            train_df,
+            catalog_df,
+            required_article_ids=required_article_ids,
+            allowed_article_ids=allowed_article_ids,
+        )
         return result, result["process_trace"]
 
     def load_traces(self) -> dict[str, list[dict[str, Any]]]:

@@ -14,14 +14,26 @@ from app.config import Settings
 class CollaborativeFilteringService:
     settings: Settings
 
-    def generate_all(self, train_df: pd.DataFrame, user_ids: list[str]) -> dict[str, list[dict[str, object]]]:
+    def generate_all(
+        self,
+        train_df: pd.DataFrame,
+        catalog_df: pd.DataFrame,
+        user_ids: list[str],
+        candidate_pool_map: dict[str, list[str]] | None = None,
+    ) -> dict[str, list[dict[str, object]]]:
         matrix = self._build_user_item_matrix(train_df)
-        metadata = self._article_metadata(train_df)
+        metadata = self._article_metadata(catalog_df)
         user_history = train_df.groupby("customer_id")["article_id"].agg(set).to_dict()
 
         recommendations: dict[str, list[dict[str, object]]] = {}
         for user_id in user_ids:
-            recommendations[user_id] = self.recommend_for_user(user_id, matrix, metadata, user_history)
+            recommendations[user_id] = self.recommend_for_user(
+                user_id,
+                matrix,
+                metadata,
+                user_history,
+                candidate_pool_article_ids=candidate_pool_map.get(user_id) if candidate_pool_map else None,
+            )
 
         self.settings.cf_output_path.write_text(json.dumps(recommendations, indent=2), encoding="utf-8")
         return recommendations
@@ -32,6 +44,7 @@ class CollaborativeFilteringService:
         matrix: pd.DataFrame,
         metadata: dict[str, dict[str, str]],
         user_history: dict[str, set[str]],
+        candidate_pool_article_ids: list[str] | None = None,
     ) -> list[dict[str, object]]:
         if user_id not in matrix.index:
             return []
@@ -49,13 +62,22 @@ class CollaborativeFilteringService:
 
         scores: defaultdict[str, float] = defaultdict(float)
         purchased = user_history.get(user_id, set())
+        allowed_candidates = set(candidate_pool_article_ids) if candidate_pool_article_ids is not None else None
+        candidate_ids = [
+            article_id
+            for article_id in metadata
+            if article_id not in purchased and (allowed_candidates is None or article_id in allowed_candidates)
+        ]
         for neighbor_id, similarity in similarities.items():
             for article_id in user_history.get(neighbor_id, set()):
                 if article_id in purchased:
                     continue
                 scores[article_id] += similarity
 
-        ranked = sorted(scores.items(), key=lambda item: item[1], reverse=True)[: self.settings.top_n]
+        ranked = sorted(
+            ((article_id, float(scores.get(article_id, 0.0))) for article_id in candidate_ids),
+            key=lambda item: (-item[1], item[0]),
+        )[: self.settings.top_n]
         result = []
         for article_id, score in ranked:
             details = metadata.get(article_id)
@@ -99,4 +121,3 @@ class CollaborativeFilteringService:
             }
             for _, row in deduped.iterrows()
         }
-

@@ -31,6 +31,23 @@ class DataValidationError(Exception):
 class DataService:
     settings: Settings
 
+    @staticmethod
+    def normalize_article_id(value: object) -> str:
+        if pd.isna(value):
+            return ""
+        text = str(value).strip()
+        if text.endswith(".0") and text[:-2].isdigit():
+            text = text[:-2]
+        if text.isdigit():
+            return text.zfill(10)
+        return text
+
+    @staticmethod
+    def normalize_customer_id(value: object) -> str:
+        if pd.isna(value):
+            return ""
+        return str(value).strip()
+
     def validate_raw_files(self) -> None:
         missing = [
             path.name
@@ -87,6 +104,8 @@ class DataService:
         )
 
         cleaned = renamed.dropna(subset=REQUIRED_COLUMNS).copy()
+        cleaned["customer_id"] = cleaned["customer_id"].map(self.normalize_customer_id)
+        cleaned["article_id"] = cleaned["article_id"].map(self.normalize_article_id)
         cleaned["transaction_date"] = pd.to_datetime(cleaned["transaction_date"])
 
         user_counts = cleaned["customer_id"].value_counts()
@@ -134,13 +153,24 @@ class DataService:
         if interactions is None:
             interactions = self.load_interactions()
         ordered = interactions.copy()
+        ordered["customer_id"] = ordered["customer_id"].map(self.normalize_customer_id)
+        ordered["article_id"] = ordered["article_id"].map(self.normalize_article_id)
         ordered["transaction_date"] = pd.to_datetime(ordered["transaction_date"])
         ordered = ordered.sort_values(["customer_id", "transaction_date", "article_id"]).reset_index(drop=True)
         eligible_users = ordered["customer_id"].value_counts()
         eligible_ids = eligible_users[eligible_users >= 2].index
         eligible = ordered[ordered["customer_id"].isin(eligible_ids)].copy()
-        test_df = eligible.groupby("customer_id", group_keys=False).tail(1).reset_index(drop=True)
-        train_df = eligible.groupby("customer_id", group_keys=False).apply(lambda group: group.iloc[:-1]).reset_index(drop=True)
+        if self.settings.ground_truth_mode == "multi_ground_truth":
+            final_dates = eligible.groupby("customer_id")["transaction_date"].transform("max")
+            test_df = eligible[eligible["transaction_date"] == final_dates].reset_index(drop=True)
+            train_df = eligible[eligible["transaction_date"] < final_dates].reset_index(drop=True)
+        else:
+            test_df = eligible.groupby("customer_id", group_keys=False).tail(1).reset_index(drop=True)
+            train_df = (
+                eligible.groupby("customer_id", group_keys=False)
+                .apply(lambda group: group.iloc[:-1])
+                .reset_index(drop=True)
+            )
         train_df["transaction_date"] = pd.to_datetime(train_df["transaction_date"]).dt.strftime("%Y-%m-%d")
         test_df["transaction_date"] = pd.to_datetime(test_df["transaction_date"]).dt.strftime("%Y-%m-%d")
         train_df.to_csv(self.settings.train_path, index=False)
@@ -148,10 +178,16 @@ class DataService:
         return train_df, test_df, "leave_one_out"
 
     def load_train(self) -> pd.DataFrame:
-        return pd.read_csv(self.settings.train_path, dtype={"article_id": "string", "customer_id": "string"})
+        frame = pd.read_csv(self.settings.train_path, dtype={"article_id": "string", "customer_id": "string"})
+        frame["customer_id"] = frame["customer_id"].map(self.normalize_customer_id)
+        frame["article_id"] = frame["article_id"].map(self.normalize_article_id)
+        return frame
 
     def load_test(self) -> pd.DataFrame:
-        return pd.read_csv(self.settings.test_path, dtype={"article_id": "string", "customer_id": "string"})
+        frame = pd.read_csv(self.settings.test_path, dtype={"article_id": "string", "customer_id": "string"})
+        frame["customer_id"] = frame["customer_id"].map(self.normalize_customer_id)
+        frame["article_id"] = frame["article_id"].map(self.normalize_article_id)
+        return frame
 
     def load_summary(self) -> dict[str, object] | None:
         if not self.settings.summary_path.exists():
@@ -159,10 +195,13 @@ class DataService:
         return json.loads(self.settings.summary_path.read_text(encoding="utf-8"))
 
     def load_interactions(self) -> pd.DataFrame:
-        return pd.read_csv(
+        frame = pd.read_csv(
             self.settings.interactions_path,
             dtype={"article_id": "string", "customer_id": "string"},
         )
+        frame["customer_id"] = frame["customer_id"].map(self.normalize_customer_id)
+        frame["article_id"] = frame["article_id"].map(self.normalize_article_id)
+        return frame
 
     def _sample_dense_user_histories(self, interactions: pd.DataFrame) -> pd.DataFrame:
         if len(interactions) <= self.settings.sample_size:

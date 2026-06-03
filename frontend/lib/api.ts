@@ -107,30 +107,70 @@ export type AgentProcessStage = {
 };
 
 export type CFRecommendationResponse = {
-  user_id: string;
+  customer_id: string;
+  method: string;
+  candidate_pool_size: number;
   ground_truth_article_id: string;
+  hit_result: HitResult;
   hit_at_5: boolean;
+  hit_label: string;
+  explanation: string;
   training_history_count: number;
   training_history_preview: TrainingHistoryItem[];
-  recommendations: RecommendationItem[];
+  top_5_recommendations: RecommendationItem[];
+  validation: RecommendationValidationBlock;
+  invalid_reason?: string | null;
 };
 
 export type AgenticRunResponse = {
-  user_id: string;
+  customer_id: string;
+  method: string;
+  candidate_pool_size: number;
   user_request: string;
   ground_truth_article_id: string;
+  hit_result: HitResult;
   hit_at_5: boolean;
+  hit_label: string;
+  explanation: string;
   training_history_count: number;
   training_history_preview: TrainingHistoryItem[];
   preference_profile: UserPreferenceProfile;
   candidate_evidence_set: CandidateEvidenceItem[];
-  final_recommendations: FinalRecommendationItem[];
+  top_5_recommendations: FinalRecommendationItem[];
   process_trace: AgentProcessStage[];
+  validation: RecommendationValidationBlock;
+  invalid_reason?: string | null;
+};
+
+export type HitResult = {
+  hit_at_5: number;
+  hit_label: string;
+  matched_article_id?: string | null;
+  matched_rank?: number | null;
+  explanation: string;
+};
+
+export type RecommendationValidationBlock = {
+  evaluation_base_used: boolean;
+  same_candidate_pool_source: boolean;
+  ground_truth_in_candidate_pool: boolean;
+  top_5_all_inside_candidate_pool: boolean;
+  top_5_contains_training_items: boolean;
+  article_id_format_check: "passed" | "failed";
 };
 
 export type ComparisonModelOutput = {
+  customer_id: string;
+  method: string;
+  candidate_pool_size: number;
+  ground_truth_article_id: string;
+  hit_result: HitResult;
   hit_at_5: boolean;
+  hit_label: string;
+  explanation: string;
   recommendations: Array<Record<string, unknown>>;
+  validation: RecommendationValidationBlock;
+  invalid_reason?: string | null;
 };
 
 export type ComparisonResponse = {
@@ -138,8 +178,60 @@ export type ComparisonResponse = {
   ground_truth_article_id: string;
   training_history_count: number;
   training_history_preview: TrainingHistoryItem[];
+  evaluation_base: EvaluationBaseRow;
   cf: ComparisonModelOutput;
   agentic: ComparisonModelOutput;
+};
+
+export type EvaluationDebugMethod = {
+  hit_at_5: boolean;
+  hit_label: string;
+  explanation: string;
+  top_5_article_ids: string[];
+  recommendations: Array<Record<string, unknown>>;
+  ground_truth_in_top_5: boolean;
+  candidate_pool_contains_ground_truth: boolean;
+};
+
+export type EvaluationDebugValidation = {
+  is_valid: boolean;
+  reasons: string[];
+  candidate_pool_size: number;
+  candidate_pool_article_ids_preview: string[];
+  evaluation_mode: string;
+};
+
+export type EvaluationDebugResponse = {
+  customer_id: string;
+  number_of_total_transactions: number;
+  number_of_training_transactions: number;
+  training_article_ids: string[];
+  ground_truth_article_id: string;
+  ground_truth_article_ids: string[];
+  ground_truth_exists_in_processed_product_catalog: boolean;
+  validation?: EvaluationDebugValidation;
+  cf: EvaluationDebugMethod;
+  agentic: EvaluationDebugMethod;
+};
+
+export type EvaluationBaseRow = {
+  customer_id: string;
+  total_transaction_count: number;
+  train_count: number;
+  train_article_ids: string[];
+  train_transaction_dates: string[];
+  ground_truth_article_id: string;
+  ground_truth_transaction_date: string;
+  ground_truth_product_type: string;
+  ground_truth_product_group: string;
+  ground_truth_colour: string;
+  ground_truth_appearance: string;
+  ground_truth_in_catalog: boolean;
+  candidate_pool_article_ids: string[];
+  candidate_pool_size: number;
+  ground_truth_in_candidate_pool: boolean;
+  is_valid_for_evaluation: boolean;
+  invalid_reason: string;
 };
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8000";
@@ -188,4 +280,12 @@ export async function runAgenticRecommendations(
 
 export async function getComparison(userId: string): Promise<ComparisonResponse> {
   return apiFetch<ComparisonResponse>(`/comparison/${userId}`);
+}
+
+export async function getEvaluationDebug(userId: string): Promise<EvaluationDebugResponse> {
+  return apiFetch<EvaluationDebugResponse>(`/debug/evaluation/${userId}`);
+}
+
+export async function getEvaluationBase(userId: string): Promise<EvaluationBaseRow> {
+  return apiFetch<EvaluationBaseRow>(`/debug/evaluation-base/${userId}`);
 }

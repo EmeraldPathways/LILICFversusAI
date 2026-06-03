@@ -174,7 +174,16 @@ def write_processed_artifacts(settings, interactions: pd.DataFrame) -> None:
             {
                 "collaborative_filtering": {"hit_at_5": 0.5},
                 "agentic_ai_framework": {"hit_at_5": 1.0},
+                "total_selected_users": 1,
+                "valid_evaluation_users": 1,
+                "invalid_evaluation_users": 0,
                 "evaluated_users": 1,
+                "cf_hit_at_5": 0.5,
+                "agentic_hit_at_5": 1.0,
+                "cf_hits_count": 0,
+                "agentic_hits_count": 1,
+                "evaluated_user_ids": ["u1"],
+                "excluded_user_ids_with_reasons": [],
                 "generated_at": "2026-01-01T00:00:00+00:00",
             }
         ),

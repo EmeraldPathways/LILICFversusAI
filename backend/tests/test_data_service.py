@@ -41,3 +41,31 @@ def test_leave_one_out_split_excludes_users_with_fewer_than_two_purchases(isolat
 
     assert set(train_df["customer_id"]) == {"u1"}
     assert set(test_df["customer_id"]) == {"u1"}
+
+
+def test_leave_one_out_split_supports_multi_ground_truth_final_date(isolated_env):
+    isolated_env.ground_truth_mode = "multi_ground_truth"
+    service = DataService(isolated_env)
+    interactions = pd.DataFrame(
+        [
+            ["u1", "a1", "Top", "Garment Upper body", "Black", "Solid", "Top 1", "2024-01-01"],
+            ["u1", "a2", "Top", "Garment Upper body", "Black", "Solid", "Top 2", "2024-01-02"],
+            ["u1", "a3", "Dress", "Garment Full body", "Blue", "Solid", "Dress 1", "2024-01-03"],
+            ["u1", "a4", "Skirt", "Garment Lower body", "Blue", "Solid", "Skirt 1", "2024-01-03"],
+        ],
+        columns=[
+            "customer_id",
+            "article_id",
+            "product_type",
+            "product_group",
+            "colour",
+            "appearance",
+            "product_name",
+            "transaction_date",
+        ],
+    )
+
+    train_df, test_df, _ = service.create_leave_one_out_split(interactions)
+
+    assert train_df["article_id"].tolist() == ["a1", "a2"]
+    assert test_df["article_id"].tolist() == ["a3", "a4"]
