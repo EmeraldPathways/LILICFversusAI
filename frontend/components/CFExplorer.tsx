@@ -1,12 +1,21 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import {
   type CFRecommendationResponse,
+  type EvaluationDebugResponse,
   type ExperimentSetup,
+  getEvaluationDebug,
   getCFRecommendations,
 } from "@/lib/api";
+import { EvaluationDebugPanel } from "@/components/EvaluationDebugPanel";
+import {
+  readPersistedCFResult,
+  readSelectedUserId,
+  writePersistedCFResult,
+  writeSelectedUserId,
+} from "@/lib/persistedState";
 
 type CFExplorerProps = {
   setup: ExperimentSetup | null;
@@ -18,6 +27,78 @@ export function CFExplorer({ setup, userIds }: CFExplorerProps) {
   const [result, setResult] = useState<CFRecommendationResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [debug, setDebug] = useState<EvaluationDebugResponse | null>(null);
+  const [debugError, setDebugError] = useState<string | null>(null);
+  const [isDebugLoading, setIsDebugLoading] = useState(false);
+
+  useEffect(() => {
+    const storedUserId = readSelectedUserId();
+    if (storedUserId && userIds.includes(storedUserId)) {
+      setSelectedUserId(storedUserId);
+    }
+
+    const storedResult = readPersistedCFResult();
+    if (storedResult && userIds.includes(storedResult.customer_id)) {
+      setSelectedUserId(storedResult.customer_id);
+      setResult(storedResult);
+    }
+  }, [userIds]);
+
+  useEffect(() => {
+    if (selectedUserId) {
+      writeSelectedUserId(selectedUserId);
+    }
+  }, [selectedUserId]);
+
+  useEffect(() => {
+    if (result && result.customer_id !== selectedUserId) {
+      const storedResult = readPersistedCFResult();
+      if (storedResult?.customer_id === selectedUserId) {
+        setResult(storedResult);
+        return;
+      }
+
+      setResult(null);
+    }
+  }, [result, selectedUserId]);
+
+  useEffect(() => {
+    if (!selectedUserId) {
+      setDebug(null);
+      setDebugError(null);
+      return;
+    }
+
+    let cancelled = false;
+
+    async function loadDebug() {
+      setIsDebugLoading(true);
+      setDebugError(null);
+      try {
+        const payload = await getEvaluationDebug(selectedUserId);
+        if (!cancelled) {
+          setDebug(payload);
+        }
+      } catch (loadError) {
+        if (!cancelled) {
+          setDebug(null);
+          setDebugError(
+            loadError instanceof Error ? loadError.message : "Unable to load evaluation debug data.",
+          );
+        }
+      } finally {
+        if (!cancelled) {
+          setIsDebugLoading(false);
+        }
+      }
+    }
+
+    void loadDebug();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [selectedUserId]);
 
   async function handleLoad() {
     if (!selectedUserId) {
@@ -27,7 +108,10 @@ export function CFExplorer({ setup, userIds }: CFExplorerProps) {
     setIsLoading(true);
     setError(null);
     try {
-      setResult(await getCFRecommendations(selectedUserId));
+      const response = await getCFRecommendations(selectedUserId);
+      setResult(response);
+      writePersistedCFResult(response);
+      writeSelectedUserId(selectedUserId);
     } catch (loadError) {
       setError(loadError instanceof Error ? loadError.message : "Unable to load CF recommendations.");
     } finally {
@@ -97,7 +181,10 @@ export function CFExplorer({ setup, userIds }: CFExplorerProps) {
             </div>
           </div>
         ) : null}
+        {result ? <p className="body-copy">{result.explanation}</p> : null}
       </section>
+
+      <EvaluationDebugPanel debug={debug} error={debugError} isLoading={isDebugLoading} />
 
       <section className="panel">
         <div className="panel-header">
@@ -135,7 +222,7 @@ export function CFExplorer({ setup, userIds }: CFExplorerProps) {
         </div>
         {result ? (
           <div className="candidate-grid">
-            {result.recommendations.map((item, index) => (
+            {result.top_5_recommendations.map((item, index) => (
               <article key={item.article_id} className="candidate-card simple-card">
                 <div className="candidate-body">
                   <div className="candidate-head">
