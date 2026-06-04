@@ -8,9 +8,11 @@ import {
   type EvaluationBaseRow,
   type EvaluationDebugResponse,
   type ExperimentSetup,
+  type MetricsResponse,
   getComparison,
   getEvaluationBase,
   getEvaluationDebug,
+  getMetrics,
 } from "@/lib/api";
 import { EvaluationDebugPanel } from "@/components/EvaluationDebugPanel";
 import {
@@ -30,7 +32,12 @@ function toComparisonResult(
   comparison: ComparisonResponse,
   storedAgenticResult: AgenticRunResponse | null,
 ) {
-  if (!storedAgenticResult || storedAgenticResult.customer_id !== comparison.user_id) {
+  if (
+    !storedAgenticResult ||
+    storedAgenticResult.customer_id !== comparison.user_id ||
+    comparison.is_comparable === false ||
+    !comparison.agentic
+  ) {
     return comparison;
   }
 
@@ -40,8 +47,19 @@ function toComparisonResult(
       ...comparison.agentic,
       hit_at_5: storedAgenticResult.hit_at_5,
       hit_label: storedAgenticResult.hit_label,
+      hit_explanation: storedAgenticResult.hit_explanation,
       explanation: storedAgenticResult.explanation,
       hit_result: storedAgenticResult.hit_result,
+      top_5_article_ids: storedAgenticResult.top_5_article_ids,
+      top_5_recommendations: storedAgenticResult.top_5_recommendations.map((item) => ({
+        article_id: item.article_id,
+        product_type_name: item.product_type_name,
+        product_group_name: item.product_group_name,
+        colour_group_name: item.colour_group_name,
+        graphical_appearance_name: item.graphical_appearance_name,
+        recommendation_reason: item.recommendation_reason,
+        match_score: item.match_score,
+      })),
       recommendations: storedAgenticResult.top_5_recommendations.map((item) => ({
         article_id: item.article_id,
         product_type_name: item.product_type_name,
@@ -55,11 +73,52 @@ function toComparisonResult(
   };
 }
 
+function hasComparableHitData(comparison: ComparisonResponse | null) {
+  if (!comparison || comparison.is_comparable === false) {
+    return false;
+  }
+  return (
+    typeof comparison.cf?.hit_at_5 === "number" &&
+    typeof comparison.agentic?.hit_at_5 === "number" &&
+    Array.isArray(comparison.cf?.top_5_recommendations) &&
+    Array.isArray(comparison.agentic?.top_5_recommendations)
+  );
+}
+
+function formatHitRate(value: number | undefined) {
+  return typeof value === "number" ? value.toFixed(2) : "Not available";
+}
+
+function formatCount(value: number | undefined) {
+  return typeof value === "number" ? String(value) : "Not available";
+}
+
+function formatUserHit(value: number | undefined) {
+  return typeof value === "number" ? String(value) : "Not available";
+}
+
+function buildConclusion(metrics: MetricsResponse | null) {
+  if (!metrics) {
+    return "Conclusion: Aggregated Hit@5 metrics are not available yet.";
+  }
+  if (metrics.agentic_hit_at_5 > metrics.cf_hit_at_5) {
+    return "Conclusion: The 3-agent method achieves a higher aggregated Hit@5 than the CF baseline on the current valid evaluation users.";
+  }
+  if (metrics.cf_hit_at_5 > metrics.agentic_hit_at_5) {
+    return "Conclusion: The CF baseline achieves a higher aggregated Hit@5 than the 3-agent method on the current valid evaluation users.";
+  }
+  return "Conclusion: Both methods achieve the same aggregated Hit@5 on the current valid evaluation users.";
+}
+
 export function ComparisonDashboard({ setup, userIds }: ComparisonDashboardProps) {
   const [selectedUserId, setSelectedUserId] = useState(userIds[0] ?? "");
   const [result, setResult] = useState<ComparisonResponse | null>(null);
+  const [metrics, setMetrics] = useState<MetricsResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [metricsError, setMetricsError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [isHydratingResult, setIsHydratingResult] = useState(false);
+  const [isMetricsLoading, setIsMetricsLoading] = useState(false);
   const [debug, setDebug] = useState<EvaluationDebugResponse | null>(null);
   const [debugError, setDebugError] = useState<string | null>(null);
   const [isDebugLoading, setIsDebugLoading] = useState(false);
@@ -74,7 +133,11 @@ export function ComparisonDashboard({ setup, userIds }: ComparisonDashboardProps
     }
 
     const storedComparison = readPersistedComparisonResult();
-    if (storedComparison && userIds.includes(storedComparison.user_id)) {
+    if (
+      storedComparison &&
+      userIds.includes(storedComparison.user_id) &&
+      hasComparableHitData(storedComparison)
+    ) {
       setSelectedUserId(storedComparison.user_id);
       setResult(toComparisonResult(storedComparison, readPersistedAgenticResult()));
     }
@@ -85,6 +148,44 @@ export function ComparisonDashboard({ setup, userIds }: ComparisonDashboardProps
       writeSelectedUserId(selectedUserId);
     }
   }, [selectedUserId]);
+
+  useEffect(() => {
+    if (result && result.user_id !== selectedUserId) {
+      setResult(null);
+    }
+  }, [result, selectedUserId]);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadMetrics() {
+      setIsMetricsLoading(true);
+      setMetricsError(null);
+      try {
+        const payload = await getMetrics();
+        if (!cancelled) {
+          setMetrics(payload);
+        }
+      } catch (loadError) {
+        if (!cancelled) {
+          setMetrics(null);
+          setMetricsError(
+            loadError instanceof Error ? loadError.message : "Unable to load evaluation metrics.",
+          );
+        }
+      } finally {
+        if (!cancelled) {
+          setIsMetricsLoading(false);
+        }
+      }
+    }
+
+    void loadMetrics();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   useEffect(() => {
     if (!selectedUserId) {
@@ -163,18 +264,18 @@ export function ComparisonDashboard({ setup, userIds }: ComparisonDashboardProps
   }, [selectedUserId]);
 
   useEffect(() => {
-    const storedAgenticResult = readPersistedAgenticResult();
-    if (!storedAgenticResult || storedAgenticResult.customer_id !== selectedUserId || result) {
+    if (!selectedUserId) {
       return;
     }
 
     let cancelled = false;
 
     async function hydrateComparison() {
-      setIsLoading(true);
+      setIsHydratingResult(true);
       setError(null);
       try {
         const comparison = await getComparison(selectedUserId);
+        const storedAgenticResult = readPersistedAgenticResult();
         if (!cancelled) {
           const hydrated = toComparisonResult(comparison, storedAgenticResult);
           setResult(hydrated);
@@ -188,7 +289,7 @@ export function ComparisonDashboard({ setup, userIds }: ComparisonDashboardProps
         }
       } finally {
         if (!cancelled) {
-          setIsLoading(false);
+          setIsHydratingResult(false);
         }
       }
     }
@@ -198,7 +299,7 @@ export function ComparisonDashboard({ setup, userIds }: ComparisonDashboardProps
     return () => {
       cancelled = true;
     };
-  }, [result, selectedUserId]);
+  }, [selectedUserId]);
 
   async function handleCompare() {
     if (!selectedUserId) {
@@ -208,9 +309,14 @@ export function ComparisonDashboard({ setup, userIds }: ComparisonDashboardProps
     setIsLoading(true);
     setError(null);
     try {
-      const comparison = await getComparison(selectedUserId);
+      const [comparison, freshMetrics] = await Promise.all([
+        getComparison(selectedUserId),
+        getMetrics(),
+      ]);
       const hydrated = toComparisonResult(comparison, readPersistedAgenticResult());
       setResult(hydrated);
+      setMetrics(freshMetrics);
+      setMetricsError(null);
       writePersistedComparisonResult(hydrated);
     } catch (compareError) {
       setError(compareError instanceof Error ? compareError.message : "Unable to load the comparison.");
@@ -220,19 +326,38 @@ export function ComparisonDashboard({ setup, userIds }: ComparisonDashboardProps
   }
 
   const comparisonWarnings = result && evaluationBase ? [
-    result.cf.candidate_pool_size !== result.agentic.candidate_pool_size
+    result.is_comparable !== false && result.cf && result.agentic && result.cf.candidate_pool_size !== result.agentic.candidate_pool_size
       ? "CF and Agentic candidate pool sizes differ."
       : null,
-    !result.cf.validation.top_5_all_inside_candidate_pool || !result.agentic.validation.top_5_all_inside_candidate_pool
+    result.is_comparable !== false &&
+    result.cf &&
+    result.agentic &&
+    (!result.cf.validation.top_5_all_inside_candidate_pool || !result.agentic.validation.top_5_all_inside_candidate_pool)
       ? "A method recommended an item outside the shared candidate pool."
       : null,
-    result.cf.validation.top_5_contains_training_items || result.agentic.validation.top_5_contains_training_items
+    result.is_comparable !== false &&
+    result.cf &&
+    result.agentic &&
+    (result.cf.validation.top_5_contains_training_items || result.agentic.validation.top_5_contains_training_items)
       ? "A method recommended an item from the training history."
       : null,
     !evaluationBase.ground_truth_in_candidate_pool
       ? "Ground truth is not in the candidate pool."
       : null,
   ].filter(Boolean) : [];
+  const isEvaluationValid = evaluationBase?.is_valid_for_evaluation ?? true;
+  const cfTop5ArticleIds = result?.cf?.top_5_article_ids ?? [];
+  const agenticTop5ArticleIds = result?.agentic?.top_5_article_ids ?? [];
+  const cfResult = result?.is_comparable === false ? null : result?.cf ?? null;
+  const agenticResult = result?.is_comparable === false ? null : result?.agentic ?? null;
+  const metricWarnings = [
+    typeof cfResult?.hit_at_5 !== "number" ? "CF User Hit@5 is missing from the backend response." : null,
+    typeof agenticResult?.hit_at_5 !== "number" ? "Agentic User Hit@5 is missing from the backend response." : null,
+    typeof metrics?.cf_hit_at_5 !== "number" ? "CF aggregated Hit@5 is missing from the backend response." : null,
+    typeof metrics?.agentic_hit_at_5 !== "number" ? "Agentic aggregated Hit@5 is missing from the backend response." : null,
+    typeof metrics?.cf_miss_count !== "number" ? "CF misses count is missing from the backend response." : null,
+    typeof metrics?.agentic_miss_count !== "number" ? "Agentic misses count is missing from the backend response." : null,
+  ].filter(Boolean);
 
   return (
     <div className="page-stack">
@@ -267,6 +392,131 @@ export function ComparisonDashboard({ setup, userIds }: ComparisonDashboardProps
       </section>
 
       {error ? <div className="error-banner">{error}</div> : null}
+      {isHydratingResult && !isLoading ? (
+        <div className="panel">
+          <p className="empty-state">Refreshing comparison data...</p>
+        </div>
+      ) : null}
+
+      <section className="panel">
+        <div className="panel-header">
+          <div>
+            <span className="eyebrow">Results</span>
+            <h3>Hit@5 Evaluation Result</h3>
+          </div>
+          {evaluationBase ? (
+            <div className={isEvaluationValid ? "hit-badge hit" : "hit-badge warn"}>
+              {isEvaluationValid ? "Valid Evaluation User" : "Invalid Evaluation User"}
+            </div>
+          ) : null}
+        </div>
+        {metricsError ? <div className="error-banner">{metricsError}</div> : null}
+        {isMetricsLoading && !metrics ? <p className="empty-state">Loading aggregated Hit@5 metrics...</p> : null}
+        {result ? (
+          <>
+            {result.is_comparable === false ? (
+              <div className="error-banner">
+                {result.reason ?? "This user does not have complete CF and Agentic results for comparison."}
+              </div>
+            ) : null}
+            <div className="comparison-grid comparison-summary-grid">
+              <article className="panel inset-panel">
+                <div className="panel-header">
+                  <div>
+                    <span className="eyebrow">CF Baseline</span>
+                    <h3>Collaborative Filtering</h3>
+                  </div>
+                  <div className={cfResult?.hit_at_5 ? "hit-badge hit" : "hit-badge miss"}>
+                    {cfResult?.hit_label ?? "Not available"}
+                  </div>
+                </div>
+                <div className="evaluation-grid">
+                  <div className="summary-chip">
+                    <span>User Hit@5</span>
+                    <strong>{formatUserHit(cfResult?.hit_at_5)}</strong>
+                  </div>
+                  <div className="summary-chip">
+                    <span>Aggregated Hit@5</span>
+                    <strong>{formatHitRate(metrics?.cf_hit_at_5)}</strong>
+                  </div>
+                  <div className="summary-chip">
+                    <span>Hits</span>
+                    <strong>
+                      {metrics ? `${formatCount(metrics.cf_hits_count)} / ${formatCount(metrics.completed_valid_users)} valid completed users` : "Not available"}
+                    </strong>
+                  </div>
+                </div>
+                <p className="body-copy">Result: {cfResult?.hit_label ?? "Not available"}</p>
+                <p className="body-copy">{cfResult?.hit_explanation ?? "Not available"}</p>
+              </article>
+
+              <article className="panel inset-panel">
+                <div className="panel-header">
+                  <div>
+                    <span className="eyebrow">3-Agent Agentic AI</span>
+                    <h3>Agentic Recommendation</h3>
+                  </div>
+                  <div className={agenticResult?.hit_at_5 ? "hit-badge hit" : "hit-badge miss"}>
+                    {agenticResult?.hit_label ?? "Not available"}
+                  </div>
+                </div>
+                <div className="evaluation-grid">
+                  <div className="summary-chip">
+                    <span>User Hit@5</span>
+                    <strong>{formatUserHit(agenticResult?.hit_at_5)}</strong>
+                  </div>
+                  <div className="summary-chip">
+                    <span>Aggregated Hit@5</span>
+                    <strong>{formatHitRate(metrics?.agentic_hit_at_5)}</strong>
+                  </div>
+                  <div className="summary-chip">
+                    <span>Hits</span>
+                    <strong>
+                      {metrics ? `${formatCount(metrics.agentic_hits_count)} / ${formatCount(metrics.completed_valid_users)} valid completed users` : "Not available"}
+                    </strong>
+                  </div>
+                </div>
+                <p className="body-copy">Result: {agenticResult?.hit_label ?? "Not available"}</p>
+                <p className="body-copy">{agenticResult?.hit_explanation ?? "Not available"}</p>
+              </article>
+            </div>
+            {metricWarnings.length > 0 ? (
+              <div className="stack-list">
+                {metricWarnings.map((warning) => (
+                  <p key={warning} className="body-copy">{warning}</p>
+                ))}
+              </div>
+            ) : null}
+            {metrics ? (
+              <div className="evaluation-grid">
+                <div className="summary-chip">
+                  <span>Valid Completed Users</span>
+                  <strong>{formatCount(metrics.completed_valid_users)}</strong>
+                </div>
+                <div className="summary-chip">
+                  <span>CF Misses</span>
+                  <strong>{formatCount(metrics.cf_miss_count)}</strong>
+                </div>
+                <div className="summary-chip">
+                  <span>Agentic Misses</span>
+                  <strong>{formatCount(metrics.agentic_miss_count)}</strong>
+                </div>
+                <div className="summary-chip">
+                  <span>Invalid Users</span>
+                  <strong>{formatCount(metrics.invalid_evaluation_users)}</strong>
+                </div>
+              </div>
+            ) : null}
+            <p className="body-copy">{buildConclusion(metrics)}</p>
+            <details className="panel inset-panel">
+              <summary className="meta-label">Raw Comparison Debug JSON</summary>
+              <pre className="debug-json">{JSON.stringify({ comparison: result, metrics }, null, 2)}</pre>
+            </details>
+          </>
+        ) : (
+          <p className="empty-state">Run the comparison to inspect both Top 5 lists and the Hit@5 summary.</p>
+        )}
+      </section>
 
       <section className="panel">
         <div className="panel-header">
@@ -275,26 +525,26 @@ export function ComparisonDashboard({ setup, userIds }: ComparisonDashboardProps
             <h3>Held-Out Next Purchase</h3>
           </div>
         </div>
-        {result ? (
+        {result && cfResult && agenticResult ? (
           <>
             <div className="evaluation-grid">
               <div className="summary-chip">
                 <span>Article</span>
-                <strong>{result.ground_truth_article_id}</strong>
+                <strong>{result.ground_truth_article_id ?? "Not available"}</strong>
               </div>
               <div className="summary-chip">
                 <span>History Size</span>
                 <strong>{result.training_history_count}</strong>
               </div>
-              <div className={result.cf.hit_at_5 ? "hit-badge hit" : "hit-badge miss"}>
-                CF: {result.cf.hit_label}
+              <div className={cfResult.hit_at_5 ? "hit-badge hit" : "hit-badge miss"}>
+                CF: {cfResult.hit_label}
               </div>
-              <div className={result.agentic.hit_at_5 ? "hit-badge hit" : "hit-badge miss"}>
-                Agentic: {result.agentic.hit_label}
+              <div className={agenticResult.hit_at_5 ? "hit-badge hit" : "hit-badge miss"}>
+                Agentic: {agenticResult.hit_label}
               </div>
             </div>
-            <p className="body-copy">CF: {result.cf.explanation}</p>
-            <p className="body-copy">Agentic: {result.agentic.explanation}</p>
+            <p className="body-copy">CF: {cfResult.hit_explanation}</p>
+            <p className="body-copy">Agentic: {agenticResult.hit_explanation}</p>
           </>
         ) : (
           <p className="empty-state">Run the comparison to inspect both Top 5 lists side by side.</p>
@@ -310,7 +560,7 @@ export function ComparisonDashboard({ setup, userIds }: ComparisonDashboardProps
             <h3>Canonical Leave-One-Out Row</h3>
           </div>
           {evaluationBase ? (
-            <div className={evaluationBase.is_valid_for_evaluation ? "hit-badge hit" : "hit-badge miss"}>
+            <div className={evaluationBase.is_valid_for_evaluation ? "hit-badge hit" : "hit-badge warn"}>
               {evaluationBase.is_valid_for_evaluation ? "Valid" : "Invalid"}
             </div>
           ) : null}
@@ -346,6 +596,20 @@ export function ComparisonDashboard({ setup, userIds }: ComparisonDashboardProps
             <p className="body-copy">
               Invalid reason: {evaluationBase.invalid_reason || "none"}
             </p>
+            <div className="evaluation-grid">
+              <div className="summary-chip">
+                <span>Selected User Valid</span>
+                <strong>{evaluationBase.is_valid_for_evaluation ? "Yes" : "No"}</strong>
+              </div>
+              <div className="summary-chip">
+                <span>CF Top 5 article_ids</span>
+                <strong>{cfTop5ArticleIds.length ? cfTop5ArticleIds.join(", ") : "none"}</strong>
+              </div>
+              <div className="summary-chip">
+                <span>Agentic Top 5 article_ids</span>
+                <strong>{agenticTop5ArticleIds.length ? agenticTop5ArticleIds.join(", ") : "none"}</strong>
+              </div>
+            </div>
           </>
         ) : null}
       </section>
@@ -366,7 +630,7 @@ export function ComparisonDashboard({ setup, userIds }: ComparisonDashboardProps
         </section>
       ) : null}
 
-      {result ? (
+      {cfResult && agenticResult ? (
         <section className="comparison-grid">
           <article className="panel">
             <div className="panel-header">
@@ -376,7 +640,7 @@ export function ComparisonDashboard({ setup, userIds }: ComparisonDashboardProps
               </div>
             </div>
             <div className="stack-list">
-              {result.cf.recommendations.map((item, index) => {
+              {cfResult.recommendations.map((item, index) => {
                 const recommendation = item as {
                   article_id: string;
                   product_type?: string;
@@ -401,7 +665,7 @@ export function ComparisonDashboard({ setup, userIds }: ComparisonDashboardProps
                     <p className="body-copy">
                       {recommendation.product_name ?? "Transaction-behavior recommendation"}
                     </p>
-                    <p className="body-copy">Validation: {result.cf.validation.top_5_all_inside_candidate_pool ? "inside shared pool" : "outside shared pool"}</p>
+                    <p className="body-copy">Validation: {cfResult.validation.top_5_all_inside_candidate_pool ? "inside shared pool" : "outside shared pool"}</p>
                     <div className="tag-row">
                       {recommendation.product_group ? (
                         <span className="tag subdued-tag">{recommendation.product_group}</span>
@@ -427,7 +691,7 @@ export function ComparisonDashboard({ setup, userIds }: ComparisonDashboardProps
               </div>
             </div>
             <div className="stack-list">
-              {result.agentic.recommendations.map((item, index) => {
+              {agenticResult.recommendations.map((item, index) => {
                 const recommendation = item as {
                   article_id: string;
                   product_type_name?: string;
@@ -452,7 +716,7 @@ export function ComparisonDashboard({ setup, userIds }: ComparisonDashboardProps
                     <p className="body-copy">
                       {recommendation.recommendation_reason ?? "Agentic ranking explanation"}
                     </p>
-                    <p className="body-copy">Validation: {result.agentic.validation.top_5_all_inside_candidate_pool ? "inside shared pool" : "outside shared pool"}</p>
+                    <p className="body-copy">Validation: {agenticResult.validation.top_5_all_inside_candidate_pool ? "inside shared pool" : "outside shared pool"}</p>
                     <div className="tag-row">
                       {recommendation.product_group_name ? (
                         <span className="tag subdued-tag">{recommendation.product_group_name}</span>

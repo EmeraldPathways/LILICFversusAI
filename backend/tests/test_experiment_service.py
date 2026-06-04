@@ -84,3 +84,84 @@ def test_run_generates_evaluation_base_table_and_validation_report(
     assert "invalid_reason" in base_table.columns
     assert report["valid_evaluation_customers"] >= 1
     assert report["selected_ui_customer_ids"]
+
+
+def test_get_completed_comparable_user_ids_filters_for_complete_comparable_rows(
+    isolated_env,
+    monkeypatch,
+):
+    service = ExperimentService(
+        settings=isolated_env,
+        data_service=DataService(isolated_env),
+        cf_service=CollaborativeFilteringService(isolated_env),
+        agentic_service=AgenticRecommendationService(isolated_env),
+        evaluation_service=EvaluationService(isolated_env),
+    )
+    base_rows = {
+        "u1": {
+            "customer_id": "u1",
+            "is_valid_for_evaluation": True,
+            "ground_truth_in_candidate_pool": True,
+            "candidate_pool_size": 6,
+            "train_article_ids": ["a1"],
+            "ground_truth_article_id": "a9",
+        },
+        "u2": {
+            "customer_id": "u2",
+            "is_valid_for_evaluation": True,
+            "ground_truth_in_candidate_pool": True,
+            "candidate_pool_size": 6,
+            "train_article_ids": ["a2"],
+            "ground_truth_article_id": "a8",
+        },
+        "u3": {
+            "customer_id": "u3",
+            "is_valid_for_evaluation": True,
+            "ground_truth_in_candidate_pool": True,
+            "candidate_pool_size": 5,
+            "train_article_ids": ["a3"],
+            "ground_truth_article_id": "a7",
+        },
+    }
+    monkeypatch.setattr(service, "load_state", lambda: {"status": "completed"})
+    monkeypatch.setattr(service, "get_evaluation_base_row", lambda user_id: base_rows[user_id])
+    monkeypatch.setattr(
+        service.evaluation_service,
+        "load_evaluation_base_table",
+        lambda: base_rows,
+    )
+    monkeypatch.setattr(
+        service,
+        "build_cf_result",
+        lambda user_id: {
+            "customer_id": user_id,
+            "validation": {
+                "same_candidate_pool_source": True,
+                "top_5_all_inside_candidate_pool": True,
+            },
+            "hit_at_5": 1 if user_id == "u1" else 0,
+            "top_5_recommendations": [{"article_id": "a1"}] if user_id != "u2" else [],
+        },
+    )
+    monkeypatch.setattr(
+        service,
+        "build_agentic_result",
+        lambda user_id, user_request="": {
+            "customer_id": user_id,
+            "validation": {
+                "same_candidate_pool_source": True,
+                "top_5_all_inside_candidate_pool": True,
+            },
+            "hit_at_5": 1,
+            "top_5_recommendations": [{"article_id": "a1"}],
+        },
+    )
+
+    service.build_completed_evaluation_users_report(
+        limit=10,
+        base_rows=base_rows,
+        allow_generation=True,
+    )
+    user_ids = service.get_completed_comparable_user_ids(limit=10)
+
+    assert user_ids == ["u1"]

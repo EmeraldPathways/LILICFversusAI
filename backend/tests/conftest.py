@@ -21,6 +21,7 @@ def isolated_env(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
                 "OPENAI_API_KEY=test-key",
                 "OPENAI_MODEL=test-model",
                 "FRONTEND_ORIGIN=http://localhost:3000",
+                "MAX_VALID_EVAL_USERS=10",
                 f"BACKEND_DATA_DIR={tmp_path.as_posix()}/data",
             ]
         ),
@@ -178,15 +179,58 @@ def write_processed_artifacts(settings, interactions: pd.DataFrame) -> None:
                 "valid_evaluation_users": 1,
                 "invalid_evaluation_users": 0,
                 "evaluated_users": 1,
+                "completed_valid_users": 1,
                 "cf_hit_at_5": 0.5,
                 "agentic_hit_at_5": 1.0,
                 "cf_hits_count": 0,
                 "agentic_hits_count": 1,
+                "cf_miss_count": 1,
+                "agentic_miss_count": 0,
                 "evaluated_user_ids": ["u1"],
                 "excluded_user_ids_with_reasons": [],
                 "generated_at": "2026-01-01T00:00:00+00:00",
             }
         ),
+        encoding="utf-8",
+    )
+    settings.completed_evaluation_users_path.write_text(
+        json.dumps(
+            [
+                {
+                    "customer_id": "u1",
+                    "base_valid": True,
+                    "cf_result_exists": True,
+                    "agentic_result_exists": True,
+                    "cf_hit_at_5": 1,
+                    "agentic_hit_at_5": 0,
+                    "cf_top_5_count": 1,
+                    "agentic_top_5_count": 1,
+                    "candidate_pool_size": 6,
+                    "ground_truth_in_candidate_pool": True,
+                    "included_in_metrics": True,
+                    "excluded_reason": "",
+                },
+                {
+                    "customer_id": "u2",
+                    "base_valid": True,
+                    "cf_result_exists": False,
+                    "agentic_result_exists": True,
+                    "cf_hit_at_5": None,
+                    "agentic_hit_at_5": 1,
+                    "cf_top_5_count": 0,
+                    "agentic_top_5_count": 1,
+                    "candidate_pool_size": 6,
+                    "ground_truth_in_candidate_pool": True,
+                    "included_in_metrics": False,
+                    "excluded_reason": "CF result is missing for this user",
+                },
+            ],
+            indent=2,
+        ),
+        encoding="utf-8",
+    )
+    settings.comparable_user_audit_path.write_text(
+        settings.completed_evaluation_users_path.read_text(encoding="utf-8"),
         encoding="utf-8",
     )
     settings.summary_path.write_text(

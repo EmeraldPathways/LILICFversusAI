@@ -130,11 +130,13 @@ class CFRecommendationResponse(BaseModel):
     candidate_pool_size: int
     ground_truth_article_id: str
     hit_result: HitResult
-    hit_at_5: bool
+    hit_at_5: int
     hit_label: str
     explanation: str
+    hit_explanation: str
     training_history_count: int
     training_history_preview: list[TrainingHistoryItem]
+    top_5_article_ids: list[str]
     top_5_recommendations: list[RecommendationItem]
     validation: RecommendationValidationBlock
     invalid_reason: str | None = None
@@ -147,13 +149,15 @@ class AgenticRunResponse(BaseModel):
     user_request: str
     ground_truth_article_id: str
     hit_result: HitResult
-    hit_at_5: bool
+    hit_at_5: int
     hit_label: str
     explanation: str
+    hit_explanation: str
     training_history_count: int
     training_history_preview: list[TrainingHistoryItem]
     preference_profile: UserIntentResponse
     candidate_evidence_set: list[CandidateEvidenceItem]
+    top_5_article_ids: list[str]
     top_5_recommendations: list[FinalRecommendationItem]
     process_trace: list[AgentProcessStage]
     validation: RecommendationValidationBlock
@@ -166,22 +170,28 @@ class ComparisonModelOutput(BaseModel):
     candidate_pool_size: int
     ground_truth_article_id: str
     hit_result: HitResult
-    hit_at_5: bool
+    hit_at_5: int
     hit_label: str
     explanation: str
+    hit_explanation: str
+    top_5_article_ids: list[str]
+    top_5_recommendations: list[dict[str, object]]
     recommendations: list[dict[str, object]]
     validation: RecommendationValidationBlock
     invalid_reason: str | None = None
 
 
 class ComparisonResponse(BaseModel):
+    customer_id: str
     user_id: str
-    ground_truth_article_id: str
-    training_history_count: int
-    training_history_preview: list[TrainingHistoryItem]
-    evaluation_base: EvaluationBaseRowResponse
-    cf: ComparisonModelOutput
-    agentic: ComparisonModelOutput
+    is_comparable: bool = True
+    reason: str | None = None
+    ground_truth_article_id: str | None = None
+    training_history_count: int = 0
+    training_history_preview: list[TrainingHistoryItem] = []
+    evaluation_base: EvaluationBaseRowResponse | None = None
+    cf: ComparisonModelOutput | None = None
+    agentic: ComparisonModelOutput | None = None
 
 
 class ModelMetric(BaseModel):
@@ -200,10 +210,13 @@ class MetricsResponse(BaseModel):
     valid_evaluation_users: int
     invalid_evaluation_users: int
     evaluated_users: int
+    completed_valid_users: int
     cf_hit_at_5: float
     agentic_hit_at_5: float
     cf_hits_count: int
     agentic_hits_count: int
+    cf_miss_count: int
+    agentic_miss_count: int
     evaluated_user_ids: list[str]
     excluded_user_ids_with_reasons: list[ExcludedUserReason]
     generated_at: datetime
@@ -227,6 +240,11 @@ class ExperimentSetupResponse(BaseModel):
     benchmark: str
     proposed_framework: str
     evaluation_metrics: list[str]
+    available_user_ids: list[str]
+    completed_comparable_user_ids: list[str]
+    valid_completed_user_count: int
+    completed_comparable_user_count: int
+    max_valid_eval_users: int
     summary: dict[str, object] | None = None
 
 

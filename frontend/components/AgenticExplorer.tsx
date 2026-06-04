@@ -245,7 +245,7 @@ export function AgenticExplorer({ setup, userIds }: AgenticExplorerProps) {
             </div>
             <div className="summary-chip">
               <span>Evaluated Users</span>
-              <strong>{setup?.summary?.evaluated_users ?? 0}</strong>
+              <strong>{setup?.valid_completed_user_count ?? setup?.summary?.evaluated_users ?? 0}</strong>
             </div>
           </div>
         </div>

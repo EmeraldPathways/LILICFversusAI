@@ -16,6 +16,51 @@ class EvaluationService:
     settings: Settings
 
     @staticmethod
+    def _normalize_metrics_payload(metrics: dict[str, object]) -> dict[str, object]:
+        normalized = dict(metrics)
+        completed_valid_users = int(
+            normalized.get("completed_valid_users")
+            or normalized.get("valid_evaluation_users")
+            or normalized.get("evaluated_users")
+            or len(normalized.get("evaluated_user_ids", []))
+            or 0
+        )
+        cf_hits_count = int(normalized.get("cf_hits_count") or 0)
+        agentic_hits_count = int(normalized.get("agentic_hits_count") or 0)
+        normalized["completed_valid_users"] = completed_valid_users
+        normalized["valid_evaluation_users"] = int(normalized.get("valid_evaluation_users") or completed_valid_users)
+        normalized["evaluated_users"] = int(normalized.get("evaluated_users") or completed_valid_users)
+        normalized["cf_miss_count"] = int(
+            normalized.get("cf_miss_count")
+            if normalized.get("cf_miss_count") is not None
+            else max(completed_valid_users - cf_hits_count, 0)
+        )
+        normalized["agentic_miss_count"] = int(
+            normalized.get("agentic_miss_count")
+            if normalized.get("agentic_miss_count") is not None
+            else max(completed_valid_users - agentic_hits_count, 0)
+        )
+        normalized["cf_hit_at_5"] = float(
+            normalized.get("cf_hit_at_5")
+            if normalized.get("cf_hit_at_5") is not None
+            else round(cf_hits_count / completed_valid_users, 4) if completed_valid_users else 0.0
+        )
+        normalized["agentic_hit_at_5"] = float(
+            normalized.get("agentic_hit_at_5")
+            if normalized.get("agentic_hit_at_5") is not None
+            else round(agentic_hits_count / completed_valid_users, 4) if completed_valid_users else 0.0
+        )
+        normalized["collaborative_filtering"] = {
+            "hit_at_5": normalized["cf_hit_at_5"],
+        }
+        normalized["agentic_ai_framework"] = {
+            "hit_at_5": normalized["agentic_hit_at_5"],
+        }
+        normalized.setdefault("excluded_user_ids_with_reasons", [])
+        normalized.setdefault("evaluated_user_ids", [])
+        return normalized
+
+    @staticmethod
     def calculate_hit_at_k(
         recommendations: list[dict[str, object]],
         ground_truth_article_id: str,
@@ -298,6 +343,8 @@ class EvaluationService:
         valid_count = len(valid_user_ids)
         cf_hit_at_5 = round(cf_hits / valid_count, 4) if valid_count else 0.0
         agentic_hit_at_5 = round(agentic_hits / valid_count, 4) if valid_count else 0.0
+        cf_miss_count = max(valid_count - cf_hits, 0)
+        agentic_miss_count = max(valid_count - agentic_hits, 0)
         metrics = {
             "collaborative_filtering": {"hit_at_5": cf_hit_at_5},
             "agentic_ai_framework": {"hit_at_5": agentic_hit_at_5},
@@ -305,10 +352,13 @@ class EvaluationService:
             "valid_evaluation_users": valid_count,
             "invalid_evaluation_users": len(excluded_users),
             "evaluated_users": valid_count,
+            "completed_valid_users": valid_count,
             "cf_hit_at_5": cf_hit_at_5,
             "agentic_hit_at_5": agentic_hit_at_5,
             "cf_hits_count": cf_hits,
             "agentic_hits_count": agentic_hits,
+            "cf_miss_count": cf_miss_count,
+            "agentic_miss_count": agentic_miss_count,
             "evaluated_user_ids": valid_user_ids,
             "excluded_user_ids_with_reasons": excluded_users,
             "generated_at": datetime.now(timezone.utc).isoformat(),
@@ -323,4 +373,8 @@ class EvaluationService:
     def load_metrics(self) -> dict[str, object] | None:
         if not self.settings.metrics_path.exists():
             return None
-        return json.loads(self.settings.metrics_path.read_text(encoding="utf-8"))
+        metrics = json.loads(self.settings.metrics_path.read_text(encoding="utf-8"))
+        normalized = self._normalize_metrics_payload(metrics)
+        if normalized != metrics:
+            self.settings.metrics_path.write_text(json.dumps(normalized, indent=2), encoding="utf-8")
+        return normalized

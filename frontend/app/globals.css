@@ -333,6 +333,11 @@ img {
   border-color: rgba(240, 141, 157, 0.4);
 }
 
+.warn {
+  color: #f0c36b;
+  border-color: rgba(240, 195, 107, 0.4);
+}
+
 .error-banner {
   padding: 14px 16px;
   border-radius: 14px;
@@ -353,6 +358,30 @@ img {
 .history-grid {
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
   margin-top: 18px;
+}
+
+.comparison-summary-grid {
+  margin-bottom: 16px;
+}
+
+.inset-panel {
+  padding: 20px;
+  border-radius: 18px;
+  border: 1px solid var(--panel-border);
+  background: rgba(11, 18, 34, 0.72);
+}
+
+.debug-json {
+  margin: 12px 0 0;
+  padding: 16px;
+  border-radius: 14px;
+  overflow-x: auto;
+  white-space: pre-wrap;
+  word-break: break-word;
+  border: 1px solid var(--panel-border);
+  background: rgba(5, 10, 20, 0.88);
+  color: var(--muted);
+  font-size: 0.85rem;
 }
 
 .history-card {

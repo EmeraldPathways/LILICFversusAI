@@ -57,6 +57,8 @@ def test_evaluation_metrics_from_fixture(isolated_env, sample_interactions: pd.D
     assert metrics["invalid_evaluation_users"] == 0
     assert metrics["cf_hits_count"] == 1
     assert metrics["agentic_hits_count"] == 1
+    assert metrics["cf_miss_count"] == 0
+    assert metrics["agentic_miss_count"] == 0
     assert metrics["evaluated_user_ids"] == ["u1"]
 
 
@@ -90,6 +92,8 @@ def test_evaluation_metrics_exclude_invalid_users_and_write_invalid_user_artifac
     assert metrics["invalid_evaluation_users"] == 1
     assert metrics["collaborative_filtering"]["hit_at_5"] == 1.0
     assert metrics["agentic_ai_framework"]["hit_at_5"] == 1.0
+    assert metrics["cf_miss_count"] == 0
+    assert metrics["agentic_miss_count"] == 0
     assert metrics["excluded_user_ids_with_reasons"] == [
         {
             "user_id": "u3",
@@ -129,3 +133,28 @@ def test_build_evaluation_base_table_generates_shared_candidate_pool_and_validat
     assert base_rows["u1"]["ground_truth_in_candidate_pool"] is True
     assert base_rows["u1"]["is_valid_for_evaluation"] is True
     assert base_rows["u1"]["candidate_pool_article_ids"]
+
+
+def test_load_metrics_normalizes_legacy_metrics_payload(isolated_env):
+    legacy_metrics = {
+        "collaborative_filtering": {"hit_at_5": 0.0},
+        "agentic_ai_framework": {"hit_at_5": 0.15},
+        "total_selected_users": 20,
+        "valid_evaluation_users": 20,
+        "invalid_evaluation_users": 0,
+        "evaluated_users": 20,
+        "cf_hit_at_5": 0.0,
+        "agentic_hit_at_5": 0.15,
+        "cf_hits_count": 0,
+        "agentic_hits_count": 3,
+        "evaluated_user_ids": ["u1", "u2"],
+        "excluded_user_ids_with_reasons": [],
+        "generated_at": "2026-06-04T00:00:00+00:00",
+    }
+    isolated_env.metrics_path.write_text(json.dumps(legacy_metrics, indent=2), encoding="utf-8")
+
+    metrics = EvaluationService(isolated_env).load_metrics()
+
+    assert metrics["completed_valid_users"] == 20
+    assert metrics["cf_miss_count"] == 20
+    assert metrics["agentic_miss_count"] == 17

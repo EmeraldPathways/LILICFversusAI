@@ -21,6 +21,11 @@ export type ExperimentSummary = {
   sample_user_ids?: string[];
   evaluated_user_ids?: string[];
   evaluated_users?: number;
+  available_user_ids?: string[];
+  completed_comparable_user_ids?: string[];
+  completed_comparable_user_count?: number;
+  valid_completed_user_count?: number;
+  max_valid_eval_users?: number;
 };
 
 export type ExperimentSetup = {
@@ -30,6 +35,11 @@ export type ExperimentSetup = {
   benchmark: string;
   proposed_framework: string;
   evaluation_metrics: string[];
+  available_user_ids: string[];
+  completed_comparable_user_ids: string[];
+  completed_comparable_user_count: number;
+  valid_completed_user_count: number;
+  max_valid_eval_users: number;
   summary: ExperimentSummary | null;
 };
 
@@ -112,11 +122,13 @@ export type CFRecommendationResponse = {
   candidate_pool_size: number;
   ground_truth_article_id: string;
   hit_result: HitResult;
-  hit_at_5: boolean;
+  hit_at_5: number;
   hit_label: string;
+  hit_explanation: string;
   explanation: string;
   training_history_count: number;
   training_history_preview: TrainingHistoryItem[];
+  top_5_article_ids: string[];
   top_5_recommendations: RecommendationItem[];
   validation: RecommendationValidationBlock;
   invalid_reason?: string | null;
@@ -129,13 +141,15 @@ export type AgenticRunResponse = {
   user_request: string;
   ground_truth_article_id: string;
   hit_result: HitResult;
-  hit_at_5: boolean;
+  hit_at_5: number;
   hit_label: string;
+  hit_explanation: string;
   explanation: string;
   training_history_count: number;
   training_history_preview: TrainingHistoryItem[];
   preference_profile: UserPreferenceProfile;
   candidate_evidence_set: CandidateEvidenceItem[];
+  top_5_article_ids: string[];
   top_5_recommendations: FinalRecommendationItem[];
   process_trace: AgentProcessStage[];
   validation: RecommendationValidationBlock;
@@ -165,22 +179,56 @@ export type ComparisonModelOutput = {
   candidate_pool_size: number;
   ground_truth_article_id: string;
   hit_result: HitResult;
-  hit_at_5: boolean;
+  hit_at_5: number;
   hit_label: string;
+  hit_explanation: string;
   explanation: string;
+  top_5_article_ids: string[];
+  top_5_recommendations: Array<Record<string, unknown>>;
   recommendations: Array<Record<string, unknown>>;
   validation: RecommendationValidationBlock;
   invalid_reason?: string | null;
 };
 
 export type ComparisonResponse = {
+  customer_id: string;
   user_id: string;
-  ground_truth_article_id: string;
+  is_comparable: boolean;
+  reason?: string | null;
+  ground_truth_article_id?: string | null;
   training_history_count: number;
   training_history_preview: TrainingHistoryItem[];
-  evaluation_base: EvaluationBaseRow;
-  cf: ComparisonModelOutput;
-  agentic: ComparisonModelOutput;
+  evaluation_base?: EvaluationBaseRow | null;
+  cf?: ComparisonModelOutput | null;
+  agentic?: ComparisonModelOutput | null;
+};
+
+export type ExcludedUserReason = {
+  user_id: string;
+  reasons: string[];
+};
+
+export type MetricsResponse = {
+  collaborative_filtering: {
+    hit_at_5: number;
+  };
+  agentic_ai_framework: {
+    hit_at_5: number;
+  };
+  total_selected_users: number;
+  valid_evaluation_users: number;
+  invalid_evaluation_users: number;
+  evaluated_users: number;
+  completed_valid_users: number;
+  cf_hit_at_5: number;
+  agentic_hit_at_5: number;
+  cf_hits_count: number;
+  agentic_hits_count: number;
+  cf_miss_count: number;
+  agentic_miss_count: number;
+  evaluated_user_ids: string[];
+  excluded_user_ids_with_reasons: ExcludedUserReason[];
+  generated_at: string;
 };
 
 export type EvaluationDebugMethod = {
@@ -280,6 +328,10 @@ export async function runAgenticRecommendations(
 
 export async function getComparison(userId: string): Promise<ComparisonResponse> {
   return apiFetch<ComparisonResponse>(`/comparison/${userId}`);
+}
+
+export async function getMetrics(): Promise<MetricsResponse> {
+  return apiFetch<MetricsResponse>("/metrics");
 }
 
 export async function getEvaluationDebug(userId: string): Promise<EvaluationDebugResponse> {

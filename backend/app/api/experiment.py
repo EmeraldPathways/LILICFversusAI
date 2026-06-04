@@ -45,19 +45,18 @@ def get_setup(
     service: ExperimentService = Depends(get_experiment_service),
 ) -> dict[str, object]:
     summary = DataService(settings).load_summary()
-    if (
-        summary
-        and settings.train_path.exists()
-        and settings.test_path.exists()
-        and len(summary.get("evaluated_user_ids", [])) > 3
-    ):
-        train_df = service.data_service.load_train()
-        test_df = service.data_service.load_test()
-        curated_user_ids = service._select_evaluable_users(train_df, test_df)
+    curated_user_ids = service.get_completed_comparable_user_ids(limit=settings.max_valid_eval_users)
+    if summary:
         summary = {
             **summary,
+            "sample_user_ids": curated_user_ids,
             "evaluated_user_ids": curated_user_ids,
             "evaluated_users": len(curated_user_ids),
+            "available_user_ids": curated_user_ids,
+            "completed_comparable_user_ids": curated_user_ids,
+            "completed_comparable_user_count": len(curated_user_ids),
+            "valid_completed_user_count": len(curated_user_ids),
+            "max_valid_eval_users": settings.max_valid_eval_users,
         }
     sample_size = int(summary["sample_size"]) if summary else settings.sample_size
     return {
@@ -67,5 +66,10 @@ def get_setup(
         "benchmark": "Collaborative Filtering",
         "proposed_framework": "3-Agent Agentic AI Recommendation Framework",
         "evaluation_metrics": ["Hit@5"],
+        "available_user_ids": curated_user_ids,
+        "completed_comparable_user_ids": curated_user_ids,
+        "valid_completed_user_count": len(curated_user_ids),
+        "completed_comparable_user_count": len(curated_user_ids),
+        "max_valid_eval_users": settings.max_valid_eval_users,
         "summary": summary,
     }

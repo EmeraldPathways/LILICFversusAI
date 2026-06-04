@@ -146,7 +146,7 @@ export function CFExplorer({ setup, userIds }: CFExplorerProps) {
           </button>
           <div className="summary-chip">
             <span>Evaluated Users</span>
-            <strong>{setup?.summary?.evaluated_users ?? 0}</strong>
+            <strong>{setup?.valid_completed_user_count ?? setup?.summary?.evaluated_users ?? 0}</strong>
           </div>
         </div>
       </section>

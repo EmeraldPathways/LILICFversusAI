@@ -31,6 +31,7 @@ class Settings(BaseSettings):
     min_user_interactions: int = Field(default=3, alias="MIN_USER_INTERACTIONS")
     min_product_interactions: int = Field(default=2, alias="MIN_PRODUCT_INTERACTIONS")
     max_eval_users: int = Field(default=50, alias="MAX_EVAL_USERS")
+    max_valid_eval_users: int = Field(default=10, alias="MAX_VALID_EVAL_USERS")
     llm_timeout_seconds: float = Field(default=40.0, alias="LLM_TIMEOUT_SECONDS")
     ground_truth_mode: str = Field(default="single_ground_truth", alias="GROUND_TRUTH_MODE")
     evaluation_mode: str = Field(default="default", alias="EVALUATION_MODE")
@@ -111,6 +112,14 @@ class Settings(BaseSettings):
     @property
     def evaluation_validation_report_path(self) -> Path:
         return self.processed_data_dir / "evaluation_validation_report.json"
+
+    @property
+    def completed_evaluation_users_path(self) -> Path:
+        return self.processed_data_dir / "completed_evaluation_users.json"
+
+    @property
+    def comparable_user_audit_path(self) -> Path:
+        return self.processed_data_dir / "comparable_user_audit.json"
 
     @property
     def experiment_state_path(self) -> Path:
