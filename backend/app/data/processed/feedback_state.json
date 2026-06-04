@@ -1,0 +1,13 @@
+{
+  "u1": {
+    "weights": {
+      "category_weight": 1.0,
+      "colour_weight": 1.0,
+      "product_type_weight": 1.8400000000000007,
+      "appearance_weight": 1.8400000000000007,
+      "diversity_penalty": 1.0
+    },
+    "last_article_id": "a1",
+    "last_feedback": "add_to_cart"
+  }
+}

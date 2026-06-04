@@ -1,0 +1,23 @@
+{
+  "status": "completed",
+  "dataset": "H&M Personalized Fashion Recommendations",
+  "sample_size": 5000,
+  "train_size": 4900,
+  "test_size": 100,
+  "evaluated_users": 20,
+  "models": [
+    "collaborative_filtering",
+    "agentic_ai_framework"
+  ],
+  "metrics_ready": true,
+  "split_boundary_date": "leave_one_out",
+  "artifacts": {
+    "interactions": "D:\\GOOGLE DRIVE\\EMERALD PATHWAYS\\WEB WORK\\AI CODING\\VS CODE\\personal\\LILI RESEARCH PROPOSAL\\backend\\app\\data\\processed\\interactions_sample.csv",
+    "train": "D:\\GOOGLE DRIVE\\EMERALD PATHWAYS\\WEB WORK\\AI CODING\\VS CODE\\personal\\LILI RESEARCH PROPOSAL\\backend\\app\\data\\processed\\train.csv",
+    "test": "D:\\GOOGLE DRIVE\\EMERALD PATHWAYS\\WEB WORK\\AI CODING\\VS CODE\\personal\\LILI RESEARCH PROPOSAL\\backend\\app\\data\\processed\\test.csv",
+    "cf_recommendations": "D:\\GOOGLE DRIVE\\EMERALD PATHWAYS\\WEB WORK\\AI CODING\\VS CODE\\personal\\LILI RESEARCH PROPOSAL\\backend\\app\\data\\processed\\cf_recommendations.json",
+    "agentic_recommendations": "D:\\GOOGLE DRIVE\\EMERALD PATHWAYS\\WEB WORK\\AI CODING\\VS CODE\\personal\\LILI RESEARCH PROPOSAL\\backend\\app\\data\\processed\\agentic_recommendations.json",
+    "metrics": "D:\\GOOGLE DRIVE\\EMERALD PATHWAYS\\WEB WORK\\AI CODING\\VS CODE\\personal\\LILI RESEARCH PROPOSAL\\backend\\app\\data\\processed\\metrics.json"
+  },
+  "updated_at": "2026-06-04T10:45:43.112267Z"
+}

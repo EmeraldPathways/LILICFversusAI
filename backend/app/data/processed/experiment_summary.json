@@ -1,0 +1,124 @@
+{
+  "dataset": "H&M Personalized Fashion Recommendations",
+  "sample_size": 5000,
+  "distinct_users": 100,
+  "distinct_products": 3031,
+  "repeat_user_ratio": 1.0,
+  "average_interactions_per_user": 50.0,
+  "average_interactions_per_product": 1.65,
+  "top_product_groups": [
+    {
+      "label": "Garment Upper body",
+      "value": 2397
+    },
+    {
+      "label": "Garment Lower body",
+      "value": 1128
+    },
+    {
+      "label": "Garment Full body",
+      "value": 467
+    },
+    {
+      "label": "Accessories",
+      "value": 317
+    },
+    {
+      "label": "Underwear",
+      "value": 252
+    }
+  ],
+  "top_product_types": [
+    {
+      "label": "Sweater",
+      "value": 788
+    },
+    {
+      "label": "Trousers",
+      "value": 767
+    },
+    {
+      "label": "Dress",
+      "value": 440
+    },
+    {
+      "label": "T-shirt",
+      "value": 342
+    },
+    {
+      "label": "Blouse",
+      "value": 267
+    }
+  ],
+  "top_colours": [
+    {
+      "label": "Black",
+      "value": 1875
+    },
+    {
+      "label": "Dark Blue",
+      "value": 383
+    },
+    {
+      "label": "White",
+      "value": 376
+    },
+    {
+      "label": "Dark Red",
+      "value": 224
+    },
+    {
+      "label": "Grey",
+      "value": 187
+    }
+  ],
+  "top_appearances": [
+    {
+      "label": "Solid",
+      "value": 2769
+    },
+    {
+      "label": "All over pattern",
+      "value": 548
+    },
+    {
+      "label": "Melange",
+      "value": 516
+    },
+    {
+      "label": "Stripe",
+      "value": 209
+    },
+    {
+      "label": "Denim",
+      "value": 184
+    }
+  ],
+  "train_size": 4900,
+  "test_size": 100,
+  "split_boundary_date": "leave_one_out",
+  "sample_user_ids": [
+    "03d0011487606c37c1b1ed147fc72f285a50c05f00b9712e0fc3da400c864296",
+    "06d23b72cac134851a761473b40c881c300814981b6b0a3c4692ddf5a93f2a48",
+    "1320d4b3dd6481cde05bb80fb7ca37397f70470b9afb96aeca5d41175acaf836",
+    "1f09f1593c106b2b171e201a79e922f83ddacfdb690a0d8d382c2b7d03d0a5cb",
+    "30d1e9b6378a74a740f64c3d34f1686693d0430b03c6cd602d58062e604373d0",
+    "49beaacac0c7801c2ce2d189efe525fe80b5d37e46ed05b50a4cd88e34d0748f",
+    "6cc121e5cc202d2bf344ffe795002bdbf87178054bcda2e57161f0ef810a4b55",
+    "788785852eddb5874f924603105f315d69571b3e5180f3a7ae6970b55b6d5dc9",
+    "7f0ac4394297dc4a885d3b9277ba526cbbfbf7fb7cae465b256ed8e55b864f03",
+    "8ecbac3466886ba06b611fc52dd86762a661f57a7ccd2a2138ae2439e36d7b37",
+    "9d50687e366b49577c136952613632b9f157cb9051cb71950714c7ba92ad6d56",
+    "9f12a01e2982f70a820b5dd61528bf769b94c5c5e43b23704f1f654784bcda58",
+    "ac078972395fc6edd27d6db647ec2fcf149cefd4c2fae6b5076a9fa7d2124406",
+    "ae414fa70eb3c2ae0ec1640bbdf588531c8d034dfc5c06000e19601be6cd34fd",
+    "afca0bdfe88b260ffce703979fd58c845983d91f4d99f299bb96c4af2c71a2d4",
+    "b79de13a78298e5dfd735eacd18eb8abab46a09d295edbd68cd5583196f82a01",
+    "c3bbcf0011725dd1012eef2f6f16e28bc3d0eb2b25a4b7c9f4f98cf97821d83d",
+    "d7ccd94737524e3138287b27dc457b1dacd3737820e27f98019b8ba84d7ffcac",
+    "e5ebe09835a61c34decfeba6b5331ea241d80184802acd6f5de65ba87b12f36f",
+    "e731b3ecc8619d96058460bcbe2acbb8a95c00951f805ed9c1b398a05dd9c10f"
+  ],
+  "evaluated_user_ids": [],
+  "evaluated_users": 0
+}

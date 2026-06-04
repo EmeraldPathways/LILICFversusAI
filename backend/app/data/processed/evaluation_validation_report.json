@@ -1,0 +1,9 @@
+{
+  "total_customers_raw": 100,
+  "eligible_customers_before_validation": 100,
+  "valid_evaluation_customers": 100,
+  "invalid_evaluation_customers": 0,
+  "invalid_reason_counts": {},
+  "selected_ui_customer_ids": [],
+  "selected_ui_customers": []
+}

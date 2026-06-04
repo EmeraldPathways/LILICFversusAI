@@ -9,7 +9,10 @@ backend/.venv/
 backend/.env
 backend/.pytest_cache/
 backend/backend-server*.log
+backend/backend-live*.log
+backend/backend-*-live*.log
 frontend/frontend-server*.log
+frontend/frontend-live*.log
 frontend/.next/
 frontend/tsconfig.tsbuildinfo
 .logs/
@@ -17,7 +20,6 @@ backend/.logs/
 frontend/.logs/
 .vscode/
 backend/app/data/raw/*.csv
-backend/app/data/processed/*
-!backend/app/data/processed/.gitkeep
+three-agent-demo/
 dist/
 coverage/

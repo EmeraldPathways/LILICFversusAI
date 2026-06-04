@@ -1,0 +1,2502 @@
+{
+  "03d0011487606c37c1b1ed147fc72f285a50c05f00b9712e0fc3da400c864296": {
+    "customer_id": "03d0011487606c37c1b1ed147fc72f285a50c05f00b9712e0fc3da400c864296",
+    "method": "cf",
+    "candidate_pool_size": 100,
+    "ground_truth_article_id": "0666158001",
+    "hit_result": {
+      "hit_at_5": 0,
+      "hit_label": "Miss",
+      "matched_article_id": null,
+      "matched_rank": null,
+      "explanation": "Ground truth item not found in Top 5"
+    },
+    "hit_at_5": false,
+    "hit_label": "Miss",
+    "explanation": "Ground truth item not found in Top 5",
+    "training_history_count": 49,
+    "training_history_preview": [
+      {
+        "article_id": "0660327002",
+        "product_name": "Artur shell top",
+        "product_type": "Blouse",
+        "product_group": "Garment Upper body",
+        "colour": "Black",
+        "appearance": "Solid",
+        "transaction_date": "2018-10-26"
+      },
+      {
+        "article_id": "0660327001",
+        "product_name": "Artur shell top",
+        "product_type": "Blouse",
+        "product_group": "Garment Upper body",
+        "colour": "Dark Purple",
+        "appearance": "Solid",
+        "transaction_date": "2018-10-26"
+      },
+      {
+        "article_id": "0642631001",
+        "product_name": "A.G Pirat",
+        "product_type": "Top",
+        "product_group": "Garment Upper body",
+        "colour": "Black",
+        "appearance": "All over pattern",
+        "transaction_date": "2018-10-26"
+      },
+      {
+        "article_id": "0640619001",
+        "product_name": "Elsa cotton trs",
+        "product_type": "Trousers",
+        "product_group": "Garment Lower body",
+        "colour": "Light Beige",
+        "appearance": "Solid",
+        "transaction_date": "2018-10-26"
+      },
+      {
+        "article_id": "0639670002",
+        "product_name": "Praline",
+        "product_type": "Blouse",
+        "product_group": "Garment Upper body",
+        "colour": "Dark Blue",
+        "appearance": "All over pattern",
+        "transaction_date": "2018-10-26"
+      }
+    ],
+    "top_5_recommendations": [
+      {
+        "article_id": "0677037005",
+        "product_name": "Jamba",
+        "product_type": "Blouse",
+        "product_group": "Garment Upper body",
+        "colour": "White",
+        "appearance": "Solid",
+        "score": 0.0537,
+        "model": "collaborative_filtering"
+      },
+      {
+        "article_id": "0661306008",
+        "product_name": "Enter treggings",
+        "product_type": "Trousers",
+        "product_group": "Garment Lower body",
+        "colour": "Yellowish Brown",
+        "appearance": "All over pattern",
+        "score": 0.0511,
+        "model": "collaborative_filtering"
+      },
+      {
+        "article_id": "0637661004",
+        "product_name": "Ludwig",
+        "product_type": "Sweater",
+        "product_group": "Garment Upper body",
+        "colour": "Off White",
+        "appearance": "Melange",
+        "score": 0.035,
+        "model": "collaborative_filtering"
+      },
+      {
+        "article_id": "0695723001",
+        "product_name": "TEQUILA CONSCIOUS ls",
+        "product_type": "Sweater",
+        "product_group": "Garment Upper body",
+        "colour": "Black",
+        "appearance": "Placement print",
+        "score": 0.0316,
+        "model": "collaborative_filtering"
+      },
+      {
+        "article_id": "0676640001",
+        "product_name": "Chicago",
+        "product_type": "Boots",
+        "product_group": "Shoes",
+        "colour": "Black",
+        "appearance": "Solid",
+        "score": 0.0282,
+        "model": "collaborative_filtering"
+      }
+    ],
+    "validation": {
+      "evaluation_base_used": true,
+      "same_candidate_pool_source": true,
+      "ground_truth_in_candidate_pool": true,
+      "top_5_all_inside_candidate_pool": true,
+      "top_5_contains_training_items": false,
+      "article_id_format_check": "passed"
+    },
+    "invalid_reason": null
+  },
+  "03fdb0bf2d9ff8ba23e1b4aef53709119aad5bc83691d89293a01a52b93d7370": {
+    "customer_id": "03fdb0bf2d9ff8ba23e1b4aef53709119aad5bc83691d89293a01a52b93d7370",
+    "method": "cf",
+    "candidate_pool_size": 100,
+    "ground_truth_article_id": "0640497002",
+    "hit_result": {
+      "hit_at_5": 0,
+      "hit_label": "Miss",
+      "matched_article_id": null,
+      "matched_rank": null,
+      "explanation": "Ground truth item not found in Top 5"
+    },
+    "hit_at_5": false,
+    "hit_label": "Miss",
+    "explanation": "Ground truth item not found in Top 5",
+    "training_history_count": 49,
+    "training_history_preview": [
+      {
+        "article_id": "0588522003",
+        "product_name": "KARIN Bra",
+        "product_type": "Bra",
+        "product_group": "Underwear",
+        "colour": "Black",
+        "appearance": "Front print",
+        "transaction_date": "2018-10-11"
+      },
+      {
+        "article_id": "0301656018",
+        "product_name": "Lou Shirt Dress",
+        "product_type": "Dress",
+        "product_group": "Garment Full body",
+        "colour": "Blue",
+        "appearance": "Solid",
+        "transaction_date": "2018-10-11"
+      },
+      {
+        "article_id": "0301656013",
+        "product_name": "Shirtdress Lou",
+        "product_type": "Dress",
+        "product_group": "Garment Full body",
+        "colour": "Blue",
+        "appearance": "Denim",
+        "transaction_date": "2018-10-09"
+      },
+      {
+        "article_id": "0608069010",
+        "product_name": "Noora 3 pack hipster fancy",
+        "product_type": "Underwear bottom",
+        "product_group": "Underwear",
+        "colour": "Dark Red",
+        "appearance": "Solid",
+        "transaction_date": "2018-10-03"
+      },
+      {
+        "article_id": "0608069010",
+        "product_name": "Noora 3 pack hipster fancy",
+        "product_type": "Underwear bottom",
+        "product_group": "Underwear",
+        "colour": "Dark Red",
+        "appearance": "Solid",
+        "transaction_date": "2018-10-03"
+      }
+    ],
+    "top_5_recommendations": [
+      {
+        "article_id": "0108775044",
+        "product_name": "Strap top",
+        "product_type": "Vest top",
+        "product_group": "Garment Upper body",
+        "colour": "White",
+        "appearance": "Solid",
+        "score": 0.029,
+        "model": "collaborative_filtering"
+      },
+      {
+        "article_id": "0693508004",
+        "product_name": "Hodor",
+        "product_type": "Jacket",
+        "product_group": "Garment Upper body",
+        "colour": "Yellowish Brown",
+        "appearance": "Solid",
+        "score": 0.029,
+        "model": "collaborative_filtering"
+      },
+      {
+        "article_id": "0559018008",
+        "product_name": "Bella DEAL sweater",
+        "product_type": "Top",
+        "product_group": "Garment Upper body",
+        "colour": "Grey",
+        "appearance": "Front print",
+        "score": 0.0282,
+        "model": "collaborative_filtering"
+      },
+      {
+        "article_id": "0594541002",
+        "product_name": "TP TOMMY sweatpants BB",
+        "product_type": "Trousers",
+        "product_group": "Garment Lower body",
+        "colour": "Black",
+        "appearance": "Solid",
+        "score": 0.0282,
+        "model": "collaborative_filtering"
+      },
+      {
+        "article_id": "0591088003",
+        "product_name": "Ren LS Lace Body",
+        "product_type": "Top",
+        "product_group": "Garment Upper body",
+        "colour": "Pink",
+        "appearance": "Lace",
+        "score": 0.0279,
+        "model": "collaborative_filtering"
+      }
+    ],
+    "validation": {
+      "evaluation_base_used": true,
+      "same_candidate_pool_source": true,
+      "ground_truth_in_candidate_pool": true,
+      "top_5_all_inside_candidate_pool": true,
+      "top_5_contains_training_items": false,
+      "article_id_format_check": "passed"
+    },
+    "invalid_reason": null
+  },
+  "06d23b72cac134851a761473b40c881c300814981b6b0a3c4692ddf5a93f2a48": {
+    "customer_id": "06d23b72cac134851a761473b40c881c300814981b6b0a3c4692ddf5a93f2a48",
+    "method": "cf",
+    "candidate_pool_size": 100,
+    "ground_truth_article_id": "0682776002",
+    "hit_result": {
+      "hit_at_5": 0,
+      "hit_label": "Miss",
+      "matched_article_id": null,
+      "matched_rank": null,
+      "explanation": "Ground truth item not found in Top 5"
+    },
+    "hit_at_5": false,
+    "hit_label": "Miss",
+    "explanation": "Ground truth item not found in Top 5",
+    "training_history_count": 49,
+    "training_history_preview": [
+      {
+        "article_id": "0647396002",
+        "product_name": "Boba jardigan",
+        "product_type": "Jacket",
+        "product_group": "Garment Upper body",
+        "colour": "Dark Beige",
+        "appearance": "Solid",
+        "transaction_date": "2018-10-19"
+      },
+      {
+        "article_id": "0501820004",
+        "product_name": "SIRPA",
+        "product_type": "Sweater",
+        "product_group": "Garment Upper body",
+        "colour": "Yellow",
+        "appearance": "Melange",
+        "transaction_date": "2018-10-19"
+      },
+      {
+        "article_id": "0501820003",
+        "product_name": "SIRPA",
+        "product_type": "Sweater",
+        "product_group": "Garment Upper body",
+        "colour": "Dark Red",
+        "appearance": "Melange",
+        "transaction_date": "2018-10-19"
+      },
+      {
+        "article_id": "0678260002",
+        "product_name": "Violet Thong Malva Low",
+        "product_type": "Underwear bottom",
+        "product_group": "Underwear",
+        "colour": "Dark Red",
+        "appearance": "Solid",
+        "transaction_date": "2018-10-17"
+      },
+      {
+        "article_id": "0662593004",
+        "product_name": "Haze Polo",
+        "product_type": "Top",
+        "product_group": "Garment Upper body",
+        "colour": "Dark Red",
+        "appearance": "Solid",
+        "transaction_date": "2018-10-17"
+      }
+    ],
+    "top_5_recommendations": [
+      {
+        "article_id": "0690624001",
+        "product_name": "Happy",
+        "product_type": "Sweater",
+        "product_group": "Garment Upper body",
+        "colour": "Light Beige",
+        "appearance": "Melange",
+        "score": 0.0602,
+        "model": "collaborative_filtering"
+      },
+      {
+        "article_id": "0629420001",
+        "product_name": "claudine",
+        "product_type": "T-shirt",
+        "product_group": "Garment Upper body",
+        "colour": "White",
+        "appearance": "Solid",
+        "score": 0.0533,
+        "model": "collaborative_filtering"
+      },
+      {
+        "article_id": "0661646002",
+        "product_name": "ALICE velvet knot headband",
+        "product_type": "Hair string",
+        "product_group": "Accessories",
+        "colour": "Dark Red",
+        "appearance": "Solid",
+        "score": 0.0533,
+        "model": "collaborative_filtering"
+      },
+      {
+        "article_id": "0679484001",
+        "product_name": "Luna Petite",
+        "product_type": "Trousers",
+        "product_group": "Garment Lower body",
+        "colour": "Black",
+        "appearance": "Solid",
+        "score": 0.0533,
+        "model": "collaborative_filtering"
+      },
+      {
+        "article_id": "0669713004",
+        "product_name": "Zingo sweater",
+        "product_type": "Sweater",
+        "product_group": "Garment Upper body",
+        "colour": "Black",
+        "appearance": "Check",
+        "score": 0.0512,
+        "model": "collaborative_filtering"
+      }
+    ],
+    "validation": {
+      "evaluation_base_used": true,
+      "same_candidate_pool_source": true,
+      "ground_truth_in_candidate_pool": true,
+      "top_5_all_inside_candidate_pool": true,
+      "top_5_contains_training_items": false,
+      "article_id_format_check": "passed"
+    },
+    "invalid_reason": null
+  },
+  "0bf4c6fd4e9d33f9bfb807bb78348cbf5c565846ff4006acf5c1b9aea77b0e54": {
+    "customer_id": "0bf4c6fd4e9d33f9bfb807bb78348cbf5c565846ff4006acf5c1b9aea77b0e54",
+    "method": "cf",
+    "candidate_pool_size": 100,
+    "ground_truth_article_id": "0702472001",
+    "hit_result": {
+      "hit_at_5": 0,
+      "hit_label": "Miss",
+      "matched_article_id": null,
+      "matched_rank": null,
+      "explanation": "Ground truth item not found in Top 5"
+    },
+    "hit_at_5": false,
+    "hit_label": "Miss",
+    "explanation": "Ground truth item not found in Top 5",
+    "training_history_count": 49,
+    "training_history_preview": [
+      {
+        "article_id": "0702472001",
+        "product_name": "Dallas PU TRS",
+        "product_type": "Trousers",
+        "product_group": "Garment Lower body",
+        "colour": "Black",
+        "appearance": "Solid",
+        "transaction_date": "2018-10-27"
+      },
+      {
+        "article_id": "0651336001",
+        "product_name": "SNAP CREW",
+        "product_type": "Sweater",
+        "product_group": "Garment Upper body",
+        "colour": "Black",
+        "appearance": "Solid",
+        "transaction_date": "2018-10-27"
+      },
+      {
+        "article_id": "0573085020",
+        "product_name": "Madison skinny HW (1)",
+        "product_type": "Trousers",
+        "product_group": "Garment Lower body",
+        "colour": "Black",
+        "appearance": "Treatment",
+        "transaction_date": "2018-10-27"
+      },
+      {
+        "article_id": "0573085020",
+        "product_name": "Madison skinny HW (1)",
+        "product_type": "Trousers",
+        "product_group": "Garment Lower body",
+        "colour": "Black",
+        "appearance": "Treatment",
+        "transaction_date": "2018-10-27"
+      },
+      {
+        "article_id": "0554772026",
+        "product_name": "Bob V-neck",
+        "product_type": "T-shirt",
+        "product_group": "Garment Upper body",
+        "colour": "Dark Grey",
+        "appearance": "Melange",
+        "transaction_date": "2018-10-27"
+      }
+    ],
+    "top_5_recommendations": [
+      {
+        "article_id": "0446224002",
+        "product_name": "Maja Cardigan",
+        "product_type": "Cardigan",
+        "product_group": "Garment Upper body",
+        "colour": "Black",
+        "appearance": "Solid",
+        "score": 0.0477,
+        "model": "collaborative_filtering"
+      },
+      {
+        "article_id": "0625518002",
+        "product_name": "BB Timm parka TP",
+        "product_type": "Jacket",
+        "product_group": "Garment Upper body",
+        "colour": "Dark Orange",
+        "appearance": "Solid",
+        "score": 0.0292,
+        "model": "collaborative_filtering"
+      },
+      {
+        "article_id": "0501820045",
+        "product_name": "SIRPA",
+        "product_type": "Sweater",
+        "product_group": "Garment Upper body",
+        "colour": "Light Pink",
+        "appearance": "Solid",
+        "score": 0.0283,
+        "model": "collaborative_filtering"
+      },
+      {
+        "article_id": "0667499001",
+        "product_name": "Despacito (1)",
+        "product_type": "Blouse",
+        "product_group": "Garment Upper body",
+        "colour": "Black",
+        "appearance": "Solid",
+        "score": 0.0263,
+        "model": "collaborative_filtering"
+      },
+      {
+        "article_id": "0667503001",
+        "product_name": "Dragonfly",
+        "product_type": "Blouse",
+        "product_group": "Garment Upper body",
+        "colour": "White",
+        "appearance": "Lace",
+        "score": 0.0263,
+        "model": "collaborative_filtering"
+      }
+    ],
+    "validation": {
+      "evaluation_base_used": true,
+      "same_candidate_pool_source": true,
+      "ground_truth_in_candidate_pool": true,
+      "top_5_all_inside_candidate_pool": true,
+      "top_5_contains_training_items": false,
+      "article_id_format_check": "passed"
+    },
+    "invalid_reason": null
+  },
+  "0d4fb6fb46dfe2759bcf7bc80340e8915b207aa2f74b5b3c76f74d3ce28359e8": {
+    "customer_id": "0d4fb6fb46dfe2759bcf7bc80340e8915b207aa2f74b5b3c76f74d3ce28359e8",
+    "method": "cf",
+    "candidate_pool_size": 100,
+    "ground_truth_article_id": "0622969001",
+    "hit_result": {
+      "hit_at_5": 0,
+      "hit_label": "Miss",
+      "matched_article_id": null,
+      "matched_rank": null,
+      "explanation": "Ground truth item not found in Top 5"
+    },
+    "hit_at_5": false,
+    "hit_label": "Miss",
+    "explanation": "Ground truth item not found in Top 5",
+    "training_history_count": 49,
+    "training_history_preview": [
+      {
+        "article_id": "0694995004",
+        "product_name": "ED Despacito",
+        "product_type": "Blouse",
+        "product_group": "Garment Upper body",
+        "colour": "Yellowish Brown",
+        "appearance": "All over pattern",
+        "transaction_date": "2018-11-16"
+      },
+      {
+        "article_id": "0573149006",
+        "product_name": "KARIN+",
+        "product_type": "Bra",
+        "product_group": "Underwear",
+        "colour": "Dark Turquoise",
+        "appearance": "All over pattern",
+        "transaction_date": "2018-11-16"
+      },
+      {
+        "article_id": "0528019001",
+        "product_name": "Matterhorn coat",
+        "product_type": "Coat",
+        "product_group": "Garment Upper body",
+        "colour": "Dark Blue",
+        "appearance": "Solid",
+        "transaction_date": "2018-11-16"
+      },
+      {
+        "article_id": "0736880001",
+        "product_name": "Karin bra OL",
+        "product_type": "Bra",
+        "product_group": "Underwear",
+        "colour": "Off White",
+        "appearance": "All over pattern",
+        "transaction_date": "2018-11-13"
+      },
+      {
+        "article_id": "0722376001",
+        "product_name": "Bailey mesh tee",
+        "product_type": "Top",
+        "product_group": "Garment Upper body",
+        "colour": "Black",
+        "appearance": "Solid",
+        "transaction_date": "2018-11-13"
+      }
+    ],
+    "top_5_recommendations": [
+      {
+        "article_id": "0674014003",
+        "product_name": "COZY SWATCH SS",
+        "product_type": "T-shirt",
+        "product_group": "Garment Upper body",
+        "colour": "Beige",
+        "appearance": "All over pattern",
+        "score": 0.0697,
+        "model": "collaborative_filtering"
+      },
+      {
+        "article_id": "0671622001",
+        "product_name": "Hillary 1p Heavy Tights",
+        "product_type": "Underwear Tights",
+        "product_group": "Socks & Tights",
+        "colour": "Dark Yellow",
+        "appearance": "Other structure",
+        "score": 0.0491,
+        "model": "collaborative_filtering"
+      },
+      {
+        "article_id": "0663016002",
+        "product_name": "Whisper",
+        "product_type": "Sweater",
+        "product_group": "Garment Upper body",
+        "colour": "Off White",
+        "appearance": "Solid",
+        "score": 0.0477,
+        "model": "collaborative_filtering"
+      },
+      {
+        "article_id": "0703371001",
+        "product_name": "Guela jaquard",
+        "product_type": "Trousers",
+        "product_group": "Garment Lower body",
+        "colour": "Black",
+        "appearance": "Jacquard",
+        "score": 0.0477,
+        "model": "collaborative_filtering"
+      },
+      {
+        "article_id": "0446224002",
+        "product_name": "Maja Cardigan",
+        "product_type": "Cardigan",
+        "product_group": "Garment Upper body",
+        "colour": "Black",
+        "appearance": "Solid",
+        "score": 0.0449,
+        "model": "collaborative_filtering"
+      }
+    ],
+    "validation": {
+      "evaluation_base_used": true,
+      "same_candidate_pool_source": true,
+      "ground_truth_in_candidate_pool": true,
+      "top_5_all_inside_candidate_pool": true,
+      "top_5_contains_training_items": false,
+      "article_id_format_check": "passed"
+    },
+    "invalid_reason": null
+  },
+  "1320d4b3dd6481cde05bb80fb7ca37397f70470b9afb96aeca5d41175acaf836": {
+    "customer_id": "1320d4b3dd6481cde05bb80fb7ca37397f70470b9afb96aeca5d41175acaf836",
+    "method": "cf",
+    "candidate_pool_size": 100,
+    "ground_truth_article_id": "0678291002",
+    "hit_result": {
+      "hit_at_5": 0,
+      "hit_label": "Miss",
+      "matched_article_id": null,
+      "matched_rank": null,
+      "explanation": "Ground truth item not found in Top 5"
+    },
+    "hit_at_5": false,
+    "hit_label": "Miss",
+    "explanation": "Ground truth item not found in Top 5",
+    "training_history_count": 49,
+    "training_history_preview": [
+      {
+        "article_id": "0675359001",
+        "product_name": "Kelly",
+        "product_type": "Blouse",
+        "product_group": "Garment Upper body",
+        "colour": "Black",
+        "appearance": "Solid",
+        "transaction_date": "2018-10-11"
+      },
+      {
+        "article_id": "0675359001",
+        "product_name": "Kelly",
+        "product_type": "Blouse",
+        "product_group": "Garment Upper body",
+        "colour": "Black",
+        "appearance": "Solid",
+        "transaction_date": "2018-10-11"
+      },
+      {
+        "article_id": "0673638001",
+        "product_name": "Son V-neck",
+        "product_type": "Sweater",
+        "product_group": "Garment Upper body",
+        "colour": "Black",
+        "appearance": "Solid",
+        "transaction_date": "2018-10-11"
+      },
+      {
+        "article_id": "0632523002",
+        "product_name": "Manacor",
+        "product_type": "Boots",
+        "product_group": "Shoes",
+        "colour": "Dark Orange",
+        "appearance": "Solid",
+        "transaction_date": "2018-10-11"
+      },
+      {
+        "article_id": "0595779011",
+        "product_name": "Offy sweater",
+        "product_type": "Sweater",
+        "product_group": "Garment Upper body",
+        "colour": "Light Blue",
+        "appearance": "Melange",
+        "transaction_date": "2018-10-11"
+      }
+    ],
+    "top_5_recommendations": [
+      {
+        "article_id": "0692454002",
+        "product_name": "EDC LAURA LACE TOP",
+        "product_type": "Top",
+        "product_group": "Garment Upper body",
+        "colour": "Black",
+        "appearance": "Lace",
+        "score": 0.1171,
+        "model": "collaborative_filtering"
+      },
+      {
+        "article_id": "0539032003",
+        "product_name": "Brandon",
+        "product_type": "Sweater",
+        "product_group": "Garment Upper body",
+        "colour": "Black",
+        "appearance": "Stripe",
+        "score": 0.0533,
+        "model": "collaborative_filtering"
+      },
+      {
+        "article_id": "0639192009",
+        "product_name": "Capri blazer",
+        "product_type": "Blazer",
+        "product_group": "Garment Upper body",
+        "colour": "Grey",
+        "appearance": "Check",
+        "score": 0.0533,
+        "model": "collaborative_filtering"
+      },
+      {
+        "article_id": "0692721002",
+        "product_name": "Baby Lock Me Up Tie Tanga",
+        "product_type": "Swimwear bottom",
+        "product_group": "Swimwear",
+        "colour": "Dark Red",
+        "appearance": "Lace",
+        "score": 0.0533,
+        "model": "collaborative_filtering"
+      },
+      {
+        "article_id": "0684272001",
+        "product_name": "Sandra 1p Tights Lurex",
+        "product_type": "Underwear Tights",
+        "product_group": "Socks & Tights",
+        "colour": "Black",
+        "appearance": "Glittering/Metallic",
+        "score": 0.0303,
+        "model": "collaborative_filtering"
+      }
+    ],
+    "validation": {
+      "evaluation_base_used": true,
+      "same_candidate_pool_source": true,
+      "ground_truth_in_candidate_pool": true,
+      "top_5_all_inside_candidate_pool": true,
+      "top_5_contains_training_items": false,
+      "article_id_format_check": "passed"
+    },
+    "invalid_reason": null
+  },
+  "157eee38676eebb003bf97407f26e369de192997ab3902c194ce2690f060ff50": {
+    "customer_id": "157eee38676eebb003bf97407f26e369de192997ab3902c194ce2690f060ff50",
+    "method": "cf",
+    "candidate_pool_size": 100,
+    "ground_truth_article_id": "0685694001",
+    "hit_result": {
+      "hit_at_5": 0,
+      "hit_label": "Miss",
+      "matched_article_id": null,
+      "matched_rank": null,
+      "explanation": "Ground truth item not found in Top 5"
+    },
+    "hit_at_5": false,
+    "hit_label": "Miss",
+    "explanation": "Ground truth item not found in Top 5",
+    "training_history_count": 49,
+    "training_history_preview": [
+      {
+        "article_id": "0668961001",
+        "product_name": "Ashley Bra plussize",
+        "product_type": "Bra",
+        "product_group": "Underwear",
+        "colour": "Black",
+        "appearance": "Solid",
+        "transaction_date": "2018-11-10"
+      },
+      {
+        "article_id": "0664317001",
+        "product_name": "Lindsey Suede Glove",
+        "product_type": "Gloves",
+        "product_group": "Accessories",
+        "colour": "Black",
+        "appearance": "Solid",
+        "transaction_date": "2018-11-10"
+      },
+      {
+        "article_id": "0623115003",
+        "product_name": "Jenny Boot",
+        "product_type": "Boots",
+        "product_group": "Shoes",
+        "colour": "Yellowish Brown",
+        "appearance": "Solid",
+        "transaction_date": "2018-11-10"
+      },
+      {
+        "article_id": "0611415005",
+        "product_name": "Charlotte Brazilian Aza.Low 2p",
+        "product_type": "Underwear bottom",
+        "product_group": "Underwear",
+        "colour": "Dark Red",
+        "appearance": "Solid",
+        "transaction_date": "2018-11-10"
+      },
+      {
+        "article_id": "0608776003",
+        "product_name": "Scallop 5p Socks",
+        "product_type": "Socks",
+        "product_group": "Socks & Tights",
+        "colour": "Black",
+        "appearance": "Contrast",
+        "transaction_date": "2018-11-10"
+      }
+    ],
+    "top_5_recommendations": [
+      {
+        "article_id": "0218829002",
+        "product_name": "Paris glove.",
+        "product_type": "Gloves",
+        "product_group": "Accessories",
+        "colour": "Black",
+        "appearance": "Solid",
+        "score": 0.113,
+        "model": "collaborative_filtering"
+      },
+      {
+        "article_id": "0607642001",
+        "product_name": "The Firm",
+        "product_type": "Shirt",
+        "product_group": "Garment Upper body",
+        "colour": "Off White",
+        "appearance": "All over pattern",
+        "score": 0.0899,
+        "model": "collaborative_filtering"
+      },
+      {
+        "article_id": "0673638002",
+        "product_name": "Son V-neck",
+        "product_type": "Sweater",
+        "product_group": "Garment Upper body",
+        "colour": "Grey",
+        "appearance": "Melange",
+        "score": 0.0899,
+        "model": "collaborative_filtering"
+      },
+      {
+        "article_id": "0640054003",
+        "product_name": "Dahlia removable padding",
+        "product_type": "Bra",
+        "product_group": "Underwear",
+        "colour": "Dark Red",
+        "appearance": "Lace",
+        "score": 0.0782,
+        "model": "collaborative_filtering"
+      },
+      {
+        "article_id": "0666448001",
+        "product_name": "Janet sweater",
+        "product_type": "Sweater",
+        "product_group": "Garment Upper body",
+        "colour": "Dark Grey",
+        "appearance": "Melange",
+        "score": 0.0717,
+        "model": "collaborative_filtering"
+      }
+    ],
+    "validation": {
+      "evaluation_base_used": true,
+      "same_candidate_pool_source": true,
+      "ground_truth_in_candidate_pool": true,
+      "top_5_all_inside_candidate_pool": true,
+      "top_5_contains_training_items": false,
+      "article_id_format_check": "passed"
+    },
+    "invalid_reason": null
+  },
+  "15a075c3ea7b76dc31971a496c0d4b1f5f30170355eff7cedd4f4234c8c9402c": {
+    "customer_id": "15a075c3ea7b76dc31971a496c0d4b1f5f30170355eff7cedd4f4234c8c9402c",
+    "method": "cf",
+    "candidate_pool_size": 100,
+    "ground_truth_article_id": "0678073001",
+    "hit_result": {
+      "hit_at_5": 0,
+      "hit_label": "Miss",
+      "matched_article_id": null,
+      "matched_rank": null,
+      "explanation": "Ground truth item not found in Top 5"
+    },
+    "hit_at_5": false,
+    "hit_label": "Miss",
+    "explanation": "Ground truth item not found in Top 5",
+    "training_history_count": 49,
+    "training_history_preview": [
+      {
+        "article_id": "0678073001",
+        "product_name": "Ronja Dress",
+        "product_type": "Dress",
+        "product_group": "Garment Full body",
+        "colour": "Black",
+        "appearance": "Solid",
+        "transaction_date": "2018-10-02"
+      },
+      {
+        "article_id": "0619262001",
+        "product_name": "Otter Checked Blazer",
+        "product_type": "Blazer",
+        "product_group": "Garment Upper body",
+        "colour": "White",
+        "appearance": "Check",
+        "transaction_date": "2018-10-02"
+      },
+      {
+        "article_id": "0598795015",
+        "product_name": "Dingo tee",
+        "product_type": "T-shirt",
+        "product_group": "Garment Upper body",
+        "colour": "Light Yellow",
+        "appearance": "Placement print",
+        "transaction_date": "2018-10-02"
+      },
+      {
+        "article_id": "0598795015",
+        "product_name": "Dingo tee",
+        "product_type": "T-shirt",
+        "product_group": "Garment Upper body",
+        "colour": "Light Yellow",
+        "appearance": "Placement print",
+        "transaction_date": "2018-10-02"
+      },
+      {
+        "article_id": "0598795014",
+        "product_name": "Dingo tee",
+        "product_type": "T-shirt",
+        "product_group": "Garment Upper body",
+        "colour": "White",
+        "appearance": "Placement print",
+        "transaction_date": "2018-10-02"
+      }
+    ],
+    "top_5_recommendations": [
+      {
+        "article_id": "0508903014",
+        "product_name": "Honey raw cut tee",
+        "product_type": "T-shirt",
+        "product_group": "Garment Upper body",
+        "colour": "Black",
+        "appearance": "Solid",
+        "score": 0.0796,
+        "model": "collaborative_filtering"
+      },
+      {
+        "article_id": "0573716012",
+        "product_name": "Kanta slacks RW",
+        "product_type": "Trousers",
+        "product_group": "Garment Lower body",
+        "colour": "Black",
+        "appearance": "Solid",
+        "score": 0.0784,
+        "model": "collaborative_filtering"
+      },
+      {
+        "article_id": "0668961001",
+        "product_name": "Ashley Bra plussize",
+        "product_type": "Bra",
+        "product_group": "Underwear",
+        "colour": "Black",
+        "appearance": "Solid",
+        "score": 0.0776,
+        "model": "collaborative_filtering"
+      },
+      {
+        "article_id": "0623698001",
+        "product_name": "Inkery dress",
+        "product_type": "Dress",
+        "product_group": "Garment Full body",
+        "colour": "Black",
+        "appearance": "Solid",
+        "score": 0.0597,
+        "model": "collaborative_filtering"
+      },
+      {
+        "article_id": "0691177002",
+        "product_name": "Cava Dress (1)",
+        "product_type": "Dress",
+        "product_group": "Garment Full body",
+        "colour": "Black",
+        "appearance": "Solid",
+        "score": 0.0597,
+        "model": "collaborative_filtering"
+      }
+    ],
+    "validation": {
+      "evaluation_base_used": true,
+      "same_candidate_pool_source": true,
+      "ground_truth_in_candidate_pool": true,
+      "top_5_all_inside_candidate_pool": true,
+      "top_5_contains_training_items": false,
+      "article_id_format_check": "passed"
+    },
+    "invalid_reason": null
+  },
+  "191071b0e1f2e94a557f1a0b4cea3de55faf1581b1f46466ffe90664f73ec96e": {
+    "customer_id": "191071b0e1f2e94a557f1a0b4cea3de55faf1581b1f46466ffe90664f73ec96e",
+    "method": "cf",
+    "candidate_pool_size": 100,
+    "ground_truth_article_id": "0703065002",
+    "hit_result": {
+      "hit_at_5": 0,
+      "hit_label": "Miss",
+      "matched_article_id": null,
+      "matched_rank": null,
+      "explanation": "Ground truth item not found in Top 5"
+    },
+    "hit_at_5": false,
+    "hit_label": "Miss",
+    "explanation": "Ground truth item not found in Top 5",
+    "training_history_count": 49,
+    "training_history_preview": [
+      {
+        "article_id": "0691275005",
+        "product_name": "Waves blouse",
+        "product_type": "Blouse",
+        "product_group": "Garment Upper body",
+        "colour": "Dark Yellow",
+        "appearance": "Solid",
+        "transaction_date": "2018-11-05"
+      },
+      {
+        "article_id": "0687535001",
+        "product_name": "Missy Wide",
+        "product_type": "Trousers",
+        "product_group": "Garment Lower body",
+        "colour": "Black",
+        "appearance": "Solid",
+        "transaction_date": "2018-11-05"
+      },
+      {
+        "article_id": "0378447033",
+        "product_name": "V-Neck Milan",
+        "product_type": "Sweater",
+        "product_group": "Garment Upper body",
+        "colour": "Yellowish Brown",
+        "appearance": "Argyle",
+        "transaction_date": "2018-11-05"
+      },
+      {
+        "article_id": "0378447002",
+        "product_name": "V-Neck Milan TVP",
+        "product_type": "Sweater",
+        "product_group": "Garment Upper body",
+        "colour": "Dark Grey",
+        "appearance": "Melange",
+        "transaction_date": "2018-11-05"
+      },
+      {
+        "article_id": "0707015002",
+        "product_name": "Flounce AOP",
+        "product_type": "Blouse",
+        "product_group": "Garment Upper body",
+        "colour": "Black",
+        "appearance": "All over pattern",
+        "transaction_date": "2018-11-03"
+      }
+    ],
+    "top_5_recommendations": [
+      {
+        "article_id": "0660599003",
+        "product_name": "Baraboom",
+        "product_type": "Cardigan",
+        "product_group": "Garment Upper body",
+        "colour": "Beige",
+        "appearance": "Melange",
+        "score": 0.1033,
+        "model": "collaborative_filtering"
+      },
+      {
+        "article_id": "0546673001",
+        "product_name": "Basic 25pk studs",
+        "product_type": "Earring",
+        "product_group": "Accessories",
+        "colour": "Gold",
+        "appearance": "Solid",
+        "score": 0.0759,
+        "model": "collaborative_filtering"
+      },
+      {
+        "article_id": "0712167002",
+        "product_name": "Zola blouse",
+        "product_type": "Blouse",
+        "product_group": "Garment Upper body",
+        "colour": "Dark Red",
+        "appearance": "Jacquard",
+        "score": 0.0557,
+        "model": "collaborative_filtering"
+      },
+      {
+        "article_id": "0399136011",
+        "product_name": "Shaping Skinny R.W",
+        "product_type": "Trousers",
+        "product_group": "Garment Lower body",
+        "colour": "Dark Green",
+        "appearance": "Solid",
+        "score": 0.0542,
+        "model": "collaborative_filtering"
+      },
+      {
+        "article_id": "0510419006",
+        "product_name": "Nilla leather sandal",
+        "product_type": "Sandals",
+        "product_group": "Shoes",
+        "colour": "Dark Red",
+        "appearance": "Other structure",
+        "score": 0.0542,
+        "model": "collaborative_filtering"
+      }
+    ],
+    "validation": {
+      "evaluation_base_used": true,
+      "same_candidate_pool_source": true,
+      "ground_truth_in_candidate_pool": true,
+      "top_5_all_inside_candidate_pool": true,
+      "top_5_contains_training_items": false,
+      "article_id_format_check": "passed"
+    },
+    "invalid_reason": null
+  },
+  "1df07f916d7f648458702bd0b612caee88f1fb4cd1b660fc79ca0c99d27b1293": {
+    "customer_id": "1df07f916d7f648458702bd0b612caee88f1fb4cd1b660fc79ca0c99d27b1293",
+    "method": "cf",
+    "candidate_pool_size": 100,
+    "ground_truth_article_id": "0539723007",
+    "hit_result": {
+      "hit_at_5": 0,
+      "hit_label": "Miss",
+      "matched_article_id": null,
+      "matched_rank": null,
+      "explanation": "Ground truth item not found in Top 5"
+    },
+    "hit_at_5": false,
+    "hit_label": "Miss",
+    "explanation": "Ground truth item not found in Top 5",
+    "training_history_count": 49,
+    "training_history_preview": [
+      {
+        "article_id": "0539209001",
+        "product_name": "Ariel PU Shorts",
+        "product_type": "Shorts",
+        "product_group": "Garment Lower body",
+        "colour": "Black",
+        "appearance": "Solid",
+        "transaction_date": "2018-10-27"
+      },
+      {
+        "article_id": "0529012011",
+        "product_name": "Hazelnut Brazilian Acacia Low",
+        "product_type": "Underwear bottom",
+        "product_group": "Underwear",
+        "colour": "Dark Blue",
+        "appearance": "Solid",
+        "transaction_date": "2018-10-27"
+      },
+      {
+        "article_id": "0740235001",
+        "product_name": "RR 37 2 Button LS dress 2 col",
+        "product_type": "Dress",
+        "product_group": "Garment Full body",
+        "colour": "Black",
+        "appearance": "Solid",
+        "transaction_date": "2018-10-19"
+      },
+      {
+        "article_id": "0718289003",
+        "product_name": "Cosette polo",
+        "product_type": "Top",
+        "product_group": "Garment Upper body",
+        "colour": "Black",
+        "appearance": "Lace",
+        "transaction_date": "2018-10-19"
+      },
+      {
+        "article_id": "0715573001",
+        "product_name": "Finesse HW wide cropped",
+        "product_type": "Trousers",
+        "product_group": "Garment Lower body",
+        "colour": "Greyish Beige",
+        "appearance": "Check",
+        "transaction_date": "2018-10-19"
+      }
+    ],
+    "top_5_recommendations": [
+      {
+        "article_id": "0639192002",
+        "product_name": "Capri blazer",
+        "product_type": "Blazer",
+        "product_group": "Garment Upper body",
+        "colour": "Black",
+        "appearance": "Solid",
+        "score": 0.0506,
+        "model": "collaborative_filtering"
+      },
+      {
+        "article_id": "0613465003",
+        "product_name": "CSP Miley",
+        "product_type": "Top",
+        "product_group": "Garment Upper body",
+        "colour": "Black",
+        "appearance": "Embroidery",
+        "score": 0.0472,
+        "model": "collaborative_filtering"
+      },
+      {
+        "article_id": "0639678004",
+        "product_name": "Onyx",
+        "product_type": "Blouse",
+        "product_group": "Garment Upper body",
+        "colour": "Yellow",
+        "appearance": "All over pattern",
+        "score": 0.0472,
+        "model": "collaborative_filtering"
+      },
+      {
+        "article_id": "0687940004",
+        "product_name": "J STAN TEE EQ",
+        "product_type": "T-shirt",
+        "product_group": "Garment Upper body",
+        "colour": "Dark Beige",
+        "appearance": "All over pattern",
+        "score": 0.0472,
+        "model": "collaborative_filtering"
+      },
+      {
+        "article_id": "0630675001",
+        "product_name": "6p Claw",
+        "product_type": "Hair clip",
+        "product_group": "Accessories",
+        "colour": "Black",
+        "appearance": "Solid",
+        "score": 0.0435,
+        "model": "collaborative_filtering"
+      }
+    ],
+    "validation": {
+      "evaluation_base_used": true,
+      "same_candidate_pool_source": true,
+      "ground_truth_in_candidate_pool": true,
+      "top_5_all_inside_candidate_pool": true,
+      "top_5_contains_training_items": false,
+      "article_id_format_check": "passed"
+    },
+    "invalid_reason": null
+  },
+  "1f09f1593c106b2b171e201a79e922f83ddacfdb690a0d8d382c2b7d03d0a5cb": {
+    "customer_id": "1f09f1593c106b2b171e201a79e922f83ddacfdb690a0d8d382c2b7d03d0a5cb",
+    "method": "cf",
+    "candidate_pool_size": 100,
+    "ground_truth_article_id": "0689005001",
+    "hit_result": {
+      "hit_at_5": 0,
+      "hit_label": "Miss",
+      "matched_article_id": null,
+      "matched_rank": null,
+      "explanation": "Ground truth item not found in Top 5"
+    },
+    "hit_at_5": false,
+    "hit_label": "Miss",
+    "explanation": "Ground truth item not found in Top 5",
+    "training_history_count": 49,
+    "training_history_preview": [
+      {
+        "article_id": "0561752001",
+        "product_name": "Jellybean",
+        "product_type": "Sweater",
+        "product_group": "Garment Upper body",
+        "colour": "Light Orange",
+        "appearance": "Glittering/Metallic",
+        "transaction_date": "2018-12-04"
+      },
+      {
+        "article_id": "0549914003",
+        "product_name": "Pia Party",
+        "product_type": "Sweater",
+        "product_group": "Garment Upper body",
+        "colour": "Black",
+        "appearance": "Glittering/Metallic",
+        "transaction_date": "2018-12-02"
+      },
+      {
+        "article_id": "0678887002",
+        "product_name": "CHLOE SMALL BAG",
+        "product_type": "Bag",
+        "product_group": "Accessories",
+        "colour": "White",
+        "appearance": "Solid",
+        "transaction_date": "2018-12-01"
+      },
+      {
+        "article_id": "0639965001",
+        "product_name": "Amanda plussize",
+        "product_type": "Bra",
+        "product_group": "Underwear",
+        "colour": "Pink",
+        "appearance": "Lace",
+        "transaction_date": "2018-12-01"
+      },
+      {
+        "article_id": "0572480002",
+        "product_name": "Abbie Rib L/S",
+        "product_type": "Top",
+        "product_group": "Garment Upper body",
+        "colour": "White",
+        "appearance": "Stripe",
+        "transaction_date": "2018-12-01"
+      }
+    ],
+    "top_5_recommendations": [
+      {
+        "article_id": "0664209002",
+        "product_name": "Adina Jsy Pull- on TRS",
+        "product_type": "Trousers",
+        "product_group": "Garment Lower body",
+        "colour": "Black",
+        "appearance": "Glittering/Metallic",
+        "score": 0.0555,
+        "model": "collaborative_filtering"
+      },
+      {
+        "article_id": "0543054010",
+        "product_name": "Danja Sweater",
+        "product_type": "Sweater",
+        "product_group": "Garment Upper body",
+        "colour": "Light Orange",
+        "appearance": "Other structure",
+        "score": 0.0527,
+        "model": "collaborative_filtering"
+      },
+      {
+        "article_id": "0530106002",
+        "product_name": "Cool Aby choker",
+        "product_type": "Necklace",
+        "product_group": "Accessories",
+        "colour": "White",
+        "appearance": "Solid",
+        "score": 0.0491,
+        "model": "collaborative_filtering"
+      },
+      {
+        "article_id": "0654375001",
+        "product_name": "Pete crew neck",
+        "product_type": "Sweater",
+        "product_group": "Garment Upper body",
+        "colour": "Grey",
+        "appearance": "Melange",
+        "score": 0.0491,
+        "model": "collaborative_filtering"
+      },
+      {
+        "article_id": "0657283003",
+        "product_name": "LS TANGA TWIST",
+        "product_type": "Sweater",
+        "product_group": "Garment Upper body",
+        "colour": "Pink",
+        "appearance": "Solid",
+        "score": 0.0491,
+        "model": "collaborative_filtering"
+      }
+    ],
+    "validation": {
+      "evaluation_base_used": true,
+      "same_candidate_pool_source": true,
+      "ground_truth_in_candidate_pool": true,
+      "top_5_all_inside_candidate_pool": true,
+      "top_5_contains_training_items": false,
+      "article_id_format_check": "passed"
+    },
+    "invalid_reason": null
+  },
+  "21dc541f04d2e07c098fe65c6d5de0c585dd9c15a338ca9ab876ebb126acf377": {
+    "customer_id": "21dc541f04d2e07c098fe65c6d5de0c585dd9c15a338ca9ab876ebb126acf377",
+    "method": "cf",
+    "candidate_pool_size": 100,
+    "ground_truth_article_id": "0670162002",
+    "hit_result": {
+      "hit_at_5": 0,
+      "hit_label": "Miss",
+      "matched_article_id": null,
+      "matched_rank": null,
+      "explanation": "Ground truth item not found in Top 5"
+    },
+    "hit_at_5": false,
+    "hit_label": "Miss",
+    "explanation": "Ground truth item not found in Top 5",
+    "training_history_count": 49,
+    "training_history_preview": [
+      {
+        "article_id": "0709188001",
+        "product_name": "Morning Glory",
+        "product_type": "Dress",
+        "product_group": "Garment Full body",
+        "colour": "Off White",
+        "appearance": "Placement print",
+        "transaction_date": "2019-01-16"
+      },
+      {
+        "article_id": "0709188001",
+        "product_name": "Morning Glory",
+        "product_type": "Dress",
+        "product_group": "Garment Full body",
+        "colour": "Off White",
+        "appearance": "Placement print",
+        "transaction_date": "2019-01-16"
+      },
+      {
+        "article_id": "0709188001",
+        "product_name": "Morning Glory",
+        "product_type": "Dress",
+        "product_group": "Garment Full body",
+        "colour": "Off White",
+        "appearance": "Placement print",
+        "transaction_date": "2019-01-16"
+      },
+      {
+        "article_id": "0708755001",
+        "product_name": "Abia Dress",
+        "product_type": "Dress",
+        "product_group": "Garment Full body",
+        "colour": "Black",
+        "appearance": "Solid",
+        "transaction_date": "2019-01-16"
+      },
+      {
+        "article_id": "0708755001",
+        "product_name": "Abia Dress",
+        "product_type": "Dress",
+        "product_group": "Garment Full body",
+        "colour": "Black",
+        "appearance": "Solid",
+        "transaction_date": "2019-01-16"
+      }
+    ],
+    "top_5_recommendations": [
+      {
+        "article_id": "0614857001",
+        "product_name": "Bliss thong (Mynta) Low 3p",
+        "product_type": "Underwear bottom",
+        "product_group": "Underwear",
+        "colour": "Pink",
+        "appearance": "Solid",
+        "score": 0.034,
+        "model": "collaborative_filtering"
+      },
+      {
+        "article_id": "0669713004",
+        "product_name": "Zingo sweater",
+        "product_type": "Sweater",
+        "product_group": "Garment Upper body",
+        "colour": "Black",
+        "appearance": "Check",
+        "score": 0.0321,
+        "model": "collaborative_filtering"
+      },
+      {
+        "article_id": "0532578020",
+        "product_name": "Annette",
+        "product_type": "Sweater",
+        "product_group": "Garment Upper body",
+        "colour": "Beige",
+        "appearance": "Solid",
+        "score": 0.0287,
+        "model": "collaborative_filtering"
+      },
+      {
+        "article_id": "0637515002",
+        "product_name": "Matey",
+        "product_type": "Sweater",
+        "product_group": "Garment Upper body",
+        "colour": "Black",
+        "appearance": "Solid",
+        "score": 0.0287,
+        "model": "collaborative_filtering"
+      },
+      {
+        "article_id": "0667499003",
+        "product_name": "Despacito",
+        "product_type": "Blouse",
+        "product_group": "Garment Upper body",
+        "colour": "Dark Red",
+        "appearance": "Solid",
+        "score": 0.0275,
+        "model": "collaborative_filtering"
+      }
+    ],
+    "validation": {
+      "evaluation_base_used": true,
+      "same_candidate_pool_source": true,
+      "ground_truth_in_candidate_pool": true,
+      "top_5_all_inside_candidate_pool": true,
+      "top_5_contains_training_items": false,
+      "article_id_format_check": "passed"
+    },
+    "invalid_reason": null
+  },
+  "2351f0fa33dff45f29de0bc0f97067400b6df574652a4dc10fca68512f7ccd66": {
+    "customer_id": "2351f0fa33dff45f29de0bc0f97067400b6df574652a4dc10fca68512f7ccd66",
+    "method": "cf",
+    "candidate_pool_size": 100,
+    "ground_truth_article_id": "0718313007",
+    "hit_result": {
+      "hit_at_5": 0,
+      "hit_label": "Miss",
+      "matched_article_id": null,
+      "matched_rank": null,
+      "explanation": "Ground truth item not found in Top 5"
+    },
+    "hit_at_5": false,
+    "hit_label": "Miss",
+    "explanation": "Ground truth item not found in Top 5",
+    "training_history_count": 49,
+    "training_history_preview": [
+      {
+        "article_id": "0712167002",
+        "product_name": "Zola blouse",
+        "product_type": "Blouse",
+        "product_group": "Garment Upper body",
+        "colour": "Dark Red",
+        "appearance": "Jacquard",
+        "transaction_date": "2018-10-12"
+      },
+      {
+        "article_id": "0707611001",
+        "product_name": "Flirty Vina necklace RT",
+        "product_type": "Necklace",
+        "product_group": "Accessories",
+        "colour": "Gold",
+        "appearance": "Solid",
+        "transaction_date": "2018-10-12"
+      },
+      {
+        "article_id": "0697489002",
+        "product_name": "Class Silva necklace RT",
+        "product_type": "Necklace",
+        "product_group": "Accessories",
+        "colour": "Black",
+        "appearance": "Solid",
+        "transaction_date": "2018-10-12"
+      },
+      {
+        "article_id": "0678073003",
+        "product_name": "Ronja Dress",
+        "product_type": "Dress",
+        "product_group": "Garment Full body",
+        "colour": "Dark Red",
+        "appearance": "Solid",
+        "transaction_date": "2018-10-12"
+      },
+      {
+        "article_id": "0669260001",
+        "product_name": "Havana waist belt",
+        "product_type": "Belt",
+        "product_group": "Accessories",
+        "colour": "Black",
+        "appearance": "Solid",
+        "transaction_date": "2018-10-12"
+      }
+    ],
+    "top_5_recommendations": [
+      {
+        "article_id": "0592975011",
+        "product_name": "Vermont fancy slacks",
+        "product_type": "Trousers",
+        "product_group": "Garment Lower body",
+        "colour": "Light Grey",
+        "appearance": "Check",
+        "score": 0.0971,
+        "model": "collaborative_filtering"
+      },
+      {
+        "article_id": "0675281001",
+        "product_name": "Jasper pencil J",
+        "product_type": "Skirt",
+        "product_group": "Garment Lower body",
+        "colour": "Black",
+        "appearance": "Check",
+        "score": 0.0812,
+        "model": "collaborative_filtering"
+      },
+      {
+        "article_id": "0684890001",
+        "product_name": "Cherry velvet dress J",
+        "product_type": "Dress",
+        "product_group": "Garment Full body",
+        "colour": "Black",
+        "appearance": "Solid",
+        "score": 0.0776,
+        "model": "collaborative_filtering"
+      },
+      {
+        "article_id": "0592986002",
+        "product_name": "Cool tiebelt dressed",
+        "product_type": "Trousers",
+        "product_group": "Garment Lower body",
+        "colour": "Black",
+        "appearance": "Solid",
+        "score": 0.0729,
+        "model": "collaborative_filtering"
+      },
+      {
+        "article_id": "0664074007",
+        "product_name": "Charlie Top",
+        "product_type": "Top",
+        "product_group": "Garment Upper body",
+        "colour": "White",
+        "appearance": "Solid",
+        "score": 0.0724,
+        "model": "collaborative_filtering"
+      }
+    ],
+    "validation": {
+      "evaluation_base_used": true,
+      "same_candidate_pool_source": true,
+      "ground_truth_in_candidate_pool": true,
+      "top_5_all_inside_candidate_pool": true,
+      "top_5_contains_training_items": false,
+      "article_id_format_check": "passed"
+    },
+    "invalid_reason": null
+  },
+  "26fbbc7fb66c96e4d7984443dffa6779b9ac1e7f9c59c3207a24eacdd74e0891": {
+    "customer_id": "26fbbc7fb66c96e4d7984443dffa6779b9ac1e7f9c59c3207a24eacdd74e0891",
+    "method": "cf",
+    "candidate_pool_size": 100,
+    "ground_truth_article_id": "0651424003",
+    "hit_result": {
+      "hit_at_5": 0,
+      "hit_label": "Miss",
+      "matched_article_id": null,
+      "matched_rank": null,
+      "explanation": "Ground truth item not found in Top 5"
+    },
+    "hit_at_5": false,
+    "hit_label": "Miss",
+    "explanation": "Ground truth item not found in Top 5",
+    "training_history_count": 49,
+    "training_history_preview": [
+      {
+        "article_id": "0651424003",
+        "product_name": "Jackson Quilted Jacket",
+        "product_type": "Jacket",
+        "product_group": "Garment Upper body",
+        "colour": "Greenish Khaki",
+        "appearance": "Solid",
+        "transaction_date": "2018-10-10"
+      },
+      {
+        "article_id": "0578860001",
+        "product_name": "HAMILTON ANCHOR TEE",
+        "product_type": "T-shirt",
+        "product_group": "Garment Upper body",
+        "colour": "Dark Blue",
+        "appearance": "Front print",
+        "transaction_date": "2018-10-10"
+      },
+      {
+        "article_id": "0485973003",
+        "product_name": "Nilsson Top",
+        "product_type": "T-shirt",
+        "product_group": "Garment Upper body",
+        "colour": "Grey",
+        "appearance": "Treatment",
+        "transaction_date": "2018-10-10"
+      },
+      {
+        "article_id": "0462086004",
+        "product_name": "Steph SL Set",
+        "product_type": "Pyjama set",
+        "product_group": "Nightwear",
+        "colour": "Dark Blue",
+        "appearance": "All over pattern",
+        "transaction_date": "2018-10-10"
+      },
+      {
+        "article_id": "0672357001",
+        "product_name": "Chantada",
+        "product_type": "Boots",
+        "product_group": "Shoes",
+        "colour": "Black",
+        "appearance": "Solid",
+        "transaction_date": "2018-09-29"
+      }
+    ],
+    "top_5_recommendations": [
+      {
+        "article_id": "0615021029",
+        "product_name": "Luisa tee",
+        "product_type": "T-shirt",
+        "product_group": "Garment Upper body",
+        "colour": "Light Beige",
+        "appearance": "All over pattern",
+        "score": 0.0534,
+        "model": "collaborative_filtering"
+      },
+      {
+        "article_id": "0672032001",
+        "product_name": "Inez Knitted Scarf",
+        "product_type": "Scarf",
+        "product_group": "Accessories",
+        "colour": "Light Beige",
+        "appearance": "Solid",
+        "score": 0.0534,
+        "model": "collaborative_filtering"
+      },
+      {
+        "article_id": "0516000024",
+        "product_name": "Agnes LS R-neck",
+        "product_type": "T-shirt",
+        "product_group": "Garment Upper body",
+        "colour": "Dark Blue",
+        "appearance": "Melange",
+        "score": 0.0315,
+        "model": "collaborative_filtering"
+      },
+      {
+        "article_id": "0653216001",
+        "product_name": "MC Swift dress",
+        "product_type": "Dress",
+        "product_group": "Garment Full body",
+        "colour": "Dark Red",
+        "appearance": "Solid",
+        "score": 0.0315,
+        "model": "collaborative_filtering"
+      },
+      {
+        "article_id": "0610776001",
+        "product_name": "Tilly (1)",
+        "product_type": "T-shirt",
+        "product_group": "Garment Upper body",
+        "colour": "White",
+        "appearance": "Solid",
+        "score": 0.0278,
+        "model": "collaborative_filtering"
+      }
+    ],
+    "validation": {
+      "evaluation_base_used": true,
+      "same_candidate_pool_source": true,
+      "ground_truth_in_candidate_pool": true,
+      "top_5_all_inside_candidate_pool": true,
+      "top_5_contains_training_items": false,
+      "article_id_format_check": "passed"
+    },
+    "invalid_reason": null
+  },
+  "2df54f0d0653811fe06479c93905f3e6ecc6d07edf39d8b56e5b66c86182bedf": {
+    "customer_id": "2df54f0d0653811fe06479c93905f3e6ecc6d07edf39d8b56e5b66c86182bedf",
+    "method": "cf",
+    "candidate_pool_size": 100,
+    "ground_truth_article_id": "0695457002",
+    "hit_result": {
+      "hit_at_5": 0,
+      "hit_label": "Miss",
+      "matched_article_id": null,
+      "matched_rank": null,
+      "explanation": "Ground truth item not found in Top 5"
+    },
+    "hit_at_5": false,
+    "hit_label": "Miss",
+    "explanation": "Ground truth item not found in Top 5",
+    "training_history_count": 49,
+    "training_history_preview": [
+      {
+        "article_id": "0686496004",
+        "product_name": "ASTRID PJ SHIRT",
+        "product_type": "Shirt",
+        "product_group": "Garment Upper body",
+        "colour": "Light Beige",
+        "appearance": "All over pattern",
+        "transaction_date": "2018-11-06"
+      },
+      {
+        "article_id": "0509091033",
+        "product_name": "Lola Brazilian (Acacia) 3pk",
+        "product_type": "Underwear bottom",
+        "product_group": "Underwear",
+        "colour": "Black",
+        "appearance": "All over pattern",
+        "transaction_date": "2018-11-06"
+      },
+      {
+        "article_id": "0673677002",
+        "product_name": "Henry polo. (1)",
+        "product_type": "Sweater",
+        "product_group": "Garment Upper body",
+        "colour": "Black",
+        "appearance": "Solid",
+        "transaction_date": "2018-10-23"
+      },
+      {
+        "article_id": "0635741003",
+        "product_name": "Sue",
+        "product_type": "Shorts",
+        "product_group": "Garment Lower body",
+        "colour": "Red",
+        "appearance": "Solid",
+        "transaction_date": "2018-10-23"
+      },
+      {
+        "article_id": "0635741002",
+        "product_name": "Sue",
+        "product_type": "Shorts",
+        "product_group": "Garment Lower body",
+        "colour": "Black",
+        "appearance": "Solid",
+        "transaction_date": "2018-10-23"
+      }
+    ],
+    "top_5_recommendations": [
+      {
+        "article_id": "0562245059",
+        "product_name": "Luna skinny RW",
+        "product_type": "Trousers",
+        "product_group": "Garment Lower body",
+        "colour": "Blue",
+        "appearance": "Denim",
+        "score": 0.0523,
+        "model": "collaborative_filtering"
+      },
+      {
+        "article_id": "0630145001",
+        "product_name": "FLORIDA TIGHTS",
+        "product_type": "Leggings/Tights",
+        "product_group": "Garment Lower body",
+        "colour": "Black",
+        "appearance": "Solid",
+        "score": 0.0495,
+        "model": "collaborative_filtering"
+      },
+      {
+        "article_id": "0111593001",
+        "product_name": "Support 40 den 1p Tights",
+        "product_type": "Underwear Tights",
+        "product_group": "Socks & Tights",
+        "colour": "Black",
+        "appearance": "Solid",
+        "score": 0.0472,
+        "model": "collaborative_filtering"
+      },
+      {
+        "article_id": "0664665004",
+        "product_name": "Rio y/d check",
+        "product_type": "Skirt",
+        "product_group": "Garment Lower body",
+        "colour": "Grey",
+        "appearance": "Check",
+        "score": 0.0472,
+        "model": "collaborative_filtering"
+      },
+      {
+        "article_id": "0501820043",
+        "product_name": "SIRPA",
+        "product_type": "Sweater",
+        "product_group": "Garment Upper body",
+        "colour": "Red",
+        "appearance": "Solid",
+        "score": 0.0283,
+        "model": "collaborative_filtering"
+      }
+    ],
+    "validation": {
+      "evaluation_base_used": true,
+      "same_candidate_pool_source": true,
+      "ground_truth_in_candidate_pool": true,
+      "top_5_all_inside_candidate_pool": true,
+      "top_5_contains_training_items": false,
+      "article_id_format_check": "passed"
+    },
+    "invalid_reason": null
+  },
+  "30d1e9b6378a74a740f64c3d34f1686693d0430b03c6cd602d58062e604373d0": {
+    "customer_id": "30d1e9b6378a74a740f64c3d34f1686693d0430b03c6cd602d58062e604373d0",
+    "method": "cf",
+    "candidate_pool_size": 100,
+    "ground_truth_article_id": "0678086002",
+    "hit_result": {
+      "hit_at_5": 0,
+      "hit_label": "Miss",
+      "matched_article_id": null,
+      "matched_rank": null,
+      "explanation": "Ground truth item not found in Top 5"
+    },
+    "hit_at_5": false,
+    "hit_label": "Miss",
+    "explanation": "Ground truth item not found in Top 5",
+    "training_history_count": 49,
+    "training_history_preview": [
+      {
+        "article_id": "0657135002",
+        "product_name": "Ronda sockshaft",
+        "product_type": "Boots",
+        "product_group": "Shoes",
+        "colour": "Red",
+        "appearance": "Solid",
+        "transaction_date": "2018-10-12"
+      },
+      {
+        "article_id": "0657135001",
+        "product_name": "Ronda sockshaft",
+        "product_type": "Boots",
+        "product_group": "Shoes",
+        "colour": "Black",
+        "appearance": "Solid",
+        "transaction_date": "2018-10-12"
+      },
+      {
+        "article_id": "0649671005",
+        "product_name": "DeLuca pull-on jogger",
+        "product_type": "Trousers",
+        "product_group": "Garment Lower body",
+        "colour": "Dark Red",
+        "appearance": "Solid",
+        "transaction_date": "2018-10-12"
+      },
+      {
+        "article_id": "0599502001",
+        "product_name": "Kia Paperbag (1)",
+        "product_type": "Trousers",
+        "product_group": "Garment Lower body",
+        "colour": "Black",
+        "appearance": "Solid",
+        "transaction_date": "2018-10-12"
+      },
+      {
+        "article_id": "0501820025",
+        "product_name": "SIRPA",
+        "product_type": "Sweater",
+        "product_group": "Garment Upper body",
+        "colour": "Yellow",
+        "appearance": "Solid",
+        "transaction_date": "2018-10-12"
+      }
+    ],
+    "top_5_recommendations": [
+      {
+        "article_id": "0667491005",
+        "product_name": "Bloom",
+        "product_type": "Shirt",
+        "product_group": "Garment Upper body",
+        "colour": "Off White",
+        "appearance": "All over pattern",
+        "score": 0.1054,
+        "model": "collaborative_filtering"
+      },
+      {
+        "article_id": "0562245001",
+        "product_name": "Luna skinny RW",
+        "product_type": "Trousers",
+        "product_group": "Garment Lower body",
+        "colour": "Black",
+        "appearance": "Solid",
+        "score": 0.0788,
+        "model": "collaborative_filtering"
+      },
+      {
+        "article_id": "0252298002",
+        "product_name": "Didi denim",
+        "product_type": "Trousers",
+        "product_group": "Garment Lower body",
+        "colour": "Black",
+        "appearance": "Solid",
+        "score": 0.0572,
+        "model": "collaborative_filtering"
+      },
+      {
+        "article_id": "0399136027",
+        "product_name": "Shaping Skinny R.W.",
+        "product_type": "Trousers",
+        "product_group": "Garment Lower body",
+        "colour": "Dark Blue",
+        "appearance": "Denim",
+        "score": 0.0572,
+        "model": "collaborative_filtering"
+      },
+      {
+        "article_id": "0400285006",
+        "product_name": "Straight R.W",
+        "product_type": "Trousers",
+        "product_group": "Garment Lower body",
+        "colour": "Dark Blue",
+        "appearance": "Denim",
+        "score": 0.0572,
+        "model": "collaborative_filtering"
+      }
+    ],
+    "validation": {
+      "evaluation_base_used": true,
+      "same_candidate_pool_source": true,
+      "ground_truth_in_candidate_pool": true,
+      "top_5_all_inside_candidate_pool": true,
+      "top_5_contains_training_items": false,
+      "article_id_format_check": "passed"
+    },
+    "invalid_reason": null
+  },
+  "3493c55a7fe252c84a9a03db338f5be7afbce1edbca12f3a908fac9b983692f2": {
+    "customer_id": "3493c55a7fe252c84a9a03db338f5be7afbce1edbca12f3a908fac9b983692f2",
+    "method": "cf",
+    "candidate_pool_size": 100,
+    "ground_truth_article_id": "0678086001",
+    "hit_result": {
+      "hit_at_5": 0,
+      "hit_label": "Miss",
+      "matched_article_id": null,
+      "matched_rank": null,
+      "explanation": "Ground truth item not found in Top 5"
+    },
+    "hit_at_5": false,
+    "hit_label": "Miss",
+    "explanation": "Ground truth item not found in Top 5",
+    "training_history_count": 49,
+    "training_history_preview": [
+      {
+        "article_id": "0647794002",
+        "product_name": "Rasmus sandal",
+        "product_type": "Sandals",
+        "product_group": "Shoes",
+        "colour": "Black",
+        "appearance": "Solid",
+        "transaction_date": "2018-10-10"
+      },
+      {
+        "article_id": "0637124003",
+        "product_name": "Doris jumpsuit W",
+        "product_type": "Jumpsuit/Playsuit",
+        "product_group": "Garment Full body",
+        "colour": "Black",
+        "appearance": "All over pattern",
+        "transaction_date": "2018-10-10"
+      },
+      {
+        "article_id": "0615972002",
+        "product_name": "Leon Fancy.",
+        "product_type": "Trousers",
+        "product_group": "Garment Lower body",
+        "colour": "Black",
+        "appearance": "Glittering/Metallic",
+        "transaction_date": "2018-10-10"
+      },
+      {
+        "article_id": "0609787011",
+        "product_name": "Aretha tee",
+        "product_type": "Top",
+        "product_group": "Garment Upper body",
+        "colour": "Greenish Khaki",
+        "appearance": "Application/3D",
+        "transaction_date": "2018-10-10"
+      },
+      {
+        "article_id": "0607392002",
+        "product_name": "V5 Tulum blouse",
+        "product_type": "Blouse",
+        "product_group": "Garment Upper body",
+        "colour": "Black",
+        "appearance": "All over pattern",
+        "transaction_date": "2018-10-10"
+      }
+    ],
+    "top_5_recommendations": [
+      {
+        "article_id": "0179123001",
+        "product_name": "Long Leggings",
+        "product_type": "Leggings/Tights",
+        "product_group": "Garment Lower body",
+        "colour": "Black",
+        "appearance": "Solid",
+        "score": 0.0245,
+        "model": "collaborative_filtering"
+      },
+      {
+        "article_id": "0369796026",
+        "product_name": "Cool Metal John Round",
+        "product_type": "Sunglasses",
+        "product_group": "Accessories",
+        "colour": "Dark Purple",
+        "appearance": "Metallic",
+        "score": 0.0245,
+        "model": "collaborative_filtering"
+      },
+      {
+        "article_id": "0233091003",
+        "product_name": "Magic Gloves 2pack",
+        "product_type": "Gloves",
+        "product_group": "Accessories",
+        "colour": "Black",
+        "appearance": "Solid",
+        "score": 0.0,
+        "model": "collaborative_filtering"
+      },
+      {
+        "article_id": "0252298002",
+        "product_name": "Didi denim",
+        "product_type": "Trousers",
+        "product_group": "Garment Lower body",
+        "colour": "Black",
+        "appearance": "Solid",
+        "score": 0.0,
+        "model": "collaborative_filtering"
+      },
+      {
+        "article_id": "0292453003",
+        "product_name": "Flirty Chantal earring",
+        "product_type": "Earring",
+        "product_group": "Accessories",
+        "colour": "Black",
+        "appearance": "Solid",
+        "score": 0.0,
+        "model": "collaborative_filtering"
+      }
+    ],
+    "validation": {
+      "evaluation_base_used": true,
+      "same_candidate_pool_source": true,
+      "ground_truth_in_candidate_pool": true,
+      "top_5_all_inside_candidate_pool": true,
+      "top_5_contains_training_items": false,
+      "article_id_format_check": "passed"
+    },
+    "invalid_reason": null
+  },
+  "4043fdbe22eb397206dabf520d2d88651179724ac19ccf6e69efadfd3da530b6": {
+    "customer_id": "4043fdbe22eb397206dabf520d2d88651179724ac19ccf6e69efadfd3da530b6",
+    "method": "cf",
+    "candidate_pool_size": 100,
+    "ground_truth_article_id": "0658487003",
+    "hit_result": {
+      "hit_at_5": 0,
+      "hit_label": "Miss",
+      "matched_article_id": null,
+      "matched_rank": null,
+      "explanation": "Ground truth item not found in Top 5"
+    },
+    "hit_at_5": false,
+    "hit_label": "Miss",
+    "explanation": "Ground truth item not found in Top 5",
+    "training_history_count": 49,
+    "training_history_preview": [
+      {
+        "article_id": "0608204001",
+        "product_name": "CLEO shirtdress",
+        "product_type": "Dress",
+        "product_group": "Garment Full body",
+        "colour": "Blue",
+        "appearance": "Chambray",
+        "transaction_date": "2018-11-17"
+      },
+      {
+        "article_id": "0547613001",
+        "product_name": "MAGGIE treggings",
+        "product_type": "Trousers",
+        "product_group": "Garment Lower body",
+        "colour": "Light Blue",
+        "appearance": "Denim",
+        "transaction_date": "2018-11-17"
+      },
+      {
+        "article_id": "0635084002",
+        "product_name": "Heart L/S",
+        "product_type": "Top",
+        "product_group": "Garment Upper body",
+        "colour": "Black",
+        "appearance": "Stripe",
+        "transaction_date": "2018-11-16"
+      },
+      {
+        "article_id": "0574109014",
+        "product_name": "Rachel Basic L/S",
+        "product_type": "Sweater",
+        "product_group": "Garment Upper body",
+        "colour": "Black",
+        "appearance": "Stripe",
+        "transaction_date": "2018-11-16"
+      },
+      {
+        "article_id": "0572400012",
+        "product_name": "Taya Hood",
+        "product_type": "Hoodie",
+        "product_group": "Garment Upper body",
+        "colour": "Yellow",
+        "appearance": "Solid",
+        "transaction_date": "2018-11-16"
+      }
+    ],
+    "top_5_recommendations": [
+      {
+        "article_id": "0665329002",
+        "product_name": "W STRADA BLOUSE EQ",
+        "product_type": "Blouse",
+        "product_group": "Garment Upper body",
+        "colour": "White",
+        "appearance": "All over pattern",
+        "score": 0.0741,
+        "model": "collaborative_filtering"
+      },
+      {
+        "article_id": "0399087001",
+        "product_name": "Super Skinny L.W Epic",
+        "product_type": "Trousers",
+        "product_group": "Garment Lower body",
+        "colour": "Black",
+        "appearance": "Solid",
+        "score": 0.0544,
+        "model": "collaborative_filtering"
+      },
+      {
+        "article_id": "0598665003",
+        "product_name": "Bongo ls",
+        "product_type": "T-shirt",
+        "product_group": "Garment Upper body",
+        "colour": "Black",
+        "appearance": "Solid",
+        "score": 0.0529,
+        "model": "collaborative_filtering"
+      },
+      {
+        "article_id": "0637124009",
+        "product_name": "Doris jumpsuit W",
+        "product_type": "Jumpsuit/Playsuit",
+        "product_group": "Garment Full body",
+        "colour": "White",
+        "appearance": "All over pattern",
+        "score": 0.0529,
+        "model": "collaborative_filtering"
+      },
+      {
+        "article_id": "0651244001",
+        "product_name": "ROSIE FRILL ONE SHOULDER",
+        "product_type": "Top",
+        "product_group": "Garment Upper body",
+        "colour": "Black",
+        "appearance": "Solid",
+        "score": 0.0529,
+        "model": "collaborative_filtering"
+      }
+    ],
+    "validation": {
+      "evaluation_base_used": true,
+      "same_candidate_pool_source": true,
+      "ground_truth_in_candidate_pool": true,
+      "top_5_all_inside_candidate_pool": true,
+      "top_5_contains_training_items": false,
+      "article_id_format_check": "passed"
+    },
+    "invalid_reason": null
+  },
+  "4308983955108b3af43ec57f0557211e44462a5633238351fff14c8b51f16093": {
+    "customer_id": "4308983955108b3af43ec57f0557211e44462a5633238351fff14c8b51f16093",
+    "method": "cf",
+    "candidate_pool_size": 100,
+    "ground_truth_article_id": "0691579001",
+    "hit_result": {
+      "hit_at_5": 0,
+      "hit_label": "Miss",
+      "matched_article_id": null,
+      "matched_rank": null,
+      "explanation": "Ground truth item not found in Top 5"
+    },
+    "hit_at_5": false,
+    "hit_label": "Miss",
+    "explanation": "Ground truth item not found in Top 5",
+    "training_history_count": 49,
+    "training_history_preview": [
+      {
+        "article_id": "0633809002",
+        "product_name": "Cavalier top",
+        "product_type": "Top",
+        "product_group": "Garment Upper body",
+        "colour": "Dark Blue",
+        "appearance": "Lace",
+        "transaction_date": "2018-10-11"
+      },
+      {
+        "article_id": "0633809002",
+        "product_name": "Cavalier top",
+        "product_type": "Top",
+        "product_group": "Garment Upper body",
+        "colour": "Dark Blue",
+        "appearance": "Lace",
+        "transaction_date": "2018-10-11"
+      },
+      {
+        "article_id": "0619822002",
+        "product_name": "Ciara wide cropped",
+        "product_type": "Trousers",
+        "product_group": "Garment Lower body",
+        "colour": "Dark Blue",
+        "appearance": "Stripe",
+        "transaction_date": "2018-10-11"
+      },
+      {
+        "article_id": "0619822002",
+        "product_name": "Ciara wide cropped",
+        "product_type": "Trousers",
+        "product_group": "Garment Lower body",
+        "colour": "Dark Blue",
+        "appearance": "Stripe",
+        "transaction_date": "2018-10-11"
+      },
+      {
+        "article_id": "0607427005",
+        "product_name": "Quick Fix",
+        "product_type": "Top",
+        "product_group": "Garment Upper body",
+        "colour": "Off White",
+        "appearance": "Solid",
+        "transaction_date": "2018-10-11"
+      }
+    ],
+    "top_5_recommendations": [
+      {
+        "article_id": "0671132001",
+        "product_name": "Basic Suede Glove M/C",
+        "product_type": "Gloves",
+        "product_group": "Accessories",
+        "colour": "Black",
+        "appearance": "Solid",
+        "score": 0.0295,
+        "model": "collaborative_filtering"
+      },
+      {
+        "article_id": "0551300001",
+        "product_name": "Tiffany hobo",
+        "product_type": "Bag",
+        "product_group": "Accessories",
+        "colour": "Black",
+        "appearance": "Solid",
+        "score": 0.0282,
+        "model": "collaborative_filtering"
+      },
+      {
+        "article_id": "0186264014",
+        "product_name": "10p Terry w.o. Clip",
+        "product_type": "Hair string",
+        "product_group": "Accessories",
+        "colour": "Black",
+        "appearance": "Solid",
+        "score": 0.0,
+        "model": "collaborative_filtering"
+      },
+      {
+        "article_id": "0220365007",
+        "product_name": "Cool Olja round",
+        "product_type": "Sunglasses",
+        "product_group": "Accessories",
+        "colour": "Light Orange",
+        "appearance": "Solid",
+        "score": 0.0,
+        "model": "collaborative_filtering"
+      },
+      {
+        "article_id": "0356289068",
+        "product_name": "JESSY SKIRT",
+        "product_type": "Skirt",
+        "product_group": "Garment Lower body",
+        "colour": "Black",
+        "appearance": "Stripe",
+        "score": 0.0,
+        "model": "collaborative_filtering"
+      }
+    ],
+    "validation": {
+      "evaluation_base_used": true,
+      "same_candidate_pool_source": true,
+      "ground_truth_in_candidate_pool": true,
+      "top_5_all_inside_candidate_pool": true,
+      "top_5_contains_training_items": false,
+      "article_id_format_check": "passed"
+    },
+    "invalid_reason": null
+  },
+  "49beaacac0c7801c2ce2d189efe525fe80b5d37e46ed05b50a4cd88e34d0748f": {
+    "customer_id": "49beaacac0c7801c2ce2d189efe525fe80b5d37e46ed05b50a4cd88e34d0748f",
+    "method": "cf",
+    "candidate_pool_size": 100,
+    "ground_truth_article_id": "0643535001",
+    "hit_result": {
+      "hit_at_5": 0,
+      "hit_label": "Miss",
+      "matched_article_id": null,
+      "matched_rank": null,
+      "explanation": "Ground truth item not found in Top 5"
+    },
+    "hit_at_5": false,
+    "hit_label": "Miss",
+    "explanation": "Ground truth item not found in Top 5",
+    "training_history_count": 49,
+    "training_history_preview": [
+      {
+        "article_id": "0629679006",
+        "product_name": "Julia jumpsuit J",
+        "product_type": "Jumpsuit/Playsuit",
+        "product_group": "Garment Full body",
+        "colour": "Yellow",
+        "appearance": "All over pattern",
+        "transaction_date": "2018-10-19"
+      },
+      {
+        "article_id": "0629679006",
+        "product_name": "Julia jumpsuit J",
+        "product_type": "Jumpsuit/Playsuit",
+        "product_group": "Garment Full body",
+        "colour": "Yellow",
+        "appearance": "All over pattern",
+        "transaction_date": "2018-10-19"
+      },
+      {
+        "article_id": "0574120001",
+        "product_name": "Berta Flower Emb.",
+        "product_type": "Sweater",
+        "product_group": "Garment Upper body",
+        "colour": "White",
+        "appearance": "Jacquard",
+        "transaction_date": "2018-10-19"
+      },
+      {
+        "article_id": "0666448004",
+        "product_name": "Janet sweater",
+        "product_type": "Sweater",
+        "product_group": "Garment Upper body",
+        "colour": "Beige",
+        "appearance": "Melange",
+        "transaction_date": "2018-10-17"
+      },
+      {
+        "article_id": "0627197003",
+        "product_name": "Gaby Blouse",
+        "product_type": "Blouse",
+        "product_group": "Garment Upper body",
+        "colour": "Red",
+        "appearance": "Solid",
+        "transaction_date": "2018-10-17"
+      }
+    ],
+    "top_5_recommendations": [
+      {
+        "article_id": "0623474001",
+        "product_name": "DT AG Saphire",
+        "product_type": "Skirt",
+        "product_group": "Garment Lower body",
+        "colour": "Greenish Khaki",
+        "appearance": "Solid",
+        "score": 0.0292,
+        "model": "collaborative_filtering"
+      },
+      {
+        "article_id": "0685687003",
+        "product_name": "W YODA KNIT OL OFFER",
+        "product_type": "Sweater",
+        "product_group": "Garment Upper body",
+        "colour": "Pink",
+        "appearance": "Melange",
+        "score": 0.0292,
+        "model": "collaborative_filtering"
+      },
+      {
+        "article_id": "0487827014",
+        "product_name": "Skinny H.W",
+        "product_type": "Trousers",
+        "product_group": "Garment Lower body",
+        "colour": "Light Blue",
+        "appearance": "Denim",
+        "score": 0.0288,
+        "model": "collaborative_filtering"
+      },
+      {
+        "article_id": "0633136003",
+        "product_name": "Herbal hood TOP PRODUCT",
+        "product_type": "Hoodie",
+        "product_group": "Garment Upper body",
+        "colour": "Black",
+        "appearance": "Placement print",
+        "score": 0.0279,
+        "model": "collaborative_filtering"
+      },
+      {
+        "article_id": "0496111004",
+        "product_name": "Devon basic sweater",
+        "product_type": "Sweater",
+        "product_group": "Garment Upper body",
+        "colour": "Dark Blue",
+        "appearance": "Solid",
+        "score": 0.0275,
+        "model": "collaborative_filtering"
+      }
+    ],
+    "validation": {
+      "evaluation_base_used": true,
+      "same_candidate_pool_source": true,
+      "ground_truth_in_candidate_pool": true,
+      "top_5_all_inside_candidate_pool": true,
+      "top_5_contains_training_items": false,
+      "article_id_format_check": "passed"
+    },
+    "invalid_reason": null
+  }
+}

@@ -1,0 +1,43 @@
+{
+  "collaborative_filtering": {
+    "hit_at_5": 0.0
+  },
+  "agentic_ai_framework": {
+    "hit_at_5": 0.15
+  },
+  "total_selected_users": 20,
+  "valid_evaluation_users": 20,
+  "invalid_evaluation_users": 0,
+  "evaluated_users": 20,
+  "cf_hit_at_5": 0.0,
+  "agentic_hit_at_5": 0.15,
+  "cf_hits_count": 0,
+  "agentic_hits_count": 3,
+  "evaluated_user_ids": [
+    "03d0011487606c37c1b1ed147fc72f285a50c05f00b9712e0fc3da400c864296",
+    "03fdb0bf2d9ff8ba23e1b4aef53709119aad5bc83691d89293a01a52b93d7370",
+    "06d23b72cac134851a761473b40c881c300814981b6b0a3c4692ddf5a93f2a48",
+    "0bf4c6fd4e9d33f9bfb807bb78348cbf5c565846ff4006acf5c1b9aea77b0e54",
+    "0d4fb6fb46dfe2759bcf7bc80340e8915b207aa2f74b5b3c76f74d3ce28359e8",
+    "1320d4b3dd6481cde05bb80fb7ca37397f70470b9afb96aeca5d41175acaf836",
+    "157eee38676eebb003bf97407f26e369de192997ab3902c194ce2690f060ff50",
+    "15a075c3ea7b76dc31971a496c0d4b1f5f30170355eff7cedd4f4234c8c9402c",
+    "191071b0e1f2e94a557f1a0b4cea3de55faf1581b1f46466ffe90664f73ec96e",
+    "1df07f916d7f648458702bd0b612caee88f1fb4cd1b660fc79ca0c99d27b1293",
+    "1f09f1593c106b2b171e201a79e922f83ddacfdb690a0d8d382c2b7d03d0a5cb",
+    "21dc541f04d2e07c098fe65c6d5de0c585dd9c15a338ca9ab876ebb126acf377",
+    "2351f0fa33dff45f29de0bc0f97067400b6df574652a4dc10fca68512f7ccd66",
+    "26fbbc7fb66c96e4d7984443dffa6779b9ac1e7f9c59c3207a24eacdd74e0891",
+    "2df54f0d0653811fe06479c93905f3e6ecc6d07edf39d8b56e5b66c86182bedf",
+    "30d1e9b6378a74a740f64c3d34f1686693d0430b03c6cd602d58062e604373d0",
+    "3493c55a7fe252c84a9a03db338f5be7afbce1edbca12f3a908fac9b983692f2",
+    "4043fdbe22eb397206dabf520d2d88651179724ac19ccf6e69efadfd3da530b6",
+    "4308983955108b3af43ec57f0557211e44462a5633238351fff14c8b51f16093",
+    "49beaacac0c7801c2ce2d189efe525fe80b5d37e46ed05b50a4cd88e34d0748f"
+  ],
+  "excluded_user_ids_with_reasons": [],
+  "generated_at": "2026-06-04T10:42:43.525657+00:00",
+  "completed_valid_users": 20,
+  "cf_miss_count": 20,
+  "agentic_miss_count": 17
+}
