@@ -119,6 +119,98 @@ class ExperimentService:
             return None
         return json.loads(self.settings.completed_evaluation_users_path.read_text(encoding="utf-8"))
 
+    def load_presentation_users(self) -> list[dict[str, object]]:
+        report_rows = self.load_completed_evaluation_users() or []
+        return [row for row in report_rows if row.get("included_in_metrics") is True]
+
+    def get_presentation_user_ids(self) -> list[str]:
+        return [str(row["customer_id"]) for row in self.load_presentation_users()]
+
+    def _load_saved_method_result(self, path, user_id: str) -> dict[str, object] | None:
+        payload = self._load_saved_method_results(path)
+        result = payload.get(user_id)
+        if result is None:
+            return None
+        return result
+
+    def _normalize_saved_method_result(
+        self,
+        result: dict[str, object] | None,
+    ) -> dict[str, object] | None:
+        if result is None:
+            return None
+        normalized = dict(result)
+        hit_at_5 = normalized.get("hit_at_5")
+        if hit_at_5 is not None:
+            normalized["hit_at_5"] = int(bool(hit_at_5))
+        hit_result = normalized.get("hit_result")
+        if isinstance(hit_result, dict) and hit_result.get("hit_at_5") is not None:
+            normalized["hit_result"] = {
+                **hit_result,
+                "hit_at_5": int(bool(hit_result["hit_at_5"])),
+            }
+        top_5_article_ids = normalized.get("top_5_article_ids")
+        if not isinstance(top_5_article_ids, list):
+            recommendations = normalized.get("top_5_recommendations") or []
+            if isinstance(recommendations, list):
+                normalized["top_5_article_ids"] = [
+                    str(item.get("article_id", ""))
+                    for item in recommendations[: self.settings.top_n]
+                    if isinstance(item, dict)
+                ]
+            else:
+                normalized["top_5_article_ids"] = []
+        if "hit_explanation" not in normalized and "explanation" in normalized:
+            normalized["hit_explanation"] = normalized["explanation"]
+        if "recommendations" not in normalized and "top_5_recommendations" in normalized:
+            normalized["recommendations"] = normalized["top_5_recommendations"]
+        return normalized
+
+    def build_presentation_metrics(self) -> dict[str, object]:
+        presentation_users = self.load_presentation_users()
+        selected_user_ids = [str(row["customer_id"]) for row in presentation_users]
+        cf_results = self._load_saved_method_results(self.settings.cf_output_path)
+        agentic_results = self._load_saved_method_results(self.settings.agentic_output_path)
+        cf_hits = 0
+        agentic_hits = 0
+
+        for user_id in selected_user_ids:
+            cf_hit = self._extract_hit_value(self._normalize_saved_method_result(cf_results.get(user_id)))
+            agentic_hit = self._extract_hit_value(
+                self._normalize_saved_method_result(agentic_results.get(user_id))
+            )
+            cf_hits += int(cf_hit or 0)
+            agentic_hits += int(agentic_hit or 0)
+
+        evaluated_users = len(selected_user_ids)
+        cf_miss_count = max(evaluated_users - cf_hits, 0)
+        agentic_miss_count = max(evaluated_users - agentic_hits, 0)
+        cf_hit_at_5 = round(cf_hits / evaluated_users, 4) if evaluated_users else 0.0
+        agentic_hit_at_5 = round(agentic_hits / evaluated_users, 4) if evaluated_users else 0.0
+        legacy_metrics = self.evaluation_service.load_metrics()
+
+        return {
+            "presentation_mode": True,
+            "user_scope": "10 users from completed_evaluation_users.json where included_in_metrics=true",
+            "legacy_20_user_metrics": legacy_metrics,
+            "collaborative_filtering": {"hit_at_5": cf_hit_at_5},
+            "agentic_ai_framework": {"hit_at_5": agentic_hit_at_5},
+            "total_selected_users": evaluated_users,
+            "valid_evaluation_users": evaluated_users,
+            "invalid_evaluation_users": 0,
+            "evaluated_users": evaluated_users,
+            "completed_valid_users": evaluated_users,
+            "cf_hit_at_5": cf_hit_at_5,
+            "agentic_hit_at_5": agentic_hit_at_5,
+            "cf_hits_count": cf_hits,
+            "agentic_hits_count": agentic_hits,
+            "cf_miss_count": cf_miss_count,
+            "agentic_miss_count": agentic_miss_count,
+            "evaluated_user_ids": selected_user_ids,
+            "excluded_user_ids_with_reasons": [],
+            "generated_at": datetime.now(timezone.utc).isoformat(),
+        }
+
     def build_completed_evaluation_users_report(
         self,
         limit: int | None = None,
@@ -372,6 +464,15 @@ class ExperimentService:
             "completed_comparable_user_count": len(selected_users),
             "completed_comparable_user_ids": selected_users,
             "excluded_users": excluded_users,
+        }
+
+    def get_presentation_users_debug(self) -> dict[str, object]:
+        users = self.load_presentation_users()
+        return {
+            "presentation_user_count": len(users),
+            "source_file": self.settings.completed_evaluation_users_path.name,
+            "filter": "included_in_metrics=true",
+            "users": users,
         }
 
     def get_ground_truth_map(self, test_df) -> dict[str, str]:

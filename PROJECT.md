@@ -4,27 +4,42 @@
 
 This project is a research-style fashion recommendation dashboard built on the H&M Personalized Fashion Recommendations dataset.
 
-The live application compares two recommendation methods on the same held-out next-purchase task:
+The live application compares two recommendation methods on the same leave-one-out next-item task:
 
 - `Collaborative Filtering (CF)` baseline
 - `3-Agent Agentic AI` recommendation pipeline
 
-The goal is to test whether the user's actual next purchased item appears in the model's Top 5 recommendations.
+The current system is built around one canonical evaluation source of truth:
 
-The evaluation setup is:
+- `backend/app/data/processed/evaluation_base_table.json`
 
-- use each eligible user's transaction sequence
-- hold out the last purchase as ground truth
-- use earlier purchases as training history
-- generate Top 5 recommendations
-- measure `Hit@5`
+For the live presentation flow, the app is intentionally locked to one saved evaluation subset:
+
+- `backend/app/data/processed/completed_evaluation_users.json`
+
+Only rows with:
+
+- `included_in_metrics = true`
+
+are exposed in the frontend dropdown and used for the presentation comparison and default metrics view.
+
+That base table defines, per user:
+
+- training history
+- held-out ground-truth next purchase
+- shared candidate pool
+- evaluation validity
+
+Both CF and Agentic AI are expected to rank over that same candidate pool.
+
+The current live presentation subset contains exactly `10` users.
 
 ## Current App Structure
 
 - `backend/`
   - FastAPI API
-  - data preprocessing
-  - leave-one-out split generation
+  - preprocessing and leave-one-out experiment setup
+  - canonical evaluation base table generation
   - CF recommendation logic
   - 3-agent recommendation logic
   - offline evaluation and metrics
@@ -36,10 +51,58 @@ The evaluation setup is:
     - `Comparison`
 - `three-agent-demo/`
   - separate Vite demo project
-  - not used by the live app
-  - currently untracked and standalone
+  - not part of the live app flow
+  - currently independent from the main frontend/backend app
 
-## What The Live App Does
+## Current Evaluation Design
+
+The project uses leave-one-out next-item evaluation.
+
+For each eligible customer:
+
+1. Sort the transaction sequence by `transaction_date`
+2. Use all earlier purchases as training history
+3. Use the final purchase as `ground_truth_article_id`
+4. Build one shared candidate pool
+5. Run both CF and Agentic AI over the same candidate pool
+6. Measure `Hit@5`
+
+The backend writes a canonical evaluation row for each customer into:
+
+- `evaluation_base_table.csv`
+- `evaluation_base_table.json`
+
+Important row fields:
+
+- `customer_id`
+- `train_article_ids`
+- `ground_truth_article_id`
+- `candidate_pool_article_ids`
+- `candidate_pool_size`
+- `ground_truth_in_candidate_pool`
+- `is_valid_for_evaluation`
+- `invalid_reason`
+
+## Normalization Rules
+
+The current implementation treats identifiers consistently:
+
+- `article_id` is normalized to string everywhere
+- leading zeros are preserved
+- `customer_id` is normalized to string everywhere
+
+This normalization is expected across:
+
+- raw transactions
+- processed interactions
+- train/test data
+- evaluation base table
+- candidate pools
+- CF outputs
+- Agentic outputs
+- Hit@5 checks
+
+## What The Backend Does
 
 ### 1. Preprocesses real H&M data
 
@@ -51,14 +114,14 @@ The backend expects these raw CSV files in `backend/app/data/raw/`:
 
 During preprocessing, the backend:
 
-- loads the H&M transactions and article metadata
+- loads transactions and article metadata
 - joins transactions to article metadata by `article_id`
-- normalizes product fields into a simpler recommendation schema
-- adds placeholder image URLs using `article_id`
+- normalizes the product schema
+- generates placeholder image URLs from `article_id`
 - filters sparse users and sparse products
 - samples a manageable working subset
 
-The normalized product fields used by the app are:
+Normalized product fields used by the app:
 
 - `article_id`
 - `product_type`
@@ -70,50 +133,73 @@ The normalized product fields used by the app are:
 - `image_url`
 - `transaction_date`
 
-### 2. Builds a leave-one-out next-item experiment
+### 2. Builds canonical evaluation artifacts
 
-For each eligible user:
+The backend writes processed files into `backend/app/data/processed/`.
 
-- the final purchase is moved to `test`
-- all earlier purchases remain in `train`
-- users with fewer than 2 purchases are excluded from evaluation
+Important files:
 
-This is the basis for both CF and Agentic AI evaluation.
+- `interactions_sample.csv`
+- `train.csv`
+- `test.csv`
+- `evaluation_base_table.csv`
+- `evaluation_base_table.json`
+- `evaluation_validation_report.json`
+- `experiment_summary.json`
+- `cf_recommendations.json`
+- `agentic_recommendations.json`
+- `agentic_trace.json`
+- `metrics.json`
+- `invalid_evaluation_users.json`
+- `completed_evaluation_users.json`
+- `comparable_user_audit.json`
+- `experiment_state.json`
 
-### 3. Runs two recommendation methods
+### 3. Builds one shared candidate pool per user
 
-#### Collaborative Filtering
+The current candidate-pool rules are:
 
-The CF method:
+- always include `ground_truth_article_id` if it exists in catalog
+- exclude training items
+- exclude duplicates
+- exclude items missing from catalog
+- use a fixed seed for reproducibility
+- default target size is controlled by `CANDIDATE_POOL_SIZE`
 
-- uses only interaction behavior from the training history
-- builds a user-item interaction matrix
-- recommends unseen items
-- returns Top 5 recommendations
+Both recommenders should use the same stored `candidate_pool_article_ids` from the evaluation base table.
 
-#### 3-Agent Agentic AI
+## Recommendation Methods
 
-The agentic method runs three stages in order:
+### Collaborative Filtering
+
+The CF method currently:
+
+- builds a global user-item interaction matrix from training interactions
+- uses the selected user's `train_article_ids` from the evaluation base table
+- scores only items in the shared candidate pool
+- excludes items already present in training history
+- returns Top 5 from the shared candidate pool
+
+### 3-Agent Agentic AI
+
+The agentic pipeline currently runs:
 
 1. `Preference Agent`
-   - reads the selected user's training history
-   - joins that history with product metadata
-   - estimates weighted product preferences
-   - treats history as soft preference evidence
-   - only creates hard constraints from explicit request text such as `only black` or `only dresses`
+   - reads only the selected user's training history
+   - joins training items to product metadata
+   - infers soft preferences from history
+   - creates hard constraints only from explicit request text
 
 2. `Evidence Agent`
-   - builds a candidate set from the processed catalog
-   - checks products against preference signals
-   - records which fields matched
-   - generates evidence summaries for each candidate
+   - builds candidate evidence only for the shared candidate pool
+   - does not search outside that pool during normal evaluation
 
 3. `Decision Agent`
-   - applies any explicit hard constraints
-   - ranks candidates using a transparent weighted scoring rule
-   - returns the final Top 5 recommendations
+   - ranks only the candidate evidence set
+   - applies explicit hard constraints when present
+   - returns Top 5 from the shared candidate pool
 
-The current scoring weights are:
+Current scoring weights:
 
 - `product_type_name`: `0.30`
 - `product_group_name`: `0.25`
@@ -121,14 +207,47 @@ The current scoring weights are:
 - `graphical_appearance_name`: `0.15`
 - `product_description` keyword similarity: `0.10`
 
-### 4. Evaluates both methods with Hit@5
+## Shared Hit@5 Logic
 
-After recommendations are generated, the backend checks whether the held-out next purchase appears in each Top 5 list.
+Both methods use one shared hit function.
 
-This produces:
+The hit result includes:
 
-- per-user `hit_at_5`
-- aggregated offline metrics
+- `hit_at_5`
+- `hit_label`
+- `matched_article_id`
+- `matched_rank`
+- `explanation`
+
+This is intended to answer whether a miss is:
+
+- a real ranking miss
+- or an invalid evaluation setup
+
+In the UI, a displayed `Miss` means:
+
+- the method returned a valid Top 5 list
+- but the held-out ground-truth item was not found in that Top 5
+
+It does **not** mean the recommender failed to run.
+
+## Validation Behavior
+
+Each method response can include a validation block proving:
+
+- the evaluation base row was used
+- the candidate pool came from the same source
+- the ground truth is in the candidate pool
+- Top 5 items stay inside the candidate pool
+- Top 5 items do not leak from training history
+- article ID formatting checks passed
+
+If a user row is invalid for evaluation:
+
+- recommendations should not be generated honestly for that user
+- the response should return `invalid_reason`
+
+Invalid users are excluded from aggregate offline metrics.
 
 ## Frontend Pages
 
@@ -144,18 +263,19 @@ Purpose:
 
 - run the 3-agent workflow for a selected user
 - optionally provide a current request
-- inspect the full agent trace
+- inspect the preference profile, candidate evidence, and final Top 5
 
 What it shows:
 
 - selected user
 - optional request input
-- training history count and preview
+- training history summary
 - ground-truth next purchase
 - Preference Agent output
-- Evidence Agent candidate set
-- Decision Agent final recommendations
-- Agentic `Hit@5`
+- Evidence Agent output
+- Decision Agent Top 5
+- agentic hit result
+- evaluation debug panel
 
 ### CF
 
@@ -165,15 +285,16 @@ Route:
 
 Purpose:
 
-- inspect the collaborative filtering baseline for the same evaluation task
+- inspect the CF baseline for the same evaluation task
 
 What it shows:
 
 - selected user
 - training history summary
 - ground-truth next purchase
-- Top 5 CF recommendations
-- CF `Hit@5`
+- CF Top 5
+- CF hit result
+- evaluation debug panel
 
 ### Comparison
 
@@ -183,17 +304,44 @@ Route:
 
 Purpose:
 
-- compare the two methods side by side on the same user
+- compare CF and Agentic AI side by side on the same evaluation base row
 
 What it shows:
 
-- selected user
+- presentation subset note for the locked 10 users
+- aggregate Hit@5 summary for the presentation subset
+- evaluation base row
 - ground-truth next purchase
-- training history preview
 - CF Top 5
 - Agentic AI Top 5
-- CF `Hit@5`
-- Agentic `Hit@5`
+- both hit results
+- method run status and Top 5 generation status
+- consistency warnings when:
+  - candidate pool sizes differ
+  - a recommender returns an item outside the candidate pool
+  - a recommender returns a training item
+  - ground truth is missing from the candidate pool
+
+Current wording on this page distinguishes:
+
+- `Hit`
+- `Valid Miss`
+- `Not Available`
+
+so a valid ranking miss is not confused with a failed run.
+
+## Frontend Persistence
+
+The frontend persists navigation context in local storage.
+
+Current persisted state:
+
+- selected user ID
+- latest agentic result
+- latest CF result
+- latest comparison result
+
+This is why moving between pages can preserve the last loaded result instead of resetting immediately.
 
 ## Main Backend Endpoints
 
@@ -206,24 +354,31 @@ Simple health check.
 ### Experiment
 
 - `POST /experiment/run`
-  - preprocesses the data
-  - creates the leave-one-out split
-  - generates CF outputs
-  - generates Agentic outputs
-  - writes evaluation metrics
+  - preprocesses data
+  - builds or refreshes the evaluation base table
+  - evaluates only valid users
+  - runs CF over the base table
+  - runs Agentic AI over the base table
+  - writes recommendation outputs and metrics
 
 - `GET /experiment/setup`
   - returns dataset summary
   - returns experiment description
-  - returns the curated user IDs exposed in the UI
+  - returns the locked presentation user IDs exposed in the UI
+  - current response includes:
+    - `presentation_mode`
+    - `user_selection_method`
+    - `selected_user_ids`
+    - `valid_evaluation_users`
+    - `presentation_user_count`
 
 ### Recommendations
 
 - `GET /recommendations/cf/{user_id}`
-  - returns CF Top 5
-  - returns training history preview
-  - returns ground-truth next item
-  - returns `hit_at_5`
+  - returns base-table-driven CF result
+  - returns Top 5 from the shared candidate pool
+  - returns hit result
+  - returns validation block
 
 - `POST /recommendations/agentic/run`
   - input:
@@ -232,36 +387,49 @@ Simple health check.
   - returns:
     - preference profile
     - candidate evidence set
-    - final recommendations
-    - process trace
-    - ground-truth next item
-    - `hit_at_5`
+    - Top 5 from the shared candidate pool
+    - hit result
+    - validation block
 
 ### Comparison
 
 - `GET /comparison/{user_id}`
-  - returns both CF and Agentic outputs for the same user
+  - only allows users from the locked presentation subset
+  - returns:
+    - evaluation base row
+    - CF result
+    - Agentic result
+    - both Top 5 lists
+    - both hit results
+    - validation blocks
+  - if the user is outside the locked set, returns:
+    - `error`
+    - `allowed_user_ids`
+
+### Debug
+
+- `GET /debug/evaluation/{user_id}`
+  - returns detailed evaluation trace for that user
+
+- `GET /debug/evaluation-base/{user_id}`
+  - returns the exact canonical evaluation base row for that user
+
+- `GET /debug/presentation-users`
+  - returns the locked presentation subset
+  - source: `completed_evaluation_users.json`
+  - filter: `included_in_metrics=true`
 
 ### Metrics
 
 - `GET /metrics`
-  - returns aggregated offline evaluation metrics
-
-## Data Artifacts Written By The Backend
-
-Processed files are written into `backend/app/data/processed/`.
-
-Important files:
-
-- `interactions_sample.csv`
-- `train.csv`
-- `test.csv`
-- `experiment_summary.json`
-- `cf_recommendations.json`
-- `agentic_recommendations.json`
-- `agentic_trace.json`
-- `metrics.json`
-- `experiment_state.json`
+  - returns presentation metrics for the locked 10-user subset by default
+  - current live values are:
+    - CF: `0 / 10 = 0.00`
+    - 3-Agent: `2 / 10 = 0.20`
+  - also includes:
+    - `presentation_mode`
+    - `user_scope`
+    - `legacy_20_user_metrics`
 
 ## Environment Variables
 
@@ -277,7 +445,11 @@ Backend variables:
 - `MIN_USER_INTERACTIONS`
 - `MIN_PRODUCT_INTERACTIONS`
 - `MAX_EVAL_USERS`
+- `MAX_VALID_EVAL_USERS`
 - `LLM_TIMEOUT_SECONDS`
+- `GROUND_TRUTH_MODE`
+- `EVALUATION_MODE`
+- `EVALUATION_SEED`
 
 Frontend variables:
 
@@ -288,7 +460,7 @@ Local defaults:
 - backend: `http://localhost:8000`
 - frontend: `http://localhost:3000`
 
-## How To Run The Project
+## How To Run
 
 ### Backend
 
@@ -308,12 +480,12 @@ npm.cmd install
 npm.cmd run dev
 ```
 
-### Recommended first run
+### Recommended local run
 
-1. Place the raw H&M CSV files in `backend/app/data/raw/`
-2. Start the backend
+1. Place raw H&M CSV files in `backend/app/data/raw/`
+2. Start backend
 3. Call `POST /experiment/run`
-4. Start the frontend
+4. Start frontend
 5. Open:
    - `http://localhost:3000/`
    - `http://localhost:3000/cf`
@@ -321,35 +493,19 @@ npm.cmd run dev
 
 ## Current Design Decisions
 
-- The live app uses `real H&M data`, not mock data
-- The UI only exposes a small curated set of users to avoid broken evaluation states in the demo
-- The agentic method uses OpenAI only in the agentic workflow
-- The frontend and backend are separate services
-- The local Vite demo is not part of production flow
-
-## Do We Still Need `three-agent-demo/`?
-
-Not for the live app.
-
-`three-agent-demo/` is not imported by `frontend/` or `backend/`, and nothing in the current application depends on it.
-
-You should keep it only if you still want one of these:
-
-- a standalone mock demo reference
-- a place to copy UI ideas from
-- an isolated prototype that is separate from the real-data app
-
-You can safely remove it if:
-
-- you are fully committed to the current `frontend/` + `backend/` app
-- you no longer need the Vite prototype
-- you want the repository to contain only the real project
-
-Recommended practical choice:
-
-- keep it temporarily if you still compare designs
-- delete or archive it once you are sure the live app has absorbed what you need
+- the live app uses real H&M data, not mock data
+- the evaluation base table is the single source of truth
+- the live frontend is locked to the saved 10-user presentation subset
+- the presentation subset is loaded from `completed_evaluation_users.json`
+- only rows with `included_in_metrics=true` are shown in dropdowns
+- the comparison page reads saved CF and Agentic outputs for that subset
+- default frontend metrics are the 10-user presentation metrics, not the legacy 20-user aggregate
+- invalid users are excluded from aggregate Hit@5 metrics
+- the two recommenders are compared only on the same shared candidate pool
+- recommendation algorithms are kept honest; misses are allowed
+- the frontend and backend are separate services
+- `three-agent-demo/` is not part of the live production flow
 
 ## Important Caveat
 
-The root `README.md` is older than the current implementation and still describes earlier pages and endpoints in places. `PROJECT.md` should be treated as the current working guide for the live 3-page application.
+The root `README.md` may lag behind the implementation. `PROJECT.md` should be treated as the current working guide for the live application.

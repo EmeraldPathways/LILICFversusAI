@@ -45,7 +45,8 @@ def get_setup(
     service: ExperimentService = Depends(get_experiment_service),
 ) -> dict[str, object]:
     summary = DataService(settings).load_summary()
-    curated_user_ids = service.get_completed_comparable_user_ids(limit=settings.max_valid_eval_users)
+    presentation_users = service.load_presentation_users()
+    curated_user_ids = [str(row["customer_id"]) for row in presentation_users]
     if summary:
         summary = {
             **summary,
@@ -56,10 +57,17 @@ def get_setup(
             "completed_comparable_user_ids": curated_user_ids,
             "completed_comparable_user_count": len(curated_user_ids),
             "valid_completed_user_count": len(curated_user_ids),
+            "selected_user_ids": curated_user_ids,
+            "presentation_user_count": len(curated_user_ids),
+            "presentation_mode": True,
+            "user_selection_method": "completed_evaluation_users_included_in_metrics",
             "max_valid_eval_users": settings.max_valid_eval_users,
         }
     sample_size = int(summary["sample_size"]) if summary else settings.sample_size
     return {
+        "presentation_mode": True,
+        "user_selection_method": "completed_evaluation_users_included_in_metrics",
+        "selected_user_ids": curated_user_ids,
         "dataset": settings.dataset_name,
         "sample_size": sample_size,
         "split_method": "Leave-one-out next-item evaluation",
@@ -70,6 +78,8 @@ def get_setup(
         "completed_comparable_user_ids": curated_user_ids,
         "valid_completed_user_count": len(curated_user_ids),
         "completed_comparable_user_count": len(curated_user_ids),
+        "presentation_user_count": len(curated_user_ids),
+        "valid_evaluation_users": presentation_users,
         "max_valid_eval_users": settings.max_valid_eval_users,
         "summary": summary,
     }

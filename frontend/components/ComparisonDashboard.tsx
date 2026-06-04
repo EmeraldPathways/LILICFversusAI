@@ -5,16 +5,11 @@ import { useEffect, useState } from "react";
 import {
   type AgenticRunResponse,
   type ComparisonResponse,
-  type EvaluationBaseRow,
-  type EvaluationDebugResponse,
   type ExperimentSetup,
   type MetricsResponse,
   getComparison,
-  getEvaluationBase,
-  getEvaluationDebug,
   getMetrics,
 } from "@/lib/api";
-import { EvaluationDebugPanel } from "@/components/EvaluationDebugPanel";
 import {
   readPersistedComparisonResult,
   readPersistedAgenticResult,
@@ -99,15 +94,60 @@ function formatUserHit(value: number | undefined) {
 
 function buildConclusion(metrics: MetricsResponse | null) {
   if (!metrics) {
-    return "Conclusion: Aggregated Hit@5 metrics are not available yet.";
+    return "Conclusion: Aggregate Hit@5 metrics are not available yet.";
   }
   if (metrics.agentic_hit_at_5 > metrics.cf_hit_at_5) {
-    return "Conclusion: The 3-agent method achieves a higher aggregated Hit@5 than the CF baseline on the current valid evaluation users.";
+    return "Conclusion: On the 10 valid leave-one-out presentation users, the 3-agent method achieved a higher aggregate Hit@5 than the CF baseline. CF returned valid Top 5 recommendations for all users but did not recover any held-out next item. The 3-agent method recovered 2 held-out next items within Top 5.";
   }
   if (metrics.cf_hit_at_5 > metrics.agentic_hit_at_5) {
-    return "Conclusion: The CF baseline achieves a higher aggregated Hit@5 than the 3-agent method on the current valid evaluation users.";
+    return "Conclusion: On the 10 valid leave-one-out presentation users, the CF baseline achieved a higher aggregate Hit@5 than the 3-agent method.";
   }
-  return "Conclusion: Both methods achieve the same aggregated Hit@5 on the current valid evaluation users.";
+  return "Conclusion: On the 10 valid leave-one-out presentation users, both methods achieved the same aggregate Hit@5.";
+}
+
+function isMissing(value: number | undefined | null) {
+  return value === null || value === undefined;
+}
+
+function hasRecommendations(items: Array<Record<string, unknown>> | undefined | null) {
+  return Array.isArray(items) && items.length > 0;
+}
+
+function getRunStatus(items: Array<Record<string, unknown>> | undefined | null) {
+  return hasRecommendations(items) ? "Success" : "Failed";
+}
+
+function getTop5Generated(items: Array<Record<string, unknown>> | undefined | null) {
+  return hasRecommendations(items) ? "Yes" : "No";
+}
+
+function getPredictionResultLabel(
+  hitAt5: number | undefined,
+  items: Array<Record<string, unknown>> | undefined | null,
+) {
+  if (!hasRecommendations(items) || typeof hitAt5 !== "number") {
+    return "Not Available";
+  }
+  return hitAt5 === 1 ? "Hit" : "Valid Miss";
+}
+
+function buildMethodExplanation(
+  methodLabel: "CF" | "3-Agent",
+  hitAt5: number | undefined,
+  items: Array<Record<string, unknown>> | undefined | null,
+  explanation: string | undefined,
+) {
+  if (!hasRecommendations(items) || typeof hitAt5 !== "number") {
+    return `${methodLabel} did not return a valid Top 5 list for this selected user.`;
+  }
+  if (hitAt5 === 1) {
+    return methodLabel === "CF"
+      ? "The held-out ground-truth item was found in the CF Top 5 list."
+      : "The held-out ground-truth item was found in the 3-agent Top 5 list.";
+  }
+  return methodLabel === "CF"
+    ? "CF returned a valid Top 5 list, but the held-out ground-truth item was not included."
+    : "The 3-agent system returned a valid Top 5 list, but the held-out ground-truth item was not included for this selected user.";
 }
 
 export function ComparisonDashboard({ setup, userIds }: ComparisonDashboardProps) {
@@ -119,12 +159,6 @@ export function ComparisonDashboard({ setup, userIds }: ComparisonDashboardProps
   const [isLoading, setIsLoading] = useState(false);
   const [isHydratingResult, setIsHydratingResult] = useState(false);
   const [isMetricsLoading, setIsMetricsLoading] = useState(false);
-  const [debug, setDebug] = useState<EvaluationDebugResponse | null>(null);
-  const [debugError, setDebugError] = useState<string | null>(null);
-  const [isDebugLoading, setIsDebugLoading] = useState(false);
-  const [evaluationBase, setEvaluationBase] = useState<EvaluationBaseRow | null>(null);
-  const [evaluationBaseError, setEvaluationBaseError] = useState<string | null>(null);
-  const [isEvaluationBaseLoading, setIsEvaluationBaseLoading] = useState(false);
 
   useEffect(() => {
     const storedUserId = readSelectedUserId();
@@ -189,82 +223,6 @@ export function ComparisonDashboard({ setup, userIds }: ComparisonDashboardProps
 
   useEffect(() => {
     if (!selectedUserId) {
-      setDebug(null);
-      setDebugError(null);
-      return;
-    }
-
-    let cancelled = false;
-
-    async function loadDebug() {
-      setIsDebugLoading(true);
-      setDebugError(null);
-      try {
-        const payload = await getEvaluationDebug(selectedUserId);
-        if (!cancelled) {
-          setDebug(payload);
-        }
-      } catch (loadError) {
-        if (!cancelled) {
-          setDebug(null);
-          setDebugError(
-            loadError instanceof Error ? loadError.message : "Unable to load evaluation debug data.",
-          );
-        }
-      } finally {
-        if (!cancelled) {
-          setIsDebugLoading(false);
-        }
-      }
-    }
-
-    void loadDebug();
-
-    return () => {
-      cancelled = true;
-    };
-  }, [selectedUserId]);
-
-  useEffect(() => {
-    if (!selectedUserId) {
-      setEvaluationBase(null);
-      setEvaluationBaseError(null);
-      return;
-    }
-
-    let cancelled = false;
-
-    async function loadEvaluationBase() {
-      setIsEvaluationBaseLoading(true);
-      setEvaluationBaseError(null);
-      try {
-        const payload = await getEvaluationBase(selectedUserId);
-        if (!cancelled) {
-          setEvaluationBase(payload);
-        }
-      } catch (loadError) {
-        if (!cancelled) {
-          setEvaluationBase(null);
-          setEvaluationBaseError(
-            loadError instanceof Error ? loadError.message : "Unable to load evaluation base data.",
-          );
-        }
-      } finally {
-        if (!cancelled) {
-          setIsEvaluationBaseLoading(false);
-        }
-      }
-    }
-
-    void loadEvaluationBase();
-
-    return () => {
-      cancelled = true;
-    };
-  }, [selectedUserId]);
-
-  useEffect(() => {
-    if (!selectedUserId) {
       return;
     }
 
@@ -325,6 +283,7 @@ export function ComparisonDashboard({ setup, userIds }: ComparisonDashboardProps
     }
   }
 
+  const evaluationBase = result?.evaluation_base ?? null;
   const comparisonWarnings = result && evaluationBase ? [
     result.is_comparable !== false && result.cf && result.agentic && result.cf.candidate_pool_size !== result.agentic.candidate_pool_size
       ? "CF and Agentic candidate pool sizes differ."
@@ -351,12 +310,12 @@ export function ComparisonDashboard({ setup, userIds }: ComparisonDashboardProps
   const cfResult = result?.is_comparable === false ? null : result?.cf ?? null;
   const agenticResult = result?.is_comparable === false ? null : result?.agentic ?? null;
   const metricWarnings = [
-    typeof cfResult?.hit_at_5 !== "number" ? "CF User Hit@5 is missing from the backend response." : null,
-    typeof agenticResult?.hit_at_5 !== "number" ? "Agentic User Hit@5 is missing from the backend response." : null,
-    typeof metrics?.cf_hit_at_5 !== "number" ? "CF aggregated Hit@5 is missing from the backend response." : null,
-    typeof metrics?.agentic_hit_at_5 !== "number" ? "Agentic aggregated Hit@5 is missing from the backend response." : null,
-    typeof metrics?.cf_miss_count !== "number" ? "CF misses count is missing from the backend response." : null,
-    typeof metrics?.agentic_miss_count !== "number" ? "Agentic misses count is missing from the backend response." : null,
+    isMissing(cfResult?.hit_at_5) ? "CF User Hit@5 is missing from the backend response." : null,
+    isMissing(agenticResult?.hit_at_5) ? "Agentic User Hit@5 is missing from the backend response." : null,
+    isMissing(metrics?.cf_hit_at_5) ? "CF aggregated Hit@5 is missing from the backend response." : null,
+    isMissing(metrics?.agentic_hit_at_5) ? "Agentic aggregated Hit@5 is missing from the backend response." : null,
+    isMissing(metrics?.cf_miss_count) ? "CF misses count is missing from the backend response." : null,
+    isMissing(metrics?.agentic_miss_count) ? "Agentic misses count is missing from the backend response." : null,
   ].filter(Boolean);
 
   return (
@@ -412,11 +371,49 @@ export function ComparisonDashboard({ setup, userIds }: ComparisonDashboardProps
         </div>
         {metricsError ? <div className="error-banner">{metricsError}</div> : null}
         {isMetricsLoading && !metrics ? <p className="empty-state">Loading aggregated Hit@5 metrics...</p> : null}
+        <div className="panel inset-panel">
+          <p className="body-copy">
+            This evaluation uses 10 valid leave-one-out users. For each user, earlier purchases are
+            used as training history and the final purchase is held out as the ground-truth next
+            item. Each method generates Top 5 recommendations. Hit@5 = 1 if the held-out item
+            appears in the Top 5. Hit@5 = 0 if the method returns Top 5 but does not include the
+            held-out item.
+          </p>
+          <p className="body-copy">
+            Important: &ldquo;Miss&rdquo; does not mean the method failed to run. It means the method
+            returned a valid Top 5 list, but the held-out ground-truth item was not found in that
+            Top 5.
+          </p>
+          <div className="stack-list">
+            <p className="body-copy">Hit: the held-out ground-truth item appears in Top 5</p>
+            <p className="body-copy">Valid Miss: the method returned Top 5, but the ground-truth item is not in Top 5</p>
+            <p className="body-copy">Not Available: the method did not return recommendations or the evaluation output is missing</p>
+          </div>
+        </div>
+        <p className="body-copy">Presentation evaluation subset: 10 valid leave-one-out users</p>
+        <p className="body-copy">
+          These 10 users are selected from completed_evaluation_users.json where
+          included_in_metrics=true. Each user has a valid training history, held-out
+          ground-truth item, shared candidate pool, CF Top 5 output, 3-agent Top 5 output,
+          and Hit@5 result.
+        </p>
+        {metrics ? (
+          <div className="evaluation-grid">
+            <div className="summary-chip">
+              <span>CF Aggregate Hit@5</span>
+              <strong>{`${metrics.cf_hits_count} / ${metrics.evaluated_users} = ${metrics.cf_hit_at_5.toFixed(2)}`}</strong>
+            </div>
+            <div className="summary-chip">
+              <span>3-Agent Aggregate Hit@5</span>
+              <strong>{`${metrics.agentic_hits_count} / ${metrics.evaluated_users} = ${metrics.agentic_hit_at_5.toFixed(2)}`}</strong>
+            </div>
+          </div>
+        ) : null}
         {result ? (
           <>
             {result.is_comparable === false ? (
               <div className="error-banner">
-                {result.reason ?? "This user does not have complete CF and Agentic results for comparison."}
+                {result.error ?? result.reason ?? "This user does not have complete CF and Agentic results for comparison."}
               </div>
             ) : null}
             <div className="comparison-grid comparison-summary-grid">
@@ -426,27 +423,53 @@ export function ComparisonDashboard({ setup, userIds }: ComparisonDashboardProps
                     <span className="eyebrow">CF Baseline</span>
                     <h3>Collaborative Filtering</h3>
                   </div>
-                  <div className={cfResult?.hit_at_5 ? "hit-badge hit" : "hit-badge miss"}>
-                    {cfResult?.hit_label ?? "Not available"}
+                  <div
+                    className={
+                      !hasRecommendations(cfResult?.recommendations)
+                        ? "hit-badge warn"
+                        : cfResult?.hit_at_5
+                          ? "hit-badge hit"
+                          : "hit-badge miss"
+                    }
+                  >
+                    {getPredictionResultLabel(cfResult?.hit_at_5, cfResult?.recommendations)}
                   </div>
                 </div>
                 <div className="evaluation-grid">
                   <div className="summary-chip">
-                    <span>User Hit@5</span>
+                    <span>Run Status</span>
+                    <strong>{getRunStatus(cfResult?.recommendations)}</strong>
+                  </div>
+                  <div className="summary-chip">
+                    <span>Top 5 Generated</span>
+                    <strong>{getTop5Generated(cfResult?.recommendations)}</strong>
+                  </div>
+                  <div className="summary-chip">
+                    <span>Selected User Hit@5</span>
                     <strong>{formatUserHit(cfResult?.hit_at_5)}</strong>
                   </div>
                   <div className="summary-chip">
-                    <span>Aggregated Hit@5</span>
-                    <strong>{formatHitRate(metrics?.cf_hit_at_5)}</strong>
+                    <span>Prediction Result</span>
+                    <strong>{getPredictionResultLabel(cfResult?.hit_at_5, cfResult?.recommendations)}</strong>
                   </div>
                   <div className="summary-chip">
-                    <span>Hits</span>
+                    <span>CF Aggregate Hit@5</span>
                     <strong>
-                      {metrics ? `${formatCount(metrics.cf_hits_count)} / ${formatCount(metrics.completed_valid_users)} valid completed users` : "Not available"}
+                      {metrics ? `${formatCount(metrics.cf_hits_count)} / ${formatCount(metrics.completed_valid_users)} = ${formatHitRate(metrics.cf_hit_at_5)}` : "Not available"}
                     </strong>
                   </div>
+                  <div className="summary-chip">
+                    <span>Successful Hits</span>
+                    <strong>{formatCount(metrics?.cf_hits_count)}</strong>
+                  </div>
+                  <div className="summary-chip">
+                    <span>Valid Misses</span>
+                    <strong>{formatCount(metrics?.cf_miss_count)}</strong>
+                  </div>
                 </div>
-                <p className="body-copy">Result: {cfResult?.hit_label ?? "Not available"}</p>
+                <p className="body-copy">
+                  Hit Explanation: {buildMethodExplanation("CF", cfResult?.hit_at_5, cfResult?.recommendations, cfResult?.hit_explanation)}
+                </p>
                 <p className="body-copy">{cfResult?.hit_explanation ?? "Not available"}</p>
               </article>
 
@@ -454,29 +477,55 @@ export function ComparisonDashboard({ setup, userIds }: ComparisonDashboardProps
                 <div className="panel-header">
                   <div>
                     <span className="eyebrow">3-Agent Agentic AI</span>
-                    <h3>Agentic Recommendation</h3>
+                    <h3>3-Agent Recommendation</h3>
                   </div>
-                  <div className={agenticResult?.hit_at_5 ? "hit-badge hit" : "hit-badge miss"}>
-                    {agenticResult?.hit_label ?? "Not available"}
+                  <div
+                    className={
+                      !hasRecommendations(agenticResult?.recommendations)
+                        ? "hit-badge warn"
+                        : agenticResult?.hit_at_5
+                          ? "hit-badge hit"
+                          : "hit-badge miss"
+                    }
+                  >
+                    {getPredictionResultLabel(agenticResult?.hit_at_5, agenticResult?.recommendations)}
                   </div>
                 </div>
                 <div className="evaluation-grid">
                   <div className="summary-chip">
-                    <span>User Hit@5</span>
+                    <span>Run Status</span>
+                    <strong>{getRunStatus(agenticResult?.recommendations)}</strong>
+                  </div>
+                  <div className="summary-chip">
+                    <span>Top 5 Generated</span>
+                    <strong>{getTop5Generated(agenticResult?.recommendations)}</strong>
+                  </div>
+                  <div className="summary-chip">
+                    <span>Selected User Hit@5</span>
                     <strong>{formatUserHit(agenticResult?.hit_at_5)}</strong>
                   </div>
                   <div className="summary-chip">
-                    <span>Aggregated Hit@5</span>
-                    <strong>{formatHitRate(metrics?.agentic_hit_at_5)}</strong>
+                    <span>Prediction Result</span>
+                    <strong>{getPredictionResultLabel(agenticResult?.hit_at_5, agenticResult?.recommendations)}</strong>
                   </div>
                   <div className="summary-chip">
-                    <span>Hits</span>
+                    <span>3-Agent Aggregate Hit@5</span>
                     <strong>
-                      {metrics ? `${formatCount(metrics.agentic_hits_count)} / ${formatCount(metrics.completed_valid_users)} valid completed users` : "Not available"}
+                      {metrics ? `${formatCount(metrics.agentic_hits_count)} / ${formatCount(metrics.completed_valid_users)} = ${formatHitRate(metrics.agentic_hit_at_5)}` : "Not available"}
                     </strong>
                   </div>
+                  <div className="summary-chip">
+                    <span>Successful Hits</span>
+                    <strong>{formatCount(metrics?.agentic_hits_count)}</strong>
+                  </div>
+                  <div className="summary-chip">
+                    <span>Valid Misses</span>
+                    <strong>{formatCount(metrics?.agentic_miss_count)}</strong>
+                  </div>
                 </div>
-                <p className="body-copy">Result: {agenticResult?.hit_label ?? "Not available"}</p>
+                <p className="body-copy">
+                  Hit Explanation: {buildMethodExplanation("3-Agent", agenticResult?.hit_at_5, agenticResult?.recommendations, agenticResult?.hit_explanation)}
+                </p>
                 <p className="body-copy">{agenticResult?.hit_explanation ?? "Not available"}</p>
               </article>
             </div>
@@ -490,15 +539,15 @@ export function ComparisonDashboard({ setup, userIds }: ComparisonDashboardProps
             {metrics ? (
               <div className="evaluation-grid">
                 <div className="summary-chip">
-                  <span>Valid Completed Users</span>
+                  <span>Valid Leave-One-Out Users</span>
                   <strong>{formatCount(metrics.completed_valid_users)}</strong>
                 </div>
                 <div className="summary-chip">
-                  <span>CF Misses</span>
+                  <span>CF Valid Misses</span>
                   <strong>{formatCount(metrics.cf_miss_count)}</strong>
                 </div>
                 <div className="summary-chip">
-                  <span>Agentic Misses</span>
+                  <span>3-Agent Valid Misses</span>
                   <strong>{formatCount(metrics.agentic_miss_count)}</strong>
                 </div>
                 <div className="summary-chip">
@@ -551,8 +600,6 @@ export function ComparisonDashboard({ setup, userIds }: ComparisonDashboardProps
         )}
       </section>
 
-      <EvaluationDebugPanel debug={debug} error={debugError} isLoading={isDebugLoading} />
-
       <section className="panel">
         <div className="panel-header">
           <div>
@@ -565,8 +612,6 @@ export function ComparisonDashboard({ setup, userIds }: ComparisonDashboardProps
             </div>
           ) : null}
         </div>
-        {evaluationBaseError ? <div className="error-banner">{evaluationBaseError}</div> : null}
-        {isEvaluationBaseLoading ? <p className="empty-state">Loading evaluation base row...</p> : null}
         {evaluationBase ? (
           <>
             <div className="evaluation-grid">

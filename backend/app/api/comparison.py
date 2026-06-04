@@ -14,29 +14,53 @@ def get_comparison(
     user_id: str,
     service: ExperimentService = Depends(get_experiment_service),
 ) -> dict[str, object]:
-    completed_rows = service.load_completed_evaluation_users() or service.build_completed_evaluation_users_report()
-    completed_row = next((row for row in completed_rows if row["customer_id"] == user_id), None)
-    if completed_row is not None and not completed_row["included_in_metrics"]:
+    allowed_user_ids = service.get_presentation_user_ids()
+    if user_id not in allowed_user_ids:
         return {
             "customer_id": user_id,
             "user_id": user_id,
             "is_comparable": False,
-            "reason": completed_row["excluded_reason"] or "This user is not part of the completed evaluation set.",
+            "reason": "This user is not part of the locked 10-user presentation set.",
+            "error": "This user is not part of the locked 10-user presentation set.",
+            "allowed_user_ids": allowed_user_ids,
         }
 
-    train_df = service.data_service.load_train()
     evaluation_base = service.get_evaluation_base_row(user_id)
-    cf_result = service.build_cf_result(user_id)
-    agentic_result = service.build_agentic_result(user_id)
+    cf_result = service._normalize_saved_method_result(
+        service._load_saved_method_result(service.settings.cf_output_path, user_id)
+    )
+    agentic_result = service._normalize_saved_method_result(
+        service._load_saved_method_result(service.settings.agentic_output_path, user_id)
+    )
+    if cf_result is None:
+        return {
+            "customer_id": user_id,
+            "user_id": user_id,
+            "is_comparable": False,
+            "reason": "CF result is missing for this user",
+            "error": "CF result is missing for this user",
+            "allowed_user_ids": allowed_user_ids,
+        }
+    if agentic_result is None:
+        return {
+            "customer_id": user_id,
+            "user_id": user_id,
+            "is_comparable": False,
+            "reason": "Agentic result is missing for this user",
+            "error": "Agentic result is missing for this user",
+            "allowed_user_ids": allowed_user_ids,
+        }
 
     return {
         "customer_id": user_id,
         "user_id": user_id,
         "is_comparable": True,
         "reason": None,
+        "error": None,
+        "allowed_user_ids": allowed_user_ids,
         "ground_truth_article_id": evaluation_base["ground_truth_article_id"],
-        "training_history_count": int((train_df["customer_id"] == user_id).sum()),
-        "training_history_preview": service.get_training_history_preview(user_id, train_df),
+        "training_history_count": int(evaluation_base["train_count"]),
+        "training_history_preview": [],
         "evaluation_base": evaluation_base,
         "cf": {
             "customer_id": cf_result["customer_id"],

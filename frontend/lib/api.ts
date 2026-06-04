@@ -22,13 +22,37 @@ export type ExperimentSummary = {
   evaluated_user_ids?: string[];
   evaluated_users?: number;
   available_user_ids?: string[];
+  selected_user_ids?: string[];
   completed_comparable_user_ids?: string[];
   completed_comparable_user_count?: number;
   valid_completed_user_count?: number;
+  presentation_mode?: boolean;
+  user_selection_method?: string;
+  presentation_user_count?: number;
   max_valid_eval_users?: number;
 };
 
+export type CompletedEvaluationUserRow = {
+  customer_id: string;
+  base_valid: boolean;
+  cf_result_exists: boolean;
+  agentic_result_exists: boolean;
+  cf_hit_at_5?: number | null;
+  agentic_hit_at_5?: number | null;
+  cf_top_5_count: number;
+  agentic_top_5_count: number;
+  candidate_pool_size: number;
+  ground_truth_in_candidate_pool: boolean;
+  candidate_pool_valid?: boolean | null;
+  included_in_metrics: boolean;
+  included_in_comparable_users?: boolean | null;
+  excluded_reason: string;
+};
+
 export type ExperimentSetup = {
+  presentation_mode: boolean;
+  user_selection_method?: string | null;
+  selected_user_ids: string[];
   dataset: string;
   sample_size: number;
   split_method: string;
@@ -39,6 +63,8 @@ export type ExperimentSetup = {
   completed_comparable_user_ids: string[];
   completed_comparable_user_count: number;
   valid_completed_user_count: number;
+  presentation_user_count: number;
+  valid_evaluation_users: CompletedEvaluationUserRow[];
   max_valid_eval_users: number;
   summary: ExperimentSummary | null;
 };
@@ -195,6 +221,8 @@ export type ComparisonResponse = {
   user_id: string;
   is_comparable: boolean;
   reason?: string | null;
+  error?: string | null;
+  allowed_user_ids?: string[];
   ground_truth_article_id?: string | null;
   training_history_count: number;
   training_history_preview: TrainingHistoryItem[];
@@ -209,6 +237,9 @@ export type ExcludedUserReason = {
 };
 
 export type MetricsResponse = {
+  presentation_mode: boolean;
+  user_scope?: string | null;
+  legacy_20_user_metrics?: Record<string, unknown> | null;
   collaborative_filtering: {
     hit_at_5: number;
   };
@@ -340,4 +371,15 @@ export async function getEvaluationDebug(userId: string): Promise<EvaluationDebu
 
 export async function getEvaluationBase(userId: string): Promise<EvaluationBaseRow> {
   return apiFetch<EvaluationBaseRow>(`/debug/evaluation-base/${userId}`);
+}
+
+export type PresentationUsersDebugResponse = {
+  presentation_user_count: number;
+  source_file: string;
+  filter: string;
+  users: CompletedEvaluationUserRow[];
+};
+
+export async function getPresentationUsersDebug(): Promise<PresentationUsersDebugResponse> {
+  return apiFetch<PresentationUsersDebugResponse>("/debug/presentation-users");
 }

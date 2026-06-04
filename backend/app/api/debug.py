@@ -36,3 +36,10 @@ def get_comparable_users_debug(
     service: ExperimentService = Depends(get_experiment_service),
 ) -> dict[str, object]:
     return service.get_completed_evaluation_users_debug()
+
+
+@router.get("/presentation-users")
+def get_presentation_users_debug(
+    service: ExperimentService = Depends(get_experiment_service),
+) -> dict[str, object]:
+    return service.get_presentation_users_debug()

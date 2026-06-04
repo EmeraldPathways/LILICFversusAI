@@ -14,18 +14,24 @@ def test_setup_endpoint(client, isolated_env, sample_interactions: pd.DataFrame)
 
     assert response.status_code == 200
     payload = response.json()
+    assert payload["presentation_mode"] is True
+    assert payload["user_selection_method"] == "completed_evaluation_users_included_in_metrics"
+    assert payload["selected_user_ids"] == ["u1"]
     assert payload["split_method"] == "Leave-one-out next-item evaluation"
     assert payload["evaluation_metrics"] == ["Hit@5"]
     assert payload["completed_comparable_user_ids"] == ["u1"]
     assert payload["completed_comparable_user_count"] == 1
     assert payload["available_user_ids"] == ["u1"]
     assert payload["valid_completed_user_count"] == 1
+    assert payload["presentation_user_count"] == 1
+    assert payload["valid_evaluation_users"][0]["customer_id"] == "u1"
     assert payload["max_valid_eval_users"] == 10
     assert payload["summary"]["sample_user_ids"] == ["u1"]
     assert payload["summary"]["evaluated_user_ids"] == ["u1"]
 
 
-def test_metrics_endpoint(client, isolated_env):
+def test_metrics_endpoint(client, isolated_env, sample_interactions: pd.DataFrame):
+    write_processed_artifacts(isolated_env, sample_interactions)
     isolated_env.metrics_path.write_text(
         json.dumps(
             {
@@ -57,12 +63,15 @@ def test_metrics_endpoint(client, isolated_env):
 
     assert response.status_code == 200
     payload = response.json()
-    assert payload["agentic_ai_framework"]["hit_at_5"] == 0.2
-    assert payload["total_selected_users"] == 3
-    assert payload["invalid_evaluation_users"] == 2
+    assert payload["presentation_mode"] is True
+    assert payload["user_scope"] == "10 users from completed_evaluation_users.json where included_in_metrics=true"
+    assert payload["agentic_ai_framework"]["hit_at_5"] == 0.0
+    assert payload["total_selected_users"] == 1
+    assert payload["invalid_evaluation_users"] == 0
     assert payload["completed_valid_users"] == 1
     assert payload["cf_miss_count"] == 0
-    assert payload["agentic_miss_count"] == 0
+    assert payload["agentic_miss_count"] == 1
+    assert payload["legacy_20_user_metrics"]["agentic_ai_framework"]["hit_at_5"] == 0.2
 
 
 def test_cf_recommendation_endpoint_returns_ground_truth_and_hit_at_5(client, isolated_env, sample_interactions: pd.DataFrame):
@@ -122,15 +131,16 @@ def test_comparison_endpoint_returns_both_model_outputs(client, isolated_env, sa
     assert payload["ground_truth_article_id"] == "a4"
     assert payload["evaluation_base"]["customer_id"] == "u1"
     assert payload["evaluation_base"]["ground_truth_in_candidate_pool"] is True
+    assert payload["allowed_user_ids"] == ["u1"]
     assert "cf" in payload
     assert "agentic" in payload
     assert payload["cf"]["hit_at_5"] == 1
     assert payload["cf"]["hit_label"] == "Hit"
     assert payload["cf"]["hit_explanation"] == "Ground truth item found at rank 1"
     assert payload["cf"]["top_5_article_ids"][0] == "a4"
-    assert isinstance(payload["agentic"]["hit_at_5"], int)
-    assert payload["agentic"]["hit_label"] in {"Hit", "Miss"}
-    assert isinstance(payload["agentic"]["hit_explanation"], str)
+    assert payload["agentic"]["hit_at_5"] == 0
+    assert payload["agentic"]["hit_label"] == "Miss"
+    assert payload["agentic"]["hit_explanation"] == "Ground truth item not found in Top 5"
     assert payload["cf"]["validation"]["same_candidate_pool_source"] is True
     assert payload["agentic"]["validation"]["same_candidate_pool_source"] is True
 
@@ -164,7 +174,9 @@ def test_comparison_endpoint_returns_non_comparable_payload_for_excluded_user(
     payload = response.json()
     assert payload["customer_id"] == "u2"
     assert payload["is_comparable"] is False
-    assert payload["reason"] == "CF result is missing for this user"
+    assert payload["reason"] == "This user is not part of the locked 10-user presentation set."
+    assert payload["error"] == "This user is not part of the locked 10-user presentation set."
+    assert payload["allowed_user_ids"] == ["u1"]
 
 
 def test_completed_evaluation_users_debug_endpoint_returns_counts(
@@ -184,6 +196,23 @@ def test_completed_evaluation_users_debug_endpoint_returns_counts(
     assert payload["excluded_users"] == [
         {"customer_id": "u2", "excluded_reason": "CF result is missing for this user"}
     ]
+
+
+def test_presentation_users_debug_endpoint_returns_locked_subset(
+    client,
+    isolated_env,
+    sample_interactions: pd.DataFrame,
+):
+    write_processed_artifacts(isolated_env, sample_interactions)
+
+    response = client.get("/debug/presentation-users")
+
+    assert response.status_code == 200
+    payload = response.json()
+    assert payload["presentation_user_count"] == 1
+    assert payload["source_file"] == "completed_evaluation_users.json"
+    assert payload["filter"] == "included_in_metrics=true"
+    assert payload["users"][0]["customer_id"] == "u1"
 
 
 def test_debug_evaluation_endpoint_returns_full_trace(client, isolated_env, sample_interactions: pd.DataFrame):

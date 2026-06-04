@@ -109,18 +109,47 @@ def write_processed_artifacts(settings, interactions: pd.DataFrame) -> None:
     settings.cf_output_path.write_text(
         json.dumps(
             {
-                "u1": [
-                    {
-                        "article_id": "a4",
-                        "product_name": "Oxford Shirt",
-                        "product_type": "Shirt",
-                        "product_group": "Garment Upper body",
-                        "colour": "Blue",
-                        "appearance": "Solid",
-                        "score": 0.81,
-                        "model": "collaborative_filtering",
-                    }
-                ]
+                "u1": {
+                    "customer_id": "u1",
+                    "method": "cf",
+                    "candidate_pool_size": 6,
+                    "ground_truth_article_id": "a4",
+                    "hit_result": {
+                        "hit_at_5": 1,
+                        "hit_label": "Hit",
+                        "matched_article_id": "a4",
+                        "matched_rank": 1,
+                        "explanation": "Ground truth item found at rank 1",
+                    },
+                    "hit_at_5": 1,
+                    "hit_label": "Hit",
+                    "explanation": "Ground truth item found at rank 1",
+                    "hit_explanation": "Ground truth item found at rank 1",
+                    "training_history_count": 3,
+                    "training_history_preview": [],
+                    "top_5_article_ids": ["a4"],
+                    "top_5_recommendations": [
+                        {
+                            "article_id": "a4",
+                            "product_name": "Oxford Shirt",
+                            "product_type": "Shirt",
+                            "product_group": "Garment Upper body",
+                            "colour": "Blue",
+                            "appearance": "Solid",
+                            "score": 0.81,
+                            "model": "collaborative_filtering",
+                        }
+                    ],
+                    "validation": {
+                        "evaluation_base_used": True,
+                        "same_candidate_pool_source": True,
+                        "ground_truth_in_candidate_pool": True,
+                        "top_5_all_inside_candidate_pool": True,
+                        "top_5_contains_training_items": False,
+                        "article_id_format_check": "passed",
+                    },
+                    "invalid_reason": None,
+                }
             }
         ),
         encoding="utf-8",
@@ -128,24 +157,64 @@ def write_processed_artifacts(settings, interactions: pd.DataFrame) -> None:
     settings.agentic_output_path.write_text(
         json.dumps(
             {
-                "u1": [
-                    {
-                        "article_id": "a5",
-                        "product_name": "Jersey Top",
-                        "product_type": "Top",
-                        "product_group": "Garment Upper body",
-                        "colour": "White",
-                        "appearance": "Patterned",
-                        "score": 0.91,
-                        "model": "agentic_ai_framework",
-                        "reason": "Recommended because it aligns with the user's preference for upper-body garments and light colours.",
-                        "intent_match": 0.9,
-                        "preference_alignment": 0.8,
-                        "product_relevance": 0.7,
-                        "diversity": 0.6,
-                        "behavioural_signal": 0.5,
-                    }
-                ]
+                "u1": {
+                    "customer_id": "u1",
+                    "method": "agentic",
+                    "candidate_pool_size": 6,
+                    "user_request": "",
+                    "ground_truth_article_id": "a4",
+                    "hit_result": {
+                        "hit_at_5": 0,
+                        "hit_label": "Miss",
+                        "matched_article_id": None,
+                        "matched_rank": None,
+                        "explanation": "Ground truth item not found in Top 5",
+                    },
+                    "hit_at_5": 0,
+                    "hit_label": "Miss",
+                    "explanation": "Ground truth item not found in Top 5",
+                    "hit_explanation": "Ground truth item not found in Top 5",
+                    "training_history_count": 3,
+                    "training_history_preview": [],
+                    "preference_profile": {
+                        "user_id": "u1",
+                        "preferred_product_type_name_values": [],
+                        "preferred_product_group_name_values": [],
+                        "preferred_colour_group_name_values": [],
+                        "preferred_graphical_appearance_name_values": [],
+                        "soft_preferences": [],
+                        "hard_constraints": {},
+                        "preference_summary": "",
+                    },
+                    "candidate_evidence_set": [],
+                    "top_5_article_ids": ["a5"],
+                    "top_5_recommendations": [
+                        {
+                            "rank": 1,
+                            "article_id": "a5",
+                            "match_score": 0.91,
+                            "recommendation_reason": "Recommended because it aligns with the user's preference for upper-body garments and light colours.",
+                            "matched_evidence": [],
+                            "constraint_status": "satisfied",
+                            "product_type_name": "Top",
+                            "product_group_name": "Garment Upper body",
+                            "graphical_appearance_name": "Patterned",
+                            "colour_group_name": "White",
+                            "product_description": "Jersey Top",
+                            "image_url": "img",
+                        }
+                    ],
+                    "process_trace": [],
+                    "validation": {
+                        "evaluation_base_used": True,
+                        "same_candidate_pool_source": True,
+                        "ground_truth_in_candidate_pool": True,
+                        "top_5_all_inside_candidate_pool": True,
+                        "top_5_contains_training_items": False,
+                        "article_id_format_check": "passed",
+                    },
+                    "invalid_reason": None,
+                }
             }
         ),
         encoding="utf-8",

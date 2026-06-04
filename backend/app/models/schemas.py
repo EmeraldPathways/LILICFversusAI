@@ -124,6 +124,23 @@ class EvaluationBaseRowResponse(BaseModel):
     invalid_reason: str
 
 
+class CompletedEvaluationUserRow(BaseModel):
+    customer_id: str
+    base_valid: bool
+    cf_result_exists: bool
+    agentic_result_exists: bool
+    cf_hit_at_5: int | None = None
+    agentic_hit_at_5: int | None = None
+    cf_top_5_count: int
+    agentic_top_5_count: int
+    candidate_pool_size: int
+    ground_truth_in_candidate_pool: bool
+    candidate_pool_valid: bool | None = None
+    included_in_metrics: bool
+    included_in_comparable_users: bool | None = None
+    excluded_reason: str
+
+
 class CFRecommendationResponse(BaseModel):
     customer_id: str
     method: str
@@ -186,6 +203,8 @@ class ComparisonResponse(BaseModel):
     user_id: str
     is_comparable: bool = True
     reason: str | None = None
+    error: str | None = None
+    allowed_user_ids: list[str] = []
     ground_truth_article_id: str | None = None
     training_history_count: int = 0
     training_history_preview: list[TrainingHistoryItem] = []
@@ -204,6 +223,9 @@ class ExcludedUserReason(BaseModel):
 
 
 class MetricsResponse(BaseModel):
+    presentation_mode: bool = False
+    user_scope: str | None = None
+    legacy_20_user_metrics: dict[str, object] | None = None
     collaborative_filtering: ModelMetric
     agentic_ai_framework: ModelMetric
     total_selected_users: int
@@ -234,6 +256,9 @@ class RunExperimentResponse(BaseModel):
 
 
 class ExperimentSetupResponse(BaseModel):
+    presentation_mode: bool = False
+    user_selection_method: str | None = None
+    selected_user_ids: list[str] = []
     dataset: str
     sample_size: int
     split_method: str
@@ -245,6 +270,8 @@ class ExperimentSetupResponse(BaseModel):
     valid_completed_user_count: int
     completed_comparable_user_count: int
     max_valid_eval_users: int
+    presentation_user_count: int = 0
+    valid_evaluation_users: list[CompletedEvaluationUserRow] = []
     summary: dict[str, object] | None = None
 
 
