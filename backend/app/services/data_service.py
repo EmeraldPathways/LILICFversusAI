@@ -418,7 +418,7 @@ class DataService:
         selected_indices = sorted(rng.sample(range(len(valid_rows)), sample_size))
         return [valid_rows[index] for index in selected_indices]
 
-    def build_svd_top10_debug_subset(
+    def build_svd_top10_subset(
         self,
         sample_size: int = 100,
         random_seed: int = 42,
@@ -481,11 +481,11 @@ class DataService:
                     if reason:
                         invalid_reason_counts[reason] = invalid_reason_counts.get(reason, 0) + 1
 
-        self.settings.evaluation_base_table_svd_top10_100_csv_path.write_text(
+        self.settings.evaluation_base_table_svd_top10_csv_path(sample_size).write_text(
             pd.DataFrame(augmented_rows).to_csv(index=False),
             encoding="utf-8",
         )
-        self.settings.evaluation_base_table_svd_top10_100_json_path.write_text(
+        self.settings.evaluation_base_table_svd_top10_json_path(sample_size).write_text(
             json.dumps(augmented_rows, indent=2),
             encoding="utf-8",
         )
@@ -515,7 +515,7 @@ class DataService:
             "example_selected_users": [row["customer_id"] for row in augmented_rows[:5]],
             "example_invalid_candidate_pool_users": example_invalid_candidate_pool_users,
         }
-        self.settings.candidate_pool_validation_report_svd_top10_100_path.write_text(
+        self.settings.candidate_pool_validation_report_svd_top10_path(sample_size).write_text(
             json.dumps(report, indent=2),
             encoding="utf-8",
         )
@@ -531,6 +531,18 @@ class DataService:
             f"candidate_pool_size_stats=({report['min_candidate_pool_size']}/{report['mean_candidate_pool_size']}/{report['max_candidate_pool_size']})"
         )
         return report
+
+    def build_svd_top10_debug_subset(
+        self,
+        sample_size: int = 100,
+        random_seed: int = 42,
+        candidate_pool_size: int | None = None,
+    ) -> dict[str, object]:
+        return self.build_svd_top10_subset(
+            sample_size=sample_size,
+            random_seed=random_seed,
+            candidate_pool_size=candidate_pool_size,
+        )
 
     def preprocess(
         self,

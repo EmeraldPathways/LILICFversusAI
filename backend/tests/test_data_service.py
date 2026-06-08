@@ -375,7 +375,7 @@ def test_build_svd_top10_debug_subset_outputs_candidate_pool_validation(isolated
     assert report["duplicate_candidate_pool_count"] == 0
 
     subset_payload = json.loads(
-        isolated_env.evaluation_base_table_svd_top10_100_json_path.read_text(encoding="utf-8")
+        isolated_env.evaluation_base_table_svd_top10_json_path(2).read_text(encoding="utf-8")
     )
     assert len(subset_payload) == 2
     assert all(row["candidate_pool_valid"] is True for row in subset_payload)

@@ -68,14 +68,15 @@ class CollaborativeFilteringService:
         target_path.write_text(json.dumps(recommendations, indent=2), encoding="utf-8")
         return recommendations
 
-    def build_svd_top10_debug_baseline(
+    def build_svd_top10_baseline(
         self,
+        subset_size: int = 100,
         n_components: int = 50,
         random_state: int = 42,
     ) -> dict[str, object]:
         processed = self._load_processed_interactions_with_articles()
         subset_rows = json.loads(
-            self.settings.evaluation_base_table_svd_top10_100_json_path.read_text(encoding="utf-8")
+            self.settings.evaluation_base_table_svd_top10_json_path(subset_size).read_text(encoding="utf-8")
         )
         metadata = self._formal_article_metadata(processed)
         train_df = self._build_svd_training_interactions(processed, subset_rows)
@@ -129,11 +130,11 @@ class CollaborativeFilteringService:
                 users_with_unscoreable_candidates += 1
             scoreable_candidate_counts.append(int(result["svd_scoreable_candidate_count"]))
 
-        self.settings.svd_recommendations_top10_100_json_path.write_text(
+        self.settings.svd_recommendations_top10_json_path(subset_size).write_text(
             json.dumps(results, indent=2),
             encoding="utf-8",
         )
-        self.settings.svd_recommendations_top10_100_csv_path.write_text(
+        self.settings.svd_recommendations_top10_csv_path(subset_size).write_text(
             pd.DataFrame(
                 [
                     {
@@ -170,7 +171,7 @@ class CollaborativeFilteringService:
             "example_svd_recommendation_users": example_svd_recommendation_users,
             "example_svd_failure_users": example_svd_failure_users,
         }
-        self.settings.svd_baseline_validation_report_top10_100_path.write_text(
+        self.settings.svd_baseline_validation_report_top10_path(subset_size).write_text(
             json.dumps(report, indent=2),
             encoding="utf-8",
         )
@@ -186,6 +187,17 @@ class CollaborativeFilteringService:
             f"top_10_contains_training_items_count={report['users_where_top_10_contains_training_items']}"
         )
         return report
+
+    def build_svd_top10_debug_baseline(
+        self,
+        n_components: int = 50,
+        random_state: int = 42,
+    ) -> dict[str, object]:
+        return self.build_svd_top10_baseline(
+            subset_size=100,
+            n_components=n_components,
+            random_state=random_state,
+        )
 
     def recommend_for_user(
         self,

@@ -266,7 +266,7 @@ class AgenticRecommendationService:
         trace = self._build_agent_trace(user_id, profile, candidates, scored, enriched)
         return enriched, trace
 
-    def build_top10_formal_experiment(self) -> dict[str, object]:
+    def build_top10_formal_experiment(self, subset_size: int = 100) -> dict[str, object]:
         processed = pd.read_csv(
             self.settings.processed_interactions_with_articles_csv_path,
             dtype={"article_id": "string", "customer_id": "string"},
@@ -276,7 +276,7 @@ class AgenticRecommendationService:
         processed["t_dat"] = pd.to_datetime(processed["t_dat"], errors="coerce")
 
         evaluation_rows = json.loads(
-            self.settings.evaluation_base_table_svd_top10_100_json_path.read_text(encoding="utf-8")
+            self.settings.evaluation_base_table_svd_top10_json_path(subset_size).read_text(encoding="utf-8")
         )
         catalogue = self._build_formal_catalogue(processed)
 
@@ -312,11 +312,11 @@ class AgenticRecommendationService:
             if bool(result["detail_desc_missing_but_handled"]):
                 users_where_detail_desc_missing_but_handled += 1
 
-        self.settings.agentic_recommendations_top10_100_json_path.write_text(
+        self.settings.agentic_recommendations_top10_json_path(subset_size).write_text(
             json.dumps(results, indent=2),
             encoding="utf-8",
         )
-        self.settings.agentic_recommendations_top10_100_csv_path.write_text(
+        self.settings.agentic_recommendations_top10_csv_path(subset_size).write_text(
             pd.DataFrame(
                 [
                     {
@@ -346,7 +346,7 @@ class AgenticRecommendationService:
             "example_agentic_recommendation_users": example_agentic_recommendation_users,
             "example_agentic_failure_users": example_agentic_failure_users,
         }
-        self.settings.agentic_top10_validation_report_100_path.write_text(
+        self.settings.agentic_top10_validation_report_path(subset_size).write_text(
             json.dumps(report, indent=2),
             encoding="utf-8",
         )

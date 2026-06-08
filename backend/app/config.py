@@ -165,6 +165,74 @@ class Settings(BaseSettings):
     def agentic_top10_validation_report_100_path(self) -> Path:
         return self.processed_data_dir / "agentic_top10_validation_report_100.json"
 
+    @property
+    def per_user_metrics_top10_100_json_path(self) -> Path:
+        return self.processed_data_dir / "per_user_metrics_top10_100.json"
+
+    @property
+    def per_user_metrics_top10_100_csv_path(self) -> Path:
+        return self.processed_data_dir / "per_user_metrics_top10_100.csv"
+
+    @property
+    def metric_summary_top10_100_json_path(self) -> Path:
+        return self.processed_data_dir / "metric_summary_top10_100.json"
+
+    @property
+    def metric_summary_top10_100_csv_path(self) -> Path:
+        return self.processed_data_dir / "metric_summary_top10_100.csv"
+
+    @property
+    def metric_validation_report_top10_100_path(self) -> Path:
+        return self.processed_data_dir / "metric_validation_report_top10_100.json"
+
+    def evaluation_base_table_svd_top10_json_path(self, sample_size: int) -> Path:
+        return self.processed_data_dir / f"evaluation_base_table_svd_top10_{sample_size}.json"
+
+    def evaluation_base_table_svd_top10_csv_path(self, sample_size: int) -> Path:
+        return self.processed_data_dir / f"evaluation_base_table_svd_top10_{sample_size}.csv"
+
+    def candidate_pool_validation_report_svd_top10_path(self, sample_size: int) -> Path:
+        return self.processed_data_dir / f"candidate_pool_validation_report_svd_top10_{sample_size}.json"
+
+    def svd_recommendations_top10_json_path(self, sample_size: int) -> Path:
+        return self.processed_data_dir / f"svd_recommendations_top10_{sample_size}.json"
+
+    def svd_recommendations_top10_csv_path(self, sample_size: int) -> Path:
+        return self.processed_data_dir / f"svd_recommendations_top10_{sample_size}.csv"
+
+    def svd_baseline_validation_report_top10_path(self, sample_size: int) -> Path:
+        return self.processed_data_dir / f"svd_baseline_validation_report_top10_{sample_size}.json"
+
+    def agentic_recommendations_top10_json_path(self, sample_size: int) -> Path:
+        return self.processed_data_dir / f"agentic_recommendations_top10_{sample_size}.json"
+
+    def agentic_recommendations_top10_csv_path(self, sample_size: int) -> Path:
+        return self.processed_data_dir / f"agentic_recommendations_top10_{sample_size}.csv"
+
+    def agentic_top10_validation_report_path(self, sample_size: int) -> Path:
+        return self.processed_data_dir / f"agentic_top10_validation_report_{sample_size}.json"
+
+    def per_user_metrics_top10_json_path(self, sample_size: int) -> Path:
+        return self.processed_data_dir / f"per_user_metrics_top10_{sample_size}.json"
+
+    def per_user_metrics_top10_csv_path(self, sample_size: int) -> Path:
+        return self.processed_data_dir / f"per_user_metrics_top10_{sample_size}.csv"
+
+    def metric_summary_top10_json_path(self, sample_size: int) -> Path:
+        return self.processed_data_dir / f"metric_summary_top10_{sample_size}.json"
+
+    def metric_summary_top10_csv_path(self, sample_size: int) -> Path:
+        return self.processed_data_dir / f"metric_summary_top10_{sample_size}.csv"
+
+    def metric_validation_report_top10_path(self, sample_size: int) -> Path:
+        return self.processed_data_dir / f"metric_validation_report_top10_{sample_size}.json"
+
+    def metric_summary_top10_with_ci_json_path(self, sample_size: int) -> Path:
+        return self.processed_data_dir / f"metric_summary_top10_{sample_size}_with_ci.json"
+
+    def bootstrap_ci_report_top10_json_path(self, sample_size: int) -> Path:
+        return self.processed_data_dir / f"bootstrap_ci_report_top10_{sample_size}.json"
+
     def experiment_artifact_path(self, experiment_mode: str, artifact_name: str) -> Path:
         if experiment_mode == self.LEGACY_DEBUG_EXPERIMENT_MODE:
             return getattr(self, f"{artifact_name}_path")
