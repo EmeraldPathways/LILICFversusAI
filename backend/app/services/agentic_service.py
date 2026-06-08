@@ -10,6 +10,7 @@ import pandas as pd
 
 from app.config import Settings
 from app.models.schemas import FeedbackType
+from app.utils.normalization import normalize_article_id, normalize_customer_id
 
 
 class AgenticServiceError(Exception):
@@ -29,6 +30,8 @@ class AgenticRecommendationService:
     }
 
     def infer_user_intent(self, user_id: str, train_df: pd.DataFrame) -> dict[str, Any]:
+        user_id = normalize_customer_id(user_id)
+        train_df = self._normalize_ids(train_df)
         history = train_df[train_df["customer_id"] == user_id].copy()
         if history.empty:
             raise AgenticServiceError(f"User {user_id} has no training history.")
@@ -80,11 +83,12 @@ class AgenticRecommendationService:
         user_profile: dict[str, Any],
         train_df: pd.DataFrame,
     ) -> pd.DataFrame:
+        train_df = self._normalize_ids(train_df)
         user_history = set(
-            train_df.loc[train_df["customer_id"] == user_profile["user_id"], "article_id"].astype(str)
+            train_df.loc[train_df["customer_id"] == normalize_customer_id(user_profile["user_id"]), "article_id"]
         )
         catalogue = train_df.drop_duplicates("article_id").copy()
-        catalogue = catalogue[~catalogue["article_id"].astype(str).isin(user_history)].copy()
+        catalogue = catalogue[~catalogue["article_id"].isin(user_history)].copy()
 
         preferred_groups = set(user_profile["preferred_categories"])
         preferred_types = set(user_profile["preferred_product_types"])
@@ -114,6 +118,7 @@ class AgenticRecommendationService:
         candidates: pd.DataFrame,
         train_df: pd.DataFrame,
     ) -> list[dict[str, Any]]:
+        train_df = self._normalize_ids(train_df)
         if candidates.empty:
             return []
 
@@ -146,7 +151,7 @@ class AgenticRecommendationService:
             seen_types.add(str(row["product_type"]))
             scored_items.append(
                 {
-                    "article_id": str(row["article_id"]),
+                    "article_id": normalize_article_id(row["article_id"]),
                     "product_name": str(row["product_name"]),
                     "product_type": str(row["product_type"]),
                     "product_group": str(row["product_group"]),
@@ -188,6 +193,8 @@ class AgenticRecommendationService:
         article_id: str,
         feedback_type: FeedbackType,
     ) -> dict[str, float]:
+        user_id = normalize_customer_id(user_id)
+        article_id = normalize_article_id(article_id)
         weights = self._load_feedback_weights(user_id)
         if feedback_type == "click":
             weights["category_weight"] += 0.05
@@ -208,7 +215,15 @@ class AgenticRecommendationService:
         self.settings.feedback_state_path.write_text(json.dumps(state, indent=2), encoding="utf-8")
         return weights
 
-    def generate_all(self, train_df: pd.DataFrame, user_ids: list[str]) -> dict[str, list[dict[str, Any]]]:
+    def generate_all(
+        self,
+        train_df: pd.DataFrame,
+        user_ids: list[str],
+        output_path=None,
+        trace_path=None,
+    ) -> dict[str, list[dict[str, Any]]]:
+        train_df = self._normalize_ids(train_df)
+        user_ids = [normalize_customer_id(user_id) for user_id in user_ids]
         outputs: dict[str, list[dict[str, Any]]] = {}
         traces: dict[str, list[dict[str, Any]]] = {}
         for user_id in user_ids:
@@ -216,15 +231,30 @@ class AgenticRecommendationService:
             outputs[user_id] = enriched
             traces[user_id] = trace
 
-        self.settings.agentic_output_path.write_text(json.dumps(outputs, indent=2), encoding="utf-8")
-        self.settings.agentic_trace_path.write_text(json.dumps(traces, indent=2), encoding="utf-8")
+        target_output_path = output_path or self.settings.agentic_output_path
+        target_trace_path = trace_path or self.settings.agentic_trace_path
+        target_output_path.write_text(json.dumps(outputs, indent=2), encoding="utf-8")
+        target_trace_path.write_text(json.dumps(traces, indent=2), encoding="utf-8")
         return outputs
+
+    def build_candidate_pools(self, train_df: pd.DataFrame, user_ids: list[str]) -> dict[str, list[str]]:
+        train_df = self._normalize_ids(train_df)
+        candidate_pools: dict[str, list[str]] = {}
+        for user_id in user_ids:
+            profile = self.infer_user_intent(user_id, train_df)
+            candidates = self.retrieve_candidate_products(profile, train_df)
+            candidate_pools[normalize_customer_id(user_id)] = [
+                normalize_article_id(article_id) for article_id in candidates["article_id"]
+            ]
+        return candidate_pools
 
     def generate_for_user(
         self,
         user_id: str,
         train_df: pd.DataFrame,
     ) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
+        user_id = normalize_customer_id(user_id)
+        train_df = self._normalize_ids(train_df)
         profile = self.infer_user_intent(user_id, train_df)
         candidates = self.retrieve_candidate_products(profile, train_df)
         scored = self.score_candidates(profile, candidates, train_df)
@@ -243,9 +273,17 @@ class AgenticRecommendationService:
         return self._read_json_file(self.settings.agentic_output_path, default={})
 
     def _load_feedback_weights(self, user_id: str) -> dict[str, float]:
+        user_id = normalize_customer_id(user_id)
         state = self._read_json_file(self.settings.feedback_state_path, default={})
         weights = state.get(user_id, {}).get("weights", {})
         return {key: float(weights.get(key, value)) for key, value in self.BASE_WEIGHTS.items()}
+
+    @staticmethod
+    def _normalize_ids(frame: pd.DataFrame) -> pd.DataFrame:
+        normalized = frame.copy()
+        normalized["article_id"] = normalized["article_id"].map(normalize_article_id)
+        normalized["customer_id"] = normalized["customer_id"].map(normalize_customer_id)
+        return normalized
 
     def _request_structured_completion(self, system_prompt: str, user_payload: dict[str, Any]) -> dict[str, Any]:
         if not self.settings.openai_api_key:
@@ -367,7 +405,7 @@ class AgenticRecommendationService:
     ) -> list[dict[str, Any]]:
         candidate_preview = [
             {
-                "article_id": str(row["article_id"]),
+                "article_id": normalize_article_id(row["article_id"]),
                 "product_name": str(row["product_name"]),
                 "product_type": str(row["product_type"]),
                 "colour": str(row["colour"]),

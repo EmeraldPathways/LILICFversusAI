@@ -72,6 +72,7 @@ class MetricsResponse(BaseModel):
 class RunExperimentResponse(BaseModel):
     dataset: str
     status: str
+    experiment_mode: str | None = None
     sample_size: int
     train_size: int
     test_size: int
@@ -83,6 +84,7 @@ class RunExperimentResponse(BaseModel):
 class ExperimentSetupResponse(BaseModel):
     dataset: str
     sample_size: int
+    experiment_mode: str | None = None
     split_method: str
     benchmark: str
     proposed_framework: str

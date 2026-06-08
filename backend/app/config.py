@@ -3,6 +3,7 @@ from __future__ import annotations
 import os
 from functools import lru_cache
 from pathlib import Path
+from typing import ClassVar
 
 from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
@@ -32,6 +33,9 @@ class Settings(BaseSettings):
     min_product_interactions: int = Field(default=2, alias="MIN_PRODUCT_INTERACTIONS")
     max_eval_users: int = Field(default=50, alias="MAX_EVAL_USERS")
     llm_timeout_seconds: float = Field(default=40.0, alias="LLM_TIMEOUT_SECONDS")
+
+    LEGACY_DEBUG_EXPERIMENT_MODE: ClassVar[str] = "legacy_debug"
+    SVD_TOP10_EXPERIMENT_MODE: ClassVar[str] = "svd_top10_experiment"
 
     @property
     def raw_data_dir(self) -> Path:
@@ -100,6 +104,35 @@ class Settings(BaseSettings):
     @property
     def feedback_state_path(self) -> Path:
         return self.processed_data_dir / "feedback_state.json"
+
+    @property
+    def processed_interactions_with_articles_csv_path(self) -> Path:
+        return self.processed_data_dir / "processed_interactions_with_articles.csv"
+
+    @property
+    def processed_interactions_with_articles_json_path(self) -> Path:
+        return self.processed_data_dir / "processed_interactions_with_articles.json"
+
+    @property
+    def processed_data_validation_report_path(self) -> Path:
+        return self.processed_data_dir / "processed_data_validation_report.json"
+
+    @property
+    def evaluation_base_table_svd_top10_all_valid_json_path(self) -> Path:
+        return self.processed_data_dir / "evaluation_base_table_svd_top10_all_valid.json"
+
+    @property
+    def evaluation_base_table_svd_top10_all_valid_csv_path(self) -> Path:
+        return self.processed_data_dir / "evaluation_base_table_svd_top10_all_valid.csv"
+
+    @property
+    def evaluation_base_validation_report_svd_top10_all_valid_path(self) -> Path:
+        return self.processed_data_dir / "evaluation_base_validation_report_svd_top10_all_valid.json"
+
+    def experiment_artifact_path(self, experiment_mode: str, artifact_name: str) -> Path:
+        if experiment_mode == self.LEGACY_DEBUG_EXPERIMENT_MODE:
+            return getattr(self, f"{artifact_name}_path")
+        return self.processed_data_dir / f"{experiment_mode}_{artifact_name}.json"
 
 
 @lru_cache(maxsize=1)
