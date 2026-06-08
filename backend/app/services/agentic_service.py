@@ -266,6 +266,102 @@ class AgenticRecommendationService:
         trace = self._build_agent_trace(user_id, profile, candidates, scored, enriched)
         return enriched, trace
 
+    def build_top10_formal_experiment(self) -> dict[str, object]:
+        processed = pd.read_csv(
+            self.settings.processed_interactions_with_articles_csv_path,
+            dtype={"article_id": "string", "customer_id": "string"},
+        )
+        processed["article_id"] = processed["article_id"].map(normalize_article_id)
+        processed["customer_id"] = processed["customer_id"].map(normalize_customer_id)
+        processed["t_dat"] = pd.to_datetime(processed["t_dat"], errors="coerce")
+
+        evaluation_rows = json.loads(
+            self.settings.evaluation_base_table_svd_top10_100_json_path.read_text(encoding="utf-8")
+        )
+        catalogue = self._build_formal_catalogue(processed)
+
+        results: list[dict[str, Any]] = []
+        users_with_agentic_recommendations = 0
+        users_without_agentic_recommendations = 0
+        users_with_full_top_10 = 0
+        users_where_top_10_all_inside_candidate_pool = 0
+        users_where_top_10_contains_training_items = 0
+        users_where_detail_desc_missing_but_handled = 0
+        example_agentic_recommendation_users: list[str] = []
+        example_agentic_failure_users: list[str] = []
+
+        for row in evaluation_rows:
+            result = self._build_formal_agentic_result_for_user(row=row, catalogue=catalogue)
+            results.append(result)
+
+            if int(result["recommendation_count"]) > 0:
+                users_with_agentic_recommendations += 1
+                if len(example_agentic_recommendation_users) < 5:
+                    example_agentic_recommendation_users.append(result["customer_id"])
+            else:
+                users_without_agentic_recommendations += 1
+                if len(example_agentic_failure_users) < 5:
+                    example_agentic_failure_users.append(result["customer_id"])
+
+            if int(result["recommendation_count"]) == self.settings.top_n:
+                users_with_full_top_10 += 1
+            if bool(result["top_10_all_inside_candidate_pool"]):
+                users_where_top_10_all_inside_candidate_pool += 1
+            if bool(result["top_10_contains_training_items"]):
+                users_where_top_10_contains_training_items += 1
+            if bool(result["detail_desc_missing_but_handled"]):
+                users_where_detail_desc_missing_but_handled += 1
+
+        self.settings.agentic_recommendations_top10_100_json_path.write_text(
+            json.dumps(results, indent=2),
+            encoding="utf-8",
+        )
+        self.settings.agentic_recommendations_top10_100_csv_path.write_text(
+            pd.DataFrame(
+                [
+                    {
+                        **result,
+                        "preference_profile": json.dumps(result["preference_profile"]),
+                        "top_10_recommendations": json.dumps(result["top_10_recommendations"]),
+                    }
+                    for result in results
+                ]
+            ).to_csv(index=False),
+            encoding="utf-8",
+        )
+
+        report = {
+            "evaluated_users_requested": len(evaluation_rows),
+            "users_with_agentic_recommendations": users_with_agentic_recommendations,
+            "users_without_agentic_recommendations": users_without_agentic_recommendations,
+            "average_top_10_length": round(
+                sum(int(result["recommendation_count"]) for result in results) / len(results), 2
+            )
+            if results
+            else 0.0,
+            "users_with_full_top_10": users_with_full_top_10,
+            "users_where_top_10_all_inside_candidate_pool": users_where_top_10_all_inside_candidate_pool,
+            "users_where_top_10_contains_training_items": users_where_top_10_contains_training_items,
+            "users_where_detail_desc_missing_but_handled": users_where_detail_desc_missing_but_handled,
+            "example_agentic_recommendation_users": example_agentic_recommendation_users,
+            "example_agentic_failure_users": example_agentic_failure_users,
+        }
+        self.settings.agentic_top10_validation_report_100_path.write_text(
+            json.dumps(report, indent=2),
+            encoding="utf-8",
+        )
+
+        print(
+            "3-agent Top-10 summary: "
+            f"users_evaluated={report['evaluated_users_requested']}, "
+            f"users_with_valid_top_10={report['users_with_full_top_10']}, "
+            f"average_top_10_length={report['average_top_10_length']}, "
+            f"top_10_all_inside_candidate_pool_count={report['users_where_top_10_all_inside_candidate_pool']}, "
+            f"top_10_contains_training_items_count={report['users_where_top_10_contains_training_items']}, "
+            f"detail_desc_missing_handled_count={report['users_where_detail_desc_missing_but_handled']}"
+        )
+        return report
+
     def load_traces(self) -> dict[str, list[dict[str, Any]]]:
         return self._read_json_file(self.settings.agentic_trace_path, default={})
 
@@ -394,6 +490,150 @@ class AgenticRecommendationService:
         if not path.exists():
             return default
         return json.loads(path.read_text(encoding="utf-8"))
+
+    def _build_formal_agentic_result_for_user(
+        self,
+        *,
+        row: dict[str, Any],
+        catalogue: pd.DataFrame,
+    ) -> dict[str, Any]:
+        customer_id = normalize_customer_id(row["customer_id"])
+        train_article_ids = [normalize_article_id(article_id) for article_id in row.get("train_article_ids", [])]
+        train_article_id_set = {article_id for article_id in train_article_ids if article_id}
+        candidate_pool_article_ids = [
+            normalize_article_id(article_id) for article_id in row.get("candidate_pool_article_ids", [])
+        ]
+        candidate_pool_set = set(candidate_pool_article_ids)
+
+        train_history = self._build_formal_history_frame(customer_id, train_article_ids, catalogue)
+        preference_profile = self._infer_formal_user_profile(customer_id, train_history)
+
+        candidate_frame = catalogue[catalogue["article_id"].isin(candidate_pool_article_ids)].copy()
+        candidate_frame = candidate_frame[~candidate_frame["article_id"].isin(train_article_id_set)].copy()
+        candidate_frame = candidate_frame.sort_values("transaction_date", ascending=False)
+
+        missing_detail_desc_handled = bool(
+            candidate_frame["detail_desc"].isna().any()
+            or candidate_frame["detail_desc"].astype("string").str.strip().eq("").any()
+        )
+        scored = self.score_candidates(preference_profile, candidate_frame, train_history)
+
+        recommendations: list[dict[str, Any]] = []
+        for rank, item in enumerate(scored[: self.settings.top_n], start=1):
+            article_row = candidate_frame.loc[candidate_frame["article_id"] == item["article_id"]].iloc[0]
+            recommendations.append(
+                {
+                    "rank": rank,
+                    "article_id": item["article_id"],
+                    "score": item["score"],
+                    "product_type_name": str(article_row["product_type_name"]),
+                    "product_group_name": str(article_row["product_group_name"]),
+                    "colour_group_name": str(article_row["colour_group_name"]),
+                    "graphical_appearance_name": str(article_row["graphical_appearance_name"]),
+                    "garment_group_name": str(article_row["garment_group_name"]),
+                    "recommendation_reason": self._build_formal_recommendation_reason(preference_profile, article_row, item),
+                    "matched_evidence": self._build_matched_evidence(preference_profile, article_row),
+                }
+            )
+
+        top_10_article_ids = [item["article_id"] for item in recommendations]
+        return {
+            "customer_id": customer_id,
+            "method": "3_agent",
+            "ground_truth_article_id": normalize_article_id(row["ground_truth_article_id"]),
+            "candidate_pool_size": int(row.get("candidate_pool_size", len(candidate_pool_article_ids))),
+            "preference_profile": preference_profile,
+            "top_10_recommendations": recommendations,
+            "recommendation_count": len(recommendations),
+            "top_10_all_inside_candidate_pool": all(article_id in candidate_pool_set for article_id in top_10_article_ids),
+            "top_10_contains_training_items": any(article_id in train_article_id_set for article_id in top_10_article_ids),
+            "detail_desc_missing_but_handled": missing_detail_desc_handled,
+        }
+
+    @staticmethod
+    def _build_formal_catalogue(processed: pd.DataFrame) -> pd.DataFrame:
+        catalogue = processed.copy()
+        catalogue["product_type"] = catalogue["product_type_name"].fillna("Unknown").astype(str)
+        catalogue["product_group"] = catalogue["product_group_name"].fillna("Unknown").astype(str)
+        catalogue["colour"] = catalogue["colour_group_name"].fillna("Unknown").astype(str)
+        catalogue["appearance"] = catalogue["graphical_appearance_name"].fillna("Unknown").astype(str)
+        catalogue["product_name"] = catalogue["product_type_name"].fillna("Unknown").astype(str)
+        catalogue["transaction_date"] = pd.to_datetime(catalogue["t_dat"], errors="coerce")
+        catalogue = catalogue.sort_values("transaction_date", ascending=False)
+        return catalogue.drop_duplicates("article_id", keep="first").reset_index(drop=True)
+
+    @staticmethod
+    def _build_formal_history_frame(
+        customer_id: str,
+        train_article_ids: list[str],
+        catalogue: pd.DataFrame,
+    ) -> pd.DataFrame:
+        catalogue_index = catalogue.set_index("article_id", drop=False)
+        history_rows: list[dict[str, Any]] = []
+        for article_id in train_article_ids:
+            if article_id not in catalogue_index.index:
+                continue
+            article_row = catalogue_index.loc[article_id]
+            history_rows.append(
+                {
+                    "customer_id": customer_id,
+                    "article_id": article_id,
+                    "product_type": str(article_row["product_type"]),
+                    "product_group": str(article_row["product_group"]),
+                    "colour": str(article_row["colour"]),
+                    "appearance": str(article_row["appearance"]),
+                    "product_name": str(article_row["product_name"]),
+                    "transaction_date": article_row["transaction_date"],
+                }
+            )
+        return pd.DataFrame(history_rows)
+
+    def _infer_formal_user_profile(self, customer_id: str, train_history: pd.DataFrame) -> dict[str, Any]:
+        if train_history.empty:
+            raise AgenticServiceError(f"User {customer_id} has no formal training history.")
+
+        preferred_categories = self._top_values(train_history["product_group"])
+        preferred_product_types = self._top_values(train_history["product_type"])
+        preferred_colours = self._top_values(train_history["colour"])
+        preferred_appearance = self._top_values(train_history["appearance"])
+        inferred_intent = " ".join(preferred_product_types + preferred_categories).lower()
+
+        return {
+            "user_id": customer_id,
+            "inferred_intent": inferred_intent,
+            "preferred_categories": preferred_categories,
+            "preferred_product_types": preferred_product_types,
+            "preferred_colours": preferred_colours,
+            "preferred_appearance": preferred_appearance,
+            "shopping_context": "offline historical preference evaluation",
+        }
+
+    @staticmethod
+    def _build_formal_recommendation_reason(
+        user_profile: dict[str, Any],
+        article_row: pd.Series,
+        scored_item: dict[str, Any],
+    ) -> str:
+        evidence = AgenticRecommendationService._build_matched_evidence(user_profile, article_row)
+        if evidence:
+            return (
+                f"Matches historical preferences on {', '.join(evidence[:3])} "
+                f"with final score {float(scored_item['score']):.4f}."
+            )
+        return f"Selected by the existing 3-agent scoring logic with final score {float(scored_item['score']):.4f}."
+
+    @staticmethod
+    def _build_matched_evidence(user_profile: dict[str, Any], article_row: pd.Series) -> list[str]:
+        evidence: list[str] = []
+        if str(article_row["product_group"]) in user_profile["preferred_categories"]:
+            evidence.append(f"product_group_name={article_row['product_group_name']}")
+        if str(article_row["product_type"]) in user_profile["preferred_product_types"]:
+            evidence.append(f"product_type_name={article_row['product_type_name']}")
+        if str(article_row["colour"]) in user_profile["preferred_colours"]:
+            evidence.append(f"colour_group_name={article_row['colour_group_name']}")
+        if str(article_row["appearance"]) in user_profile["preferred_appearance"]:
+            evidence.append(f"graphical_appearance_name={article_row['graphical_appearance_name']}")
+        return evidence
 
     def _build_agent_trace(
         self,

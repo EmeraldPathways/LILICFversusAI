@@ -297,31 +297,26 @@ class DataService:
 
             json_file.write("\n]\n")
 
-        report = {
-            "total_customers_before_filtering": total_customers_before_filtering,
-            "customers_with_at_least_10_transactions": customers_with_at_least_10_transactions,
-            "valid_final_comparison_base_users": valid_final_comparison_base_users,
-            "invalid_user_count": invalid_user_count,
-            "invalid_reason_counts": invalid_reason_counts,
-            "article_id_format_check_summary": {
-                "passed": article_id_format_passed_count,
-                "failed": article_id_format_failed_count,
-            },
-            "customer_id_format_check_summary": {
-                "passed": customer_id_format_passed_count,
-                "failed": customer_id_format_failed_count,
-            },
-            "ground_truth_in_catalog_count": ground_truth_in_catalog_count,
-            "train_items_in_catalog_count": train_items_in_catalog_count,
-            "ground_truth_detail_desc_missing_count": ground_truth_detail_desc_missing_count,
-            "min_train_count": min(valid_train_counts) if valid_train_counts else 0,
-            "mean_train_count": round(sum(valid_train_counts) / len(valid_train_counts), 2)
-            if valid_train_counts
-            else 0.0,
-            "max_train_count": max(valid_train_counts) if valid_train_counts else 0,
-            "example_valid_users": example_valid_users,
-            "example_invalid_users": example_invalid_users,
-        }
+        report = self._compose_evaluation_base_validation_report(
+            total_customers_before_filtering=total_customers_before_filtering,
+            customers_with_at_least_10_transactions=customers_with_at_least_10_transactions,
+            valid_final_comparison_base_users=valid_final_comparison_base_users,
+            invalid_user_count=invalid_user_count,
+            invalid_reason_counts=invalid_reason_counts,
+            article_id_format_passed_count=article_id_format_passed_count,
+            article_id_format_failed_count=article_id_format_failed_count,
+            customer_id_format_passed_count=customer_id_format_passed_count,
+            customer_id_format_failed_count=customer_id_format_failed_count,
+            ground_truth_in_catalog_count=ground_truth_in_catalog_count,
+            train_items_in_catalog_count=train_items_in_catalog_count,
+            ground_truth_detail_desc_missing_count=ground_truth_detail_desc_missing_count,
+            valid_train_counts=valid_train_counts,
+            example_valid_users=example_valid_users,
+            example_invalid_users=example_invalid_users,
+            valid_users_ground_truth_in_catalog_count=valid_final_comparison_base_users,
+            valid_users_train_items_in_catalog_count=valid_final_comparison_base_users,
+            valid_users_core_metadata_complete_count=valid_final_comparison_base_users,
+        )
         self.settings.evaluation_base_validation_report_svd_top10_all_valid_path.write_text(
             json.dumps(report, indent=2),
             encoding="utf-8",
@@ -339,6 +334,63 @@ class DataService:
             f"invalid_users={report['invalid_user_count']}, "
             f"top_invalid_reasons={top_invalid_reasons}, "
             f"train_count_stats=({report['min_train_count']}/{report['mean_train_count']}/{report['max_train_count']})"
+        )
+        return report
+
+    def rebuild_evaluation_base_validation_report(self) -> dict[str, object]:
+        base_rows = json.loads(
+            self.settings.evaluation_base_table_svd_top10_all_valid_json_path.read_text(encoding="utf-8")
+        )
+        valid_rows = [row for row in base_rows if row.get("is_valid_for_final_comparison_base")]
+        invalid_rows = [row for row in base_rows if not row.get("is_valid_for_final_comparison_base")]
+        invalid_reason_counts: dict[str, int] = {}
+        for row in invalid_rows:
+            for reason in str(row.get("invalid_reason", "")).split("; "):
+                if reason:
+                    invalid_reason_counts[reason] = invalid_reason_counts.get(reason, 0) + 1
+
+        valid_train_counts = [int(row["train_count"]) for row in valid_rows]
+        report = self._compose_evaluation_base_validation_report(
+            total_customers_before_filtering=len(base_rows),
+            customers_with_at_least_10_transactions=sum(
+                1 for row in base_rows if int(row["total_transaction_count"]) >= 10
+            ),
+            valid_final_comparison_base_users=len(valid_rows),
+            invalid_user_count=len(invalid_rows),
+            invalid_reason_counts=invalid_reason_counts,
+            article_id_format_passed_count=sum(
+                1 for row in base_rows if row.get("article_id_format_check") == "passed"
+            ),
+            article_id_format_failed_count=sum(
+                1 for row in base_rows if row.get("article_id_format_check") == "failed"
+            ),
+            customer_id_format_passed_count=sum(
+                1 for row in base_rows if row.get("customer_id_format_check") == "passed"
+            ),
+            customer_id_format_failed_count=sum(
+                1 for row in base_rows if row.get("customer_id_format_check") == "failed"
+            ),
+            ground_truth_in_catalog_count=sum(1 for row in base_rows if row.get("ground_truth_in_catalog")),
+            train_items_in_catalog_count=sum(1 for row in base_rows if row.get("train_items_in_catalog")),
+            ground_truth_detail_desc_missing_count=sum(
+                1 for row in base_rows if row.get("ground_truth_detail_desc_missing")
+            ),
+            valid_train_counts=valid_train_counts,
+            example_valid_users=[row["customer_id"] for row in valid_rows[:5]],
+            example_invalid_users=[row["customer_id"] for row in invalid_rows[:5]],
+            valid_users_ground_truth_in_catalog_count=sum(
+                1 for row in valid_rows if row.get("ground_truth_in_catalog")
+            ),
+            valid_users_train_items_in_catalog_count=sum(
+                1 for row in valid_rows if row.get("train_items_in_catalog")
+            ),
+            valid_users_core_metadata_complete_count=sum(
+                1 for row in valid_rows if row.get("core_metadata_complete")
+            ),
+        )
+        self.settings.evaluation_base_validation_report_svd_top10_all_valid_path.write_text(
+            json.dumps(report, indent=2),
+            encoding="utf-8",
         )
         return report
 
@@ -365,6 +417,120 @@ class DataService:
         rng = random.Random(random_seed)
         selected_indices = sorted(rng.sample(range(len(valid_rows)), sample_size))
         return [valid_rows[index] for index in selected_indices]
+
+    def build_svd_top10_debug_subset(
+        self,
+        sample_size: int = 100,
+        random_seed: int = 42,
+        candidate_pool_size: int | None = None,
+    ) -> dict[str, object]:
+        candidate_pool_target_size = candidate_pool_size or self.settings.candidate_pool_size
+        all_valid_rows = json.loads(
+            self.settings.evaluation_base_table_svd_top10_all_valid_json_path.read_text(encoding="utf-8")
+        )
+        processed = self._load_processed_interactions_with_articles()
+        catalogue = self._build_processed_catalogue(processed)
+        global_training_item_vocab = self._build_global_training_item_vocab(all_valid_rows)
+        svd_scoreable_valid_users = self._filter_svd_scoreable_valid_users(
+            all_valid_rows,
+            catalogue=catalogue,
+            global_training_item_vocab=global_training_item_vocab,
+        )
+        selected_rows = self._sample_customer_level_rows(
+            svd_scoreable_valid_users,
+            sample_size=sample_size,
+            random_seed=random_seed,
+        )
+        augmented_rows: list[dict[str, object]] = []
+        invalid_reason_counts: dict[str, int] = {}
+        valid_candidate_pools = 0
+        invalid_candidate_pools = 0
+        ground_truth_in_candidate_pool_count = 0
+        candidate_pool_all_items_in_catalog_count = 0
+        candidate_pool_all_items_in_global_training_vocab_count = 0
+        duplicate_candidate_pool_count = 0
+        candidate_pool_sizes: list[int] = []
+        example_invalid_candidate_pool_users: list[str] = []
+
+        for row in selected_rows:
+            candidate_pool = self._build_shared_candidate_pool_for_user(
+                row=row,
+                catalogue=catalogue,
+                global_training_item_vocab=global_training_item_vocab,
+                candidate_pool_size=candidate_pool_target_size,
+                random_seed=random_seed,
+            )
+            augmented_row = {**row, **candidate_pool}
+            augmented_rows.append(augmented_row)
+            candidate_pool_sizes.append(int(augmented_row["candidate_pool_size"]))
+            if augmented_row["ground_truth_in_candidate_pool"]:
+                ground_truth_in_candidate_pool_count += 1
+            if augmented_row["candidate_pool_all_items_in_catalog"]:
+                candidate_pool_all_items_in_catalog_count += 1
+            if augmented_row["candidate_pool_all_items_in_global_training_vocab"]:
+                candidate_pool_all_items_in_global_training_vocab_count += 1
+            if augmented_row["candidate_pool_has_duplicates"]:
+                duplicate_candidate_pool_count += 1
+            if augmented_row["candidate_pool_valid"]:
+                valid_candidate_pools += 1
+            else:
+                invalid_candidate_pools += 1
+                if len(example_invalid_candidate_pool_users) < 5:
+                    example_invalid_candidate_pool_users.append(augmented_row["customer_id"])
+                for reason in str(augmented_row["candidate_pool_invalid_reason"]).split("; "):
+                    if reason:
+                        invalid_reason_counts[reason] = invalid_reason_counts.get(reason, 0) + 1
+
+        self.settings.evaluation_base_table_svd_top10_100_csv_path.write_text(
+            pd.DataFrame(augmented_rows).to_csv(index=False),
+            encoding="utf-8",
+        )
+        self.settings.evaluation_base_table_svd_top10_100_json_path.write_text(
+            json.dumps(augmented_rows, indent=2),
+            encoding="utf-8",
+        )
+
+        report = {
+            "full_valid_user_pool_size": len(
+                [row for row in all_valid_rows if row.get("is_valid_for_final_comparison_base")]
+            ),
+            "global_training_item_vocab_size": len(global_training_item_vocab),
+            "svd_scoreable_valid_users_count": len(svd_scoreable_valid_users),
+            "requested_subset_size": sample_size,
+            "actual_selected_subset_size": len(augmented_rows),
+            "candidate_pool_target_size": candidate_pool_target_size,
+            "users_with_valid_candidate_pool": valid_candidate_pools,
+            "users_with_invalid_candidate_pool": invalid_candidate_pools,
+            "invalid_reason_counts": invalid_reason_counts,
+            "ground_truth_in_candidate_pool_count": ground_truth_in_candidate_pool_count,
+            "candidate_pool_all_items_in_catalog_count": candidate_pool_all_items_in_catalog_count,
+            "candidate_pool_all_items_in_global_training_vocab_count": candidate_pool_all_items_in_global_training_vocab_count,
+            "duplicate_candidate_pool_count": duplicate_candidate_pool_count,
+            "min_candidate_pool_size": min(candidate_pool_sizes) if candidate_pool_sizes else 0,
+            "mean_candidate_pool_size": round(sum(candidate_pool_sizes) / len(candidate_pool_sizes), 2)
+            if candidate_pool_sizes
+            else 0.0,
+            "max_candidate_pool_size": max(candidate_pool_sizes) if candidate_pool_sizes else 0,
+            "random_seed": random_seed,
+            "example_selected_users": [row["customer_id"] for row in augmented_rows[:5]],
+            "example_invalid_candidate_pool_users": example_invalid_candidate_pool_users,
+        }
+        self.settings.candidate_pool_validation_report_svd_top10_100_path.write_text(
+            json.dumps(report, indent=2),
+            encoding="utf-8",
+        )
+
+        print(
+            "Debug subset summary: "
+            f"full_valid_user_pool_size={report['full_valid_user_pool_size']}, "
+            f"svd_scoreable_valid_users_count={report['svd_scoreable_valid_users_count']}, "
+            f"selected_subset_size={report['actual_selected_subset_size']}, "
+            f"valid_candidate_pools_count={report['users_with_valid_candidate_pool']}, "
+            f"invalid_candidate_pools_count={report['users_with_invalid_candidate_pool']}, "
+            f"ground_truth_in_candidate_pool_count={report['ground_truth_in_candidate_pool_count']}, "
+            f"candidate_pool_size_stats=({report['min_candidate_pool_size']}/{report['mean_candidate_pool_size']}/{report['max_candidate_pool_size']})"
+        )
+        return report
 
     def preprocess(
         self,
@@ -689,6 +855,114 @@ class DataService:
         }
 
     @staticmethod
+    def _build_global_training_item_vocab(base_rows: list[dict[str, object]]) -> set[str]:
+        vocab: set[str] = set()
+        for row in base_rows:
+            for article_id in row.get("train_article_ids", []):
+                normalized = normalize_article_id(article_id)
+                if normalized:
+                    vocab.add(normalized)
+        return vocab
+
+    @staticmethod
+    def _filter_svd_scoreable_valid_users(
+        base_rows: list[dict[str, object]],
+        *,
+        catalogue: dict[str, dict[str, object]],
+        global_training_item_vocab: set[str],
+    ) -> list[dict[str, object]]:
+        filtered: list[dict[str, object]] = []
+        for row in base_rows:
+            train_article_ids = [normalize_article_id(article_id) for article_id in row.get("train_article_ids", [])]
+            ground_truth_article_id = normalize_article_id(row.get("ground_truth_article_id"))
+            if not row.get("is_valid_for_final_comparison_base"):
+                continue
+            if ground_truth_article_id not in catalogue:
+                continue
+            if ground_truth_article_id not in global_training_item_vocab:
+                continue
+            if int(row.get("train_count", 0)) < 9:
+                continue
+            if int(row.get("total_transaction_count", 0)) < 10:
+                continue
+            if any(not isinstance(article_id, str) or article_id == "" for article_id in train_article_ids):
+                continue
+            if not isinstance(ground_truth_article_id, str) or ground_truth_article_id == "":
+                continue
+            filtered.append(row)
+        return filtered
+
+    @staticmethod
+    def _sample_customer_level_rows(
+        rows: list[dict[str, object]],
+        *,
+        sample_size: int,
+        random_seed: int,
+    ) -> list[dict[str, object]]:
+        if sample_size >= len(rows):
+            return rows
+        rng = random.Random(random_seed)
+        selected_indices = sorted(rng.sample(range(len(rows)), sample_size))
+        return [rows[index] for index in selected_indices]
+
+    def _build_shared_candidate_pool_for_user(
+        self,
+        *,
+        row: dict[str, object],
+        catalogue: dict[str, dict[str, object]],
+        global_training_item_vocab: set[str],
+        candidate_pool_size: int,
+        random_seed: int,
+    ) -> dict[str, object]:
+        customer_id = str(row["customer_id"])
+        ground_truth_article_id = normalize_article_id(row["ground_truth_article_id"])
+        train_article_ids = {normalize_article_id(article_id) for article_id in row.get("train_article_ids", [])}
+        negative_candidates = sorted(
+            article_id
+            for article_id in global_training_item_vocab
+            if article_id != ground_truth_article_id
+            and article_id not in train_article_ids
+            and article_id in catalogue
+        )
+        rng = random.Random(f"{random_seed}:{customer_id}")
+        negatives_needed = max(candidate_pool_size - 1, 0)
+        if len(negative_candidates) > negatives_needed:
+            sampled_negatives = rng.sample(negative_candidates, negatives_needed)
+        else:
+            sampled_negatives = negative_candidates
+        candidate_pool_article_ids = [ground_truth_article_id] + sampled_negatives
+        candidate_pool_all_items_in_catalog = all(
+            normalize_article_id(article_id) in catalogue for article_id in candidate_pool_article_ids
+        )
+        candidate_pool_all_items_in_global_training_vocab = all(
+            normalize_article_id(article_id) in global_training_item_vocab for article_id in candidate_pool_article_ids
+        )
+        candidate_pool_has_duplicates = len(candidate_pool_article_ids) != len(set(candidate_pool_article_ids))
+        ground_truth_in_candidate_pool = ground_truth_article_id in candidate_pool_article_ids
+        invalid_reasons: list[str] = []
+        if not ground_truth_in_candidate_pool:
+            invalid_reasons.append("ground_truth_missing_from_candidate_pool")
+        if not candidate_pool_all_items_in_catalog:
+            invalid_reasons.append("candidate_pool_items_missing_from_catalog")
+        if not candidate_pool_all_items_in_global_training_vocab:
+            invalid_reasons.append("candidate_pool_items_missing_from_global_training_vocab")
+        if candidate_pool_has_duplicates:
+            invalid_reasons.append("candidate_pool_has_duplicates")
+        if any(article_id in train_article_ids for article_id in candidate_pool_article_ids if article_id != ground_truth_article_id):
+            invalid_reasons.append("candidate_pool_contains_train_items")
+
+        return {
+            "candidate_pool_article_ids": candidate_pool_article_ids,
+            "candidate_pool_size": len(candidate_pool_article_ids),
+            "ground_truth_in_candidate_pool": ground_truth_in_candidate_pool,
+            "candidate_pool_all_items_in_catalog": candidate_pool_all_items_in_catalog,
+            "candidate_pool_all_items_in_global_training_vocab": candidate_pool_all_items_in_global_training_vocab,
+            "candidate_pool_has_duplicates": candidate_pool_has_duplicates,
+            "candidate_pool_valid": not invalid_reasons,
+            "candidate_pool_invalid_reason": "; ".join(invalid_reasons),
+        }
+
+    @staticmethod
     def _core_metadata_complete(row: pd.Series) -> bool:
         return all(not pd.isna(row[field]) and str(row[field]).strip() != "" for field in CORE_METADATA_FIELDS)
 
@@ -729,3 +1003,62 @@ class DataService:
         if not core_metadata_complete:
             reasons.append("core_metadata_incomplete")
         return reasons
+
+    @staticmethod
+    def _compose_evaluation_base_validation_report(
+        *,
+        total_customers_before_filtering: int,
+        customers_with_at_least_10_transactions: int,
+        valid_final_comparison_base_users: int,
+        invalid_user_count: int,
+        invalid_reason_counts: dict[str, int],
+        article_id_format_passed_count: int,
+        article_id_format_failed_count: int,
+        customer_id_format_passed_count: int,
+        customer_id_format_failed_count: int,
+        ground_truth_in_catalog_count: int,
+        train_items_in_catalog_count: int,
+        ground_truth_detail_desc_missing_count: int,
+        valid_train_counts: list[int],
+        example_valid_users: list[str],
+        example_invalid_users: list[str],
+        valid_users_ground_truth_in_catalog_count: int,
+        valid_users_train_items_in_catalog_count: int,
+        valid_users_core_metadata_complete_count: int,
+    ) -> dict[str, object]:
+        return {
+            "total_customers_before_filtering": total_customers_before_filtering,
+            "customers_with_at_least_10_transactions": customers_with_at_least_10_transactions,
+            "valid_final_comparison_base_users": valid_final_comparison_base_users,
+            "invalid_user_count": invalid_user_count,
+            "invalid_reason_counts": invalid_reason_counts,
+            "article_id_format_check_summary": {
+                "passed": article_id_format_passed_count,
+                "failed": article_id_format_failed_count,
+            },
+            "customer_id_format_check_summary": {
+                "passed": customer_id_format_passed_count,
+                "failed": customer_id_format_failed_count,
+            },
+            "ground_truth_in_catalog_count": ground_truth_in_catalog_count,
+            "train_items_in_catalog_count": train_items_in_catalog_count,
+            "all_base_users_ground_truth_in_catalog_count": ground_truth_in_catalog_count,
+            "valid_users_ground_truth_in_catalog_count": valid_users_ground_truth_in_catalog_count,
+            "valid_users_ground_truth_in_catalog_all_true": (
+                valid_users_ground_truth_in_catalog_count == valid_final_comparison_base_users
+            ),
+            "valid_users_train_items_in_catalog_all_true": (
+                valid_users_train_items_in_catalog_count == valid_final_comparison_base_users
+            ),
+            "valid_users_core_metadata_complete_all_true": (
+                valid_users_core_metadata_complete_count == valid_final_comparison_base_users
+            ),
+            "ground_truth_detail_desc_missing_count": ground_truth_detail_desc_missing_count,
+            "min_train_count": min(valid_train_counts) if valid_train_counts else 0,
+            "mean_train_count": round(sum(valid_train_counts) / len(valid_train_counts), 2)
+            if valid_train_counts
+            else 0.0,
+            "max_train_count": max(valid_train_counts) if valid_train_counts else 0,
+            "example_valid_users": example_valid_users,
+            "example_invalid_users": example_invalid_users,
+        }

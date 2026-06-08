@@ -251,6 +251,11 @@ def test_build_leave_one_out_evaluation_base_outputs_validity_flags_and_subset_f
     assert report["customers_with_at_least_10_transactions"] == 1
     assert report["valid_final_comparison_base_users"] == 1
     assert report["invalid_user_count"] == 1
+    assert report["all_base_users_ground_truth_in_catalog_count"] == 2
+    assert report["valid_users_ground_truth_in_catalog_count"] == 1
+    assert report["valid_users_ground_truth_in_catalog_all_true"] is True
+    assert report["valid_users_train_items_in_catalog_all_true"] is True
+    assert report["valid_users_core_metadata_complete_all_true"] is True
 
     base_table = json.loads(output_json.read_text(encoding="utf-8"))
     assert len(base_table) == 2
@@ -266,3 +271,113 @@ def test_build_leave_one_out_evaluation_base_outputs_validity_flags_and_subset_f
     subset = service.create_experiment_subset(sample_size=1, random_seed=7)
     assert len(subset) == 1
     assert subset[0]["customer_id"] == "u1"
+
+    rebuilt_report = service.rebuild_evaluation_base_validation_report()
+    assert rebuilt_report["all_base_users_ground_truth_in_catalog_count"] == 2
+    assert rebuilt_report["valid_users_ground_truth_in_catalog_count"] == 1
+
+
+def test_build_svd_top10_debug_subset_outputs_candidate_pool_validation(isolated_env):
+    service = DataService(isolated_env)
+    base_rows = []
+    for user_number in range(1, 4):
+        train_article_ids = [f"{user_number:02d}{index:02d}" for index in range(1, 10)]
+        base_rows.append(
+                {
+                    "customer_id": f"u{user_number}",
+                    "total_transaction_count": 10,
+                    "train_count": 9,
+                    "train_article_ids": train_article_ids,
+                    "train_transaction_dates": [f"2024-01-{index:02d}" for index in range(1, 10)],
+                    "ground_truth_article_id": "0201" if user_number == 1 else ("0101" if user_number == 2 else "9999"),
+                "ground_truth_transaction_date": "2024-01-10",
+                "ground_truth_product_type_name": "Top",
+                "ground_truth_product_group_name": "Upper",
+                "ground_truth_colour_group_name": "Black",
+                "ground_truth_graphical_appearance_name": "Solid",
+                "ground_truth_garment_group_name": "Jersey",
+                "ground_truth_department_name": "Dept",
+                "ground_truth_section_name": "Sec",
+                "ground_truth_index_name": "Idx",
+                "ground_truth_detail_desc": None,
+                "ground_truth_detail_desc_missing": True,
+                "train_items_in_catalog": True,
+                "ground_truth_in_catalog": True,
+                "article_id_format_check": "passed",
+                "customer_id_format_check": "passed",
+                "core_metadata_complete": True,
+                "is_valid_for_svd_evaluation_base": True,
+                "is_valid_for_agentic_evaluation_base": True,
+                "is_valid_for_final_comparison_base": True,
+                "invalid_reason": "",
+            }
+        )
+    isolated_env.evaluation_base_table_svd_top10_all_valid_json_path.write_text(
+        json.dumps(base_rows, indent=2),
+        encoding="utf-8",
+    )
+    processed_rows = []
+    for row in base_rows:
+        for article_id in row["train_article_ids"] + [row["ground_truth_article_id"]]:
+            processed_rows.append(
+                [
+                    row["customer_id"],
+                    article_id,
+                    "2024-01-01",
+                    10.0,
+                    1,
+                    "Top",
+                    "Upper",
+                    "Solid",
+                    "Black",
+                    "Jersey",
+                    "Dept",
+                    "Sec",
+                    "Idx",
+                    None,
+                ]
+            )
+    for article_id in ["9801", "9802", "9803", "9804", "9805"]:
+        processed_rows.append(
+            ["catalog", article_id, "2024-02-01", 11.0, 1, "Top", "Upper", "Solid", "Black", "Jersey", "Dept", "Sec", "Idx", None]
+        )
+    pd.DataFrame(
+        processed_rows,
+        columns=[
+            "customer_id",
+            "article_id",
+            "t_dat",
+            "price",
+            "sales_channel_id",
+            "product_type_name",
+            "product_group_name",
+            "graphical_appearance_name",
+            "colour_group_name",
+            "garment_group_name",
+            "department_name",
+            "section_name",
+            "index_name",
+            "detail_desc",
+        ],
+    ).to_csv(isolated_env.processed_interactions_with_articles_csv_path, index=False)
+    isolated_env.candidate_pool_size = 4
+
+    report = service.build_svd_top10_debug_subset(sample_size=2, random_seed=42)
+
+    assert report["full_valid_user_pool_size"] == 3
+    assert report["svd_scoreable_valid_users_count"] == 2
+    assert report["actual_selected_subset_size"] == 2
+    assert report["users_with_valid_candidate_pool"] == 2
+    assert report["users_with_invalid_candidate_pool"] == 0
+    assert report["ground_truth_in_candidate_pool_count"] == 2
+    assert report["candidate_pool_all_items_in_catalog_count"] == 2
+    assert report["candidate_pool_all_items_in_global_training_vocab_count"] == 2
+    assert report["duplicate_candidate_pool_count"] == 0
+
+    subset_payload = json.loads(
+        isolated_env.evaluation_base_table_svd_top10_100_json_path.read_text(encoding="utf-8")
+    )
+    assert len(subset_payload) == 2
+    assert all(row["candidate_pool_valid"] is True for row in subset_payload)
+    assert all(row["ground_truth_in_candidate_pool"] is True for row in subset_payload)
+    assert all(row["candidate_pool_has_duplicates"] is False for row in subset_payload)

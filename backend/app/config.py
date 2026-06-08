@@ -129,6 +129,42 @@ class Settings(BaseSettings):
     def evaluation_base_validation_report_svd_top10_all_valid_path(self) -> Path:
         return self.processed_data_dir / "evaluation_base_validation_report_svd_top10_all_valid.json"
 
+    @property
+    def evaluation_base_table_svd_top10_100_json_path(self) -> Path:
+        return self.processed_data_dir / "evaluation_base_table_svd_top10_100.json"
+
+    @property
+    def evaluation_base_table_svd_top10_100_csv_path(self) -> Path:
+        return self.processed_data_dir / "evaluation_base_table_svd_top10_100.csv"
+
+    @property
+    def candidate_pool_validation_report_svd_top10_100_path(self) -> Path:
+        return self.processed_data_dir / "candidate_pool_validation_report_svd_top10_100.json"
+
+    @property
+    def svd_recommendations_top10_100_json_path(self) -> Path:
+        return self.processed_data_dir / "svd_recommendations_top10_100.json"
+
+    @property
+    def svd_recommendations_top10_100_csv_path(self) -> Path:
+        return self.processed_data_dir / "svd_recommendations_top10_100.csv"
+
+    @property
+    def svd_baseline_validation_report_top10_100_path(self) -> Path:
+        return self.processed_data_dir / "svd_baseline_validation_report_top10_100.json"
+
+    @property
+    def agentic_recommendations_top10_100_json_path(self) -> Path:
+        return self.processed_data_dir / "agentic_recommendations_top10_100.json"
+
+    @property
+    def agentic_recommendations_top10_100_csv_path(self) -> Path:
+        return self.processed_data_dir / "agentic_recommendations_top10_100.csv"
+
+    @property
+    def agentic_top10_validation_report_100_path(self) -> Path:
+        return self.processed_data_dir / "agentic_top10_validation_report_100.json"
+
     def experiment_artifact_path(self, experiment_mode: str, artifact_name: str) -> Path:
         if experiment_mode == self.LEGACY_DEBUG_EXPERIMENT_MODE:
             return getattr(self, f"{artifact_name}_path")
