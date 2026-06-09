@@ -273,6 +273,151 @@ class EvaluationService:
             "bootstrap": bootstrap_report,
         }
 
+    def compute_three_method_top10_metrics_from_saved_artifacts(
+        self,
+        subset_size: int = 1000,
+        bootstrap_samples: int = 1000,
+        random_seed: int = 42,
+    ) -> dict[str, object]:
+        evaluation_rows = json.loads(
+            self.settings.evaluation_base_table_svd_top10_json_path(subset_size).read_text(encoding="utf-8")
+        )
+        svd_rows = json.loads(self.settings.svd_recommendations_top10_json_path(subset_size).read_text(encoding="utf-8"))
+        agentic_rows = json.loads(
+            self.settings.agentic_recommendations_top10_json_path(subset_size).read_text(encoding="utf-8")
+        )
+        hybrid_rows = json.loads(
+            self.settings.hybrid_svd_agentic_recommendations_top10_json_path(subset_size).read_text(encoding="utf-8")
+        )
+        processed = pd.read_csv(
+            self.settings.processed_interactions_with_articles_csv_path,
+            dtype={"article_id": "string", "customer_id": "string"},
+        )
+        metadata_lookup = self._build_article_metadata_lookup(processed)
+        evaluation_lookup = {
+            normalize_customer_id(row["customer_id"]): self._normalize_evaluation_row(row)
+            for row in evaluation_rows
+        }
+        method_payloads = {
+            "svd": {
+                "summary_label": "svd",
+                "display_label": "SVD Matrix Factorisation",
+                "payload": {
+                    normalize_customer_id(row["customer_id"]): self._normalize_saved_recommendation_row(row)
+                    for row in svd_rows
+                },
+            },
+            "agentic": {
+                "summary_label": "agentic",
+                "display_label": "Standalone 3-Agent",
+                "payload": {
+                    normalize_customer_id(row["customer_id"]): self._normalize_saved_recommendation_row(row)
+                    for row in agentic_rows
+                },
+            },
+            "hybrid": {
+                "summary_label": "hybrid",
+                "display_label": "Hybrid SVD + 3-Agent Reranker",
+                "payload": {
+                    normalize_customer_id(row["customer_id"]): self._normalize_saved_recommendation_row(row)
+                    for row in hybrid_rows
+                },
+            },
+        }
+
+        per_user_rows: list[dict[str, object]] = []
+        validation_report = {
+            "users_evaluated": len(evaluation_lookup),
+            "users_with_svd_metrics": 0,
+            "users_with_agentic_metrics": 0,
+            "users_with_hybrid_metrics": 0,
+            "svd_top_10_count_check": 0,
+            "agentic_top_10_count_check": 0,
+            "hybrid_top_10_count_check": 0,
+            "svd_recommendations_inside_candidate_pool_check": 0,
+            "agentic_recommendations_inside_candidate_pool_check": 0,
+            "hybrid_recommendations_inside_candidate_pool_check": 0,
+            "missing_metadata_for_diversity_count": 0,
+            "metric_calculation_errors": [],
+        }
+
+        for customer_id, eval_row in evaluation_lookup.items():
+            ground_truth_article_id = eval_row["ground_truth_article_id"]
+            candidate_pool_set = set(eval_row["candidate_pool_article_ids"])
+            row_result: dict[str, object] = {
+                "customer_id": customer_id,
+                "ground_truth_article_id": ground_truth_article_id,
+            }
+
+            for method_key, payload_meta in method_payloads.items():
+                rec_row = payload_meta["payload"].get(customer_id, {"top_10_recommendations": []})
+                recommendations = rec_row.get("top_10_recommendations", [])
+                metrics, missing_count, errors = self._compute_method_metrics_for_user(
+                    customer_id=customer_id,
+                    ground_truth_article_id=ground_truth_article_id,
+                    recommendations=recommendations,
+                    metadata_lookup=metadata_lookup,
+                    method_label=method_key,
+                )
+                row_result[f"{method_key}_hit_rate_at_10"] = metrics["hit_rate_at_10"]
+                row_result[f"{method_key}_ground_truth_rank"] = metrics["ground_truth_rank"]
+                row_result[f"{method_key}_ndcg_at_10"] = metrics["ndcg_at_10"]
+                row_result[f"{method_key}_ild_at_10"] = metrics["ild_at_10"]
+                validation_report["missing_metadata_for_diversity_count"] += missing_count
+                validation_report["metric_calculation_errors"].extend(errors)
+
+                if recommendations:
+                    validation_report[f"users_with_{method_key}_metrics"] += 1
+                if len(recommendations) == self.settings.top_n:
+                    validation_report[f"{method_key}_top_10_count_check"] += 1
+                if all(normalize_article_id(item.get("article_id")) in candidate_pool_set for item in recommendations):
+                    validation_report[f"{method_key}_recommendations_inside_candidate_pool_check"] += 1
+
+            per_user_rows.append(row_result)
+
+        self.settings.per_user_metrics_top10_three_methods_json_path(subset_size).write_text(
+            json.dumps(per_user_rows, indent=2),
+            encoding="utf-8",
+        )
+        self.settings.per_user_metrics_top10_three_methods_csv_path(subset_size).write_text(
+            pd.DataFrame(per_user_rows).to_csv(index=False),
+            encoding="utf-8",
+        )
+
+        summary = self._build_three_method_metric_summary(per_user_rows, subset_size=subset_size)
+        self.settings.metric_summary_top10_three_methods_json_path(subset_size).write_text(
+            json.dumps(summary, indent=2),
+            encoding="utf-8",
+        )
+        self.settings.metric_summary_top10_three_methods_csv_path(subset_size).write_text(
+            pd.DataFrame([self._flatten_three_method_metric_summary(summary)]).to_csv(index=False),
+            encoding="utf-8",
+        )
+
+        bootstrap_report = self._build_three_method_bootstrap_ci_report(
+            per_user_rows=per_user_rows,
+            bootstrap_samples=bootstrap_samples,
+            random_seed=random_seed,
+        )
+        self.settings.bootstrap_ci_report_top10_three_methods_json_path(subset_size).write_text(
+            json.dumps(bootstrap_report, indent=2),
+            encoding="utf-8",
+        )
+
+        self._write_hybrid_audit_report(
+            subset_size=subset_size,
+            summary=summary,
+            bootstrap_report=bootstrap_report,
+            validation_report=validation_report,
+        )
+
+        return {
+            "summary": summary,
+            "validation": validation_report,
+            "per_user_metrics": per_user_rows,
+            "bootstrap": bootstrap_report,
+        }
+
     def _model_metrics(
         self,
         user_ids: list[str],
@@ -638,6 +783,78 @@ class EvaluationService:
             "agentic_intra_list_diversity_at_10": agentic["intra_list_diversity_at_10"],
         }
 
+    def _build_three_method_metric_summary(
+        self,
+        per_user_rows: list[dict[str, object]],
+        subset_size: int,
+    ) -> dict[str, object]:
+        total_users = len(per_user_rows)
+
+        def avg(field: str) -> float:
+            if not per_user_rows:
+                return 0.0
+            return round(sum(float(row[field]) for row in per_user_rows) / total_users, 6)
+
+        def hit_counts(prefix: str) -> tuple[int, int]:
+            hits = sum(int(row[f"{prefix}_hit_rate_at_10"]) for row in per_user_rows)
+            return hits, total_users - hits
+
+        svd_hits, svd_misses = hit_counts("svd")
+        agentic_hits, agentic_misses = hit_counts("agentic")
+        hybrid_hits, hybrid_misses = hit_counts("hybrid")
+        return {
+            "evaluation_scope": {
+                "valid_evaluated_users": total_users,
+                "candidate_pool_size": self.settings.candidate_pool_size,
+                "top_k": self.settings.top_n,
+                "experiment_subset_size": subset_size,
+                "split_strategy": "leave_one_out",
+            },
+            "svd": {
+                "method": "SVD Matrix Factorisation",
+                "hit_rate_at_10": avg("svd_hit_rate_at_10"),
+                "hits_count": svd_hits,
+                "miss_count": svd_misses,
+                "ndcg_at_10": avg("svd_ndcg_at_10"),
+                "intra_list_diversity_at_10": avg("svd_ild_at_10"),
+            },
+            "agentic": {
+                "method": "Standalone 3-Agent",
+                "hit_rate_at_10": avg("agentic_hit_rate_at_10"),
+                "hits_count": agentic_hits,
+                "miss_count": agentic_misses,
+                "ndcg_at_10": avg("agentic_ndcg_at_10"),
+                "intra_list_diversity_at_10": avg("agentic_ild_at_10"),
+            },
+            "hybrid": {
+                "method": "Hybrid SVD + 3-Agent Reranker",
+                "hit_rate_at_10": avg("hybrid_hit_rate_at_10"),
+                "hits_count": hybrid_hits,
+                "miss_count": hybrid_misses,
+                "ndcg_at_10": avg("hybrid_ndcg_at_10"),
+                "intra_list_diversity_at_10": avg("hybrid_ild_at_10"),
+            },
+        }
+
+    @staticmethod
+    def _flatten_three_method_metric_summary(summary: dict[str, object]) -> dict[str, object]:
+        evaluation_scope = summary["evaluation_scope"]
+        flat = {
+            "valid_evaluated_users": evaluation_scope["valid_evaluated_users"],
+            "candidate_pool_size": evaluation_scope["candidate_pool_size"],
+            "top_k": evaluation_scope["top_k"],
+            "experiment_subset_size": evaluation_scope["experiment_subset_size"],
+            "split_strategy": evaluation_scope["split_strategy"],
+        }
+        for key in ("svd", "agentic", "hybrid"):
+            method = summary[key]
+            flat[f"{key}_hit_rate_at_10"] = method["hit_rate_at_10"]
+            flat[f"{key}_hits_count"] = method["hits_count"]
+            flat[f"{key}_miss_count"] = method["miss_count"]
+            flat[f"{key}_ndcg_at_10"] = method["ndcg_at_10"]
+            flat[f"{key}_intra_list_diversity_at_10"] = method["intra_list_diversity_at_10"]
+        return flat
+
     def _build_bootstrap_ci_report(
         self,
         *,
@@ -709,3 +926,188 @@ class EvaluationService:
         upper_index = min(lower_index + 1, len(ordered) - 1)
         weight = position - lower_index
         return ordered[lower_index] * (1 - weight) + ordered[upper_index] * weight
+
+    def _build_three_method_bootstrap_ci_report(
+        self,
+        *,
+        per_user_rows: list[dict[str, object]],
+        bootstrap_samples: int,
+        random_seed: int,
+    ) -> dict[str, object]:
+        rng = random.Random(random_seed)
+        metrics = {
+            "svd_hit_rate_at_10": [],
+            "agentic_hit_rate_at_10": [],
+            "hybrid_hit_rate_at_10": [],
+            "svd_ndcg_at_10": [],
+            "agentic_ndcg_at_10": [],
+            "hybrid_ndcg_at_10": [],
+            "svd_ild_at_10": [],
+            "agentic_ild_at_10": [],
+            "hybrid_ild_at_10": [],
+            "difference_hybrid_minus_svd_hit_rate_at_10": [],
+            "difference_hybrid_minus_svd_ndcg_at_10": [],
+            "difference_hybrid_minus_svd_ild_at_10": [],
+            "difference_hybrid_minus_agentic_hit_rate_at_10": [],
+            "difference_hybrid_minus_agentic_ndcg_at_10": [],
+            "difference_hybrid_minus_agentic_ild_at_10": [],
+        }
+        row_count = len(per_user_rows)
+        for _ in range(bootstrap_samples):
+            sample = [per_user_rows[rng.randrange(row_count)] for _ in range(row_count)]
+            means = {
+                field: sum(float(row[field]) for row in sample) / row_count
+                for field in (
+                    "svd_hit_rate_at_10",
+                    "agentic_hit_rate_at_10",
+                    "hybrid_hit_rate_at_10",
+                    "svd_ndcg_at_10",
+                    "agentic_ndcg_at_10",
+                    "hybrid_ndcg_at_10",
+                    "svd_ild_at_10",
+                    "agentic_ild_at_10",
+                    "hybrid_ild_at_10",
+                )
+            }
+            for field, value in means.items():
+                metrics[field].append(value)
+            metrics["difference_hybrid_minus_svd_hit_rate_at_10"].append(
+                means["hybrid_hit_rate_at_10"] - means["svd_hit_rate_at_10"]
+            )
+            metrics["difference_hybrid_minus_svd_ndcg_at_10"].append(
+                means["hybrid_ndcg_at_10"] - means["svd_ndcg_at_10"]
+            )
+            metrics["difference_hybrid_minus_svd_ild_at_10"].append(
+                means["hybrid_ild_at_10"] - means["svd_ild_at_10"]
+            )
+            metrics["difference_hybrid_minus_agentic_hit_rate_at_10"].append(
+                means["hybrid_hit_rate_at_10"] - means["agentic_hit_rate_at_10"]
+            )
+            metrics["difference_hybrid_minus_agentic_ndcg_at_10"].append(
+                means["hybrid_ndcg_at_10"] - means["agentic_ndcg_at_10"]
+            )
+            metrics["difference_hybrid_minus_agentic_ild_at_10"].append(
+                means["hybrid_ild_at_10"] - means["agentic_ild_at_10"]
+            )
+
+        return {
+            "bootstrap_samples": bootstrap_samples,
+            "random_seed": random_seed,
+            "confidence_intervals": {
+                metric_name: {
+                    "mean": round(sum(values) / len(values), 6),
+                    "ci_95_lower": round(self._percentile(values, 2.5), 6),
+                    "ci_95_upper": round(self._percentile(values, 97.5), 6),
+                }
+                for metric_name, values in metrics.items()
+            },
+        }
+
+    def _write_hybrid_audit_report(
+        self,
+        *,
+        subset_size: int,
+        summary: dict[str, object],
+        bootstrap_report: dict[str, object],
+        validation_report: dict[str, object],
+    ) -> None:
+        ci = bootstrap_report["confidence_intervals"]
+        hybrid = summary["hybrid"]
+        svd = summary["svd"]
+        agentic = summary["agentic"]
+        hybrid_better_than_svd = (
+            hybrid["hit_rate_at_10"] > svd["hit_rate_at_10"]
+            and hybrid["ndcg_at_10"] > svd["ndcg_at_10"]
+        )
+        hybrid_better_than_agentic = (
+            hybrid["hit_rate_at_10"] > agentic["hit_rate_at_10"]
+            and hybrid["ndcg_at_10"] > agentic["ndcg_at_10"]
+        )
+        lines = [
+            "# Hybrid SVD + 3-Agent Audit Report",
+            "",
+            "## Why Hybrid Was Added",
+            "",
+            "The standalone 3-agent method underperformed SVD in the saved 1,000-user offline evaluation.",
+            "The hybrid experiment tests whether agentic evidence can help as a reranking signal on top of SVD rather than replacing SVD.",
+            "",
+            "## Method Description",
+            "",
+            "- SVD remains the main behavioural relevance signal.",
+            "- The standalone 3-agent score is used as a metadata evidence signal.",
+            "- A small diversity bonus is applied during iterative Top-10 selection.",
+            "",
+            "## Hybrid Scoring Formula",
+            "",
+            "```text",
+            "hybrid_score = 0.70 * normalized_svd_score",
+            "             + 0.25 * normalized_agentic_score",
+            "             + 0.05 * diversity_bonus",
+            "```",
+            "",
+            "## Validation Checks",
+            "",
+        ]
+        for key, value in validation_report.items():
+            lines.append(f"- {key}: {value}")
+        lines.extend(
+            [
+                "",
+                "## Final Metrics",
+                "",
+                f"- SVD HitRate@10: {svd['hit_rate_at_10']:.6f}",
+                f"- SVD NDCG@10: {svd['ndcg_at_10']:.6f}",
+                f"- SVD ILD@10: {svd['intra_list_diversity_at_10']:.6f}",
+                f"- Standalone 3-Agent HitRate@10: {agentic['hit_rate_at_10']:.6f}",
+                f"- Standalone 3-Agent NDCG@10: {agentic['ndcg_at_10']:.6f}",
+                f"- Standalone 3-Agent ILD@10: {agentic['intra_list_diversity_at_10']:.6f}",
+                f"- Hybrid HitRate@10: {hybrid['hit_rate_at_10']:.6f}",
+                f"- Hybrid NDCG@10: {hybrid['ndcg_at_10']:.6f}",
+                f"- Hybrid ILD@10: {hybrid['intra_list_diversity_at_10']:.6f}",
+                "",
+                "## Bootstrap Confidence Intervals",
+                "",
+            ]
+        )
+        for metric_name, values in ci.items():
+            lines.append(
+                f"- {metric_name}: mean={values['mean']:.6f}, "
+                f"95% CI [{values['ci_95_lower']:.6f}, {values['ci_95_upper']:.6f}]"
+            )
+        lines.extend(
+            [
+                "",
+                "## Did Hybrid Improve?",
+                "",
+                f"- Hybrid improved over SVD on offline relevance: {hybrid_better_than_svd}",
+                f"- Hybrid improved over standalone 3-agent on offline relevance: {hybrid_better_than_agentic}",
+                "",
+                "## Honest Interpretation",
+                "",
+            ]
+        )
+        if hybrid_better_than_svd:
+            lines.append("- The saved offline metrics show the hybrid outperforming SVD on relevance.")
+        else:
+            lines.append("- The saved offline metrics do not show the hybrid outperforming SVD on relevance.")
+            lines.append("- SVD remains the strongest offline relevance baseline in this experiment.")
+        if hybrid_better_than_agentic:
+            lines.append("- The hybrid outperforms standalone 3-agent on offline relevance.")
+        else:
+            lines.append("- The hybrid does not outperform standalone 3-agent on offline relevance.")
+        if hybrid["intra_list_diversity_at_10"] > agentic["intra_list_diversity_at_10"]:
+            lines.append("- The hybrid improves diversity over standalone 3-agent.")
+        lines.extend(
+            [
+                "",
+                "## Limitations",
+                "",
+                "- These are offline metrics only.",
+                "- They do not establish customer engagement, CTR, CVR, or business impact.",
+                "- The hybrid uses a fixed heuristic formula and was not tuned in this step.",
+            ]
+        )
+        self.settings.hybrid_svd_agentic_audit_report_top10_path(subset_size).write_text(
+            "\n".join(lines) + "\n",
+            encoding="utf-8",
+        )

@@ -233,6 +233,33 @@ class Settings(BaseSettings):
     def bootstrap_ci_report_top10_json_path(self, sample_size: int) -> Path:
         return self.processed_data_dir / f"bootstrap_ci_report_top10_{sample_size}.json"
 
+    def hybrid_svd_agentic_recommendations_top10_json_path(self, sample_size: int) -> Path:
+        return self.processed_data_dir / f"hybrid_svd_agentic_recommendations_top10_{sample_size}.json"
+
+    def hybrid_svd_agentic_recommendations_top10_csv_path(self, sample_size: int) -> Path:
+        return self.processed_data_dir / f"hybrid_svd_agentic_recommendations_top10_{sample_size}.csv"
+
+    def hybrid_svd_agentic_validation_report_top10_path(self, sample_size: int) -> Path:
+        return self.processed_data_dir / f"hybrid_svd_agentic_validation_report_top10_{sample_size}.json"
+
+    def per_user_metrics_top10_three_methods_json_path(self, sample_size: int) -> Path:
+        return self.processed_data_dir / f"per_user_metrics_top10_{sample_size}_three_methods.json"
+
+    def per_user_metrics_top10_three_methods_csv_path(self, sample_size: int) -> Path:
+        return self.processed_data_dir / f"per_user_metrics_top10_{sample_size}_three_methods.csv"
+
+    def metric_summary_top10_three_methods_json_path(self, sample_size: int) -> Path:
+        return self.processed_data_dir / f"metric_summary_top10_{sample_size}_three_methods.json"
+
+    def metric_summary_top10_three_methods_csv_path(self, sample_size: int) -> Path:
+        return self.processed_data_dir / f"metric_summary_top10_{sample_size}_three_methods.csv"
+
+    def bootstrap_ci_report_top10_three_methods_json_path(self, sample_size: int) -> Path:
+        return self.processed_data_dir / f"bootstrap_ci_report_top10_{sample_size}_three_methods.json"
+
+    def hybrid_svd_agentic_audit_report_top10_path(self, sample_size: int) -> Path:
+        return self.processed_data_dir / f"hybrid_svd_agentic_audit_report_top10_{sample_size}.md"
+
     def experiment_artifact_path(self, experiment_mode: str, artifact_name: str) -> Path:
         if experiment_mode == self.LEGACY_DEBUG_EXPERIMENT_MODE:
             return getattr(self, f"{artifact_name}_path")

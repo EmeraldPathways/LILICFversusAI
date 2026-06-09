@@ -117,6 +117,7 @@ class AgenticRecommendationService:
         user_profile: dict[str, Any],
         candidates: pd.DataFrame,
         train_df: pd.DataFrame,
+        limit: int | None = None,
     ) -> list[dict[str, Any]]:
         train_df = self._normalize_ids(train_df)
         if candidates.empty:
@@ -168,7 +169,10 @@ class AgenticRecommendationService:
             )
 
         scored_items.sort(key=lambda item: item["score"], reverse=True)
-        return scored_items[: self.settings.top_n]
+        top_limit = self.settings.top_n if limit is None else limit
+        if top_limit <= 0:
+            return []
+        return scored_items[:top_limit]
 
     def generate_explanation(self, user_profile: dict[str, Any], scored_item: dict[str, Any]) -> str:
         llm_result = self._request_structured_completion(
