@@ -36,7 +36,7 @@ function renderValue(value: unknown): ReactNode {
 
 export function AgentProcessPanel({ stages }: { stages: AgentProcessStage[] }) {
   if (!stages.length) {
-    return <section className="card muted">Run the experiment to inspect the five-agent process trace.</section>;
+    return <section className="card muted">Run the experiment to inspect the 3-agent process trace.</section>;
   }
 
   return (

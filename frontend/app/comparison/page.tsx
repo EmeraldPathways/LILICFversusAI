@@ -11,12 +11,12 @@ export default async function ComparisonPage() {
         <span className="eyebrow">Model Comparison</span>
         <h2 className="section-title">Collaborative Filtering vs Agentic AI</h2>
         <p className="muted">
-          The benchmark returns similarity-based products. The agentic model returns products with
-          explicit reasons, exposes the five-agent pipeline, and supports simulated feedback
-          adaptation.
+          The benchmark returns products from the formal SVD leave-one-out experiment. The agentic
+          model applies the saved 3-agent ranking test on the same evaluated users and candidate
+          pools.
         </p>
       </section>
-      <ComparisonExplorer userIds={userIds} />
+      <ComparisonExplorer userIds={userIds} benchmarkLabel={setup?.benchmark ?? "SVD Matrix Factorisation"} />
     </div>
   );
 }

@@ -80,9 +80,9 @@ export default async function DataProcessingPage() {
           <strong>Experimental traceability</strong>
           <p className="muted">
             The preprocessing stage merges transaction history with article metadata, removes sparse
-            noise, preserves time order, and then splits the sample into 80% historical behaviour
-            and 20% future behaviour. That keeps the evaluation aligned with a realistic
-            recommendation setting and avoids information leakage.
+            noise, preserves time order, and then applies a leave-one-out split per evaluated
+            customer. That keeps the formal SVD versus 3-agent comparison aligned with a realistic
+            next-item recommendation setting and avoids information leakage.
           </p>
         </article>
       </section>

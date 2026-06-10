@@ -26,8 +26,8 @@ export default async function ResearchSetupPage() {
       <section className="grid two">
         <article className="card">
           <strong>Core Design</strong>
-          <p className="muted">Task: Top-N recommendation on a time-based 80/20 train-test split.</p>
-          <p className="muted">Evaluation: offline proxy metrics based on future held-out behaviour.</p>
+          <p className="muted">Task: Top-N recommendation on the configured offline evaluation split.</p>
+          <p className="muted">Split: {setup?.split_method ?? "Unavailable"}.</p>
           <p className="muted">
             Metrics: {(setup?.evaluation_metrics ?? ["Hit Rate@10", "Preference Alignment", "Diversity"]).join(", ")}
           </p>
@@ -43,4 +43,3 @@ export default async function ResearchSetupPage() {
     </div>
   );
 }
-

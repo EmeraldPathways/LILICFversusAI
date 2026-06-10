@@ -55,6 +55,130 @@ def test_metrics_endpoint(client, isolated_env):
     assert response.json()["agentic_ai_framework"]["diversity"] == 0.5
 
 
+def test_metrics_endpoint_reads_formal_svd_summary_when_requested(client, isolated_env):
+    isolated_env.metric_summary_top10_100_json_path.write_text(
+        json.dumps(
+            {
+                "evaluation_scope": {
+                    "valid_evaluated_users": 100,
+                    "candidate_pool_size": 100,
+                    "top_k": 10,
+                    "split_strategy": "leave_one_out",
+                    "baseline": "SVD Matrix Factorisation",
+                    "comparison_method": "3-Agent Agentic AI",
+                },
+                "svd": {
+                    "hit_rate_at_10": 0.35,
+                    "hits_count": 35,
+                    "miss_count": 65,
+                    "ndcg_at_10": 0.187798,
+                    "intra_list_diversity_at_10": 0.75,
+                },
+                "agentic": {
+                    "hit_rate_at_10": 0.38,
+                    "hits_count": 38,
+                    "miss_count": 62,
+                    "ndcg_at_10": 0.196679,
+                    "intra_list_diversity_at_10": 0.549185,
+                },
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    response = client.get("/metrics?mode=svd_top10_experiment")
+
+    assert response.status_code == 200
+    payload = response.json()
+    assert payload["svd_matrix_factorization"]["ndcg_at_10"] == 0.187798
+    assert payload["agentic_ai_framework"]["intra_list_diversity_at_10"] == 0.549185
+    assert payload["evaluated_users"] == 100
+
+
+def test_formal_user_intent_endpoint_reads_saved_preference_profile(client, isolated_env):
+    isolated_env.agentic_recommendations_top10_100_json_path.write_text(
+        json.dumps(
+            [
+                {
+                    "customer_id": "u1",
+                    "preference_profile": {
+                        "user_id": "u1",
+                        "inferred_intent": "casual tops",
+                        "preferred_categories": ["Garment Upper body"],
+                        "preferred_product_types": ["Top"],
+                        "preferred_colours": ["White"],
+                        "preferred_appearance": ["Solid"],
+                        "shopping_context": "offline historical preference evaluation",
+                    },
+                    "top_10_recommendations": [],
+                }
+            ]
+        ),
+        encoding="utf-8",
+    )
+
+    response = client.get("/users/u1/intent?mode=svd_top10_experiment")
+
+    assert response.status_code == 200
+    payload = response.json()
+    assert payload["user_id"] == "u1"
+    assert payload["inferred_intent"] == "casual tops"
+
+
+def test_formal_recommendation_comparison_reads_saved_top10_artifacts(client, isolated_env):
+    isolated_env.svd_recommendations_top10_100_json_path.write_text(
+        json.dumps(
+            [
+                {
+                    "customer_id": "u1",
+                    "top_10_recommendations": [
+                        {
+                            "article_id": "a1",
+                            "score": 0.42,
+                            "product_type_name": "Top",
+                            "product_group_name": "Garment Upper body",
+                            "colour_group_name": "White",
+                            "graphical_appearance_name": "Solid",
+                        }
+                    ],
+                }
+            ]
+        ),
+        encoding="utf-8",
+    )
+    isolated_env.agentic_recommendations_top10_100_json_path.write_text(
+        json.dumps(
+            [
+                {
+                    "customer_id": "u1",
+                    "top_10_recommendations": [
+                        {
+                            "article_id": "a2",
+                            "score": 0.91,
+                            "product_type_name": "Blouse",
+                            "product_group_name": "Garment Upper body",
+                            "colour_group_name": "Blue",
+                            "graphical_appearance_name": "Patterned",
+                            "recommendation_reason": "Matches the user's saved preference profile.",
+                        }
+                    ],
+                }
+            ]
+        ),
+        encoding="utf-8",
+    )
+
+    response = client.get("/recommendations/compare/u1?mode=svd_top10_experiment")
+
+    assert response.status_code == 200
+    payload = response.json()
+    assert payload["cf_recommendations"][0]["article_id"] == "a1"
+    assert payload["cf_recommendations"][0]["product_type"] == "Top"
+    assert payload["agentic_recommendations"][0]["article_id"] == "a2"
+    assert payload["agentic_recommendations"][0]["reason"] == "Matches the user's saved preference profile."
+    assert payload["agentic_process"] == []
+
+
 def test_recommendation_comparison_includes_agent_process(client, isolated_env, sample_interactions: pd.DataFrame):
     write_processed_artifacts(isolated_env, sample_interactions)
 

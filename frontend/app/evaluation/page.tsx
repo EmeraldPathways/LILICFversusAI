@@ -10,18 +10,21 @@ export default async function EvaluationPage() {
     return <section className="card muted">Run the backend experiment to generate evaluation metrics.</section>;
   }
 
+  const baseline = metrics.svd_matrix_factorization;
   const metricChart = [
     { label: "Hit Rate@10", value: metrics.agentic_ai_framework.hit_rate_at_10 },
-    { label: "Preference Alignment", value: metrics.agentic_ai_framework.preference_alignment },
-    { label: "Diversity", value: metrics.agentic_ai_framework.diversity },
+    { label: "NDCG@10", value: metrics.agentic_ai_framework.ndcg_at_10 ?? 0 },
+    {
+      label: "Intra-list Diversity@10",
+      value: metrics.agentic_ai_framework.intra_list_diversity_at_10 ?? 0,
+    },
   ];
   const hitRateDelta =
-    metrics.agentic_ai_framework.hit_rate_at_10 - metrics.collaborative_filtering.hit_rate_at_10;
-  const alignmentDelta =
-    metrics.agentic_ai_framework.preference_alignment -
-    metrics.collaborative_filtering.preference_alignment;
+    metrics.agentic_ai_framework.hit_rate_at_10 - (baseline?.hit_rate_at_10 ?? 0);
+  const ndcgDelta = (metrics.agentic_ai_framework.ndcg_at_10 ?? 0) - (baseline?.ndcg_at_10 ?? 0);
   const diversityDelta =
-    metrics.agentic_ai_framework.diversity - metrics.collaborative_filtering.diversity;
+    (metrics.agentic_ai_framework.intra_list_diversity_at_10 ?? 0) -
+    (baseline?.intra_list_diversity_at_10 ?? 0);
 
   return (
     <div className="stack">
@@ -36,28 +39,26 @@ export default async function EvaluationPage() {
           recommendation explanation, and feedback adaptation.
         </p>
         <p className="muted">
-          Both methods generate Top-N recommendations under the same sampled data environment and
-          are then compared against future user behaviour through Hit Rate@10, Preference
-          Alignment, and Diversity. The current run covers {metrics.evaluated_users} evaluated
-          users, so the interpretation should be treated as prototype evidence rather than a final
-          paper result.
+          Both methods generate Top-10 recommendations under the same leave-one-out split and
+          shared candidate pools. They are compared through Hit Rate@10, NDCG@10, and Intra-list
+          Diversity@10 across {metrics.evaluated_users} evaluated users.
         </p>
       </section>
       <section className="grid three">
         <MetricCard
-          label="CTR Proxy"
+          label="Hit Rate@10"
           value={metrics.business_mapping.hit_rate_at_10}
           detail="Mapped from Hit Rate@10"
         />
         <MetricCard
-          label="CVR Proxy"
-          value={metrics.business_mapping.preference_alignment}
-          detail="Mapped from Preference Alignment"
+          label="NDCG@10"
+          value={metrics.business_mapping.ndcg_at_10}
+          detail="Ranking quality for held-out purchases"
         />
         <MetricCard
-          label="Engagement Proxy"
-          value={metrics.business_mapping.diversity}
-          detail="Mapped from Diversity"
+          label="ILD@10"
+          value={metrics.business_mapping.intra_list_diversity_at_10}
+          detail="Assortment breadth inside each Top-10 list"
         />
       </section>
       <ModelComparisonTable metrics={metrics} />
@@ -66,31 +67,27 @@ export default async function EvaluationPage() {
         <article className="card">
           <strong>Research Interpretation</strong>
           <p className="muted">
-            In this paper framing, Hit Rate@10 is treated as a proxy for potential CTR impact,
-            Preference Alignment as a proxy for potential CVR impact, and Diversity as a proxy for
-            potential customer-engagement depth. These are inferential links rather than direct
-            live-market measurements.
+            Hit Rate@10 captures whether the held-out item appears anywhere in the final list.
+            NDCG@10 adds rank sensitivity, so higher values indicate better placement of relevant
+            items. Intra-list Diversity@10 shows how broad or narrow each Top-10 assortment is.
           </p>
           <p className="muted">
-            In the current run, the strongest result is Preference Alignment: the agentic framework
-            is {alignmentDelta > 0 ? "higher" : "not higher"} than collaborative filtering by{" "}
-            {Math.abs(alignmentDelta).toFixed(3)}. This is the clearest support for the claim that
-            the agentic layer improves the recommendation system&apos;s explicit understanding of user
-            needs.
+            In the current run, the 3-agent framework is{" "}
+            {ndcgDelta > 0 ? "higher" : "not higher"} than SVD on NDCG@10 by{" "}
+            {Math.abs(ndcgDelta).toFixed(3)}. That is the clearest signal of whether the agentic
+            ranker improves ordering quality rather than only matching on list inclusion.
           </p>
           <p className="muted">
-            No CTR-related improvement is demonstrated in this experiment because the two models
-            produced the same Hit Rate@10 result ({metrics.agentic_ai_framework.hit_rate_at_10.toFixed(3)} vs{" "}
-            {metrics.collaborative_filtering.hit_rate_at_10.toFixed(3)}). Diversity is{" "}
-            {diversityDelta < 0 ? "lower" : "higher"} for the agentic framework by{" "}
-            {Math.abs(diversityDelta).toFixed(3)}, so the engagement-depth claim is not supported
-            by this specific run.
+            Hit Rate@10 is {hitRateDelta > 0 ? "higher" : hitRateDelta < 0 ? "lower" : "unchanged"} for
+            the agentic framework by {Math.abs(hitRateDelta).toFixed(3)}. Intra-list Diversity@10
+            is {diversityDelta < 0 ? "lower" : "higher"} by {Math.abs(diversityDelta).toFixed(3)},
+            which shows whether the ranking logic is trading behavioural relevance for narrower or
+            broader recommendation lists.
           </p>
           <p className="muted">
-            The intended research relationship remains: agentic AI ability shapes how the system
-            interprets user needs, which may influence shopping-behaviour response and customer
-            engagement. A larger evaluated cohort is still needed before claiming stable business
-            implications.
+            These are offline comparison metrics rather than live business outcomes. They are
+            useful for controlled SVD-versus-agentic evaluation, not for claiming production CTR or
+            conversion impact on their own.
           </p>
         </article>
       </section>

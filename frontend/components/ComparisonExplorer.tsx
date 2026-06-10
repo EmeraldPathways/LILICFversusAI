@@ -9,12 +9,14 @@ import { getRecommendationComparison } from "@/lib/api";
 
 type ComparisonExplorerProps = {
   userIds: string[];
+  benchmarkLabel: string;
 };
 
-export function ComparisonExplorer({ userIds }: ComparisonExplorerProps) {
+export function ComparisonExplorer({ userIds, benchmarkLabel }: ComparisonExplorerProps) {
   const [selectedUser, setSelectedUser] = useState(userIds[0] ?? "");
   const [comparison, setComparison] = useState<RecommendationComparison | null>(null);
   const [error, setError] = useState<string>("");
+  const displayedStages = comparison?.agentic_process.slice(0, 3) ?? [];
 
   useEffect(() => {
     if (!selectedUser) {
@@ -51,26 +53,26 @@ export function ComparisonExplorer({ userIds }: ComparisonExplorerProps) {
         <div className="stack">
           <div className="grid two">
             <RecommendationTable
-              title="Collaborative Filtering Benchmark"
+              title={benchmarkLabel}
               userId={comparison.user_id}
               items={comparison.cf_recommendations}
             />
             <RecommendationTable
-              title="Agentic AI Recommendation Framework"
+              title="3-Agent Agentic AI Recommendation Framework"
               userId={comparison.user_id}
               items={comparison.agentic_recommendations}
               showReasons
             />
           </div>
           <section className="card">
-            <span className="eyebrow">Five-Agent Trace</span>
-            <h3 className="section-title">What each agent returned for this user</h3>
+            <span className="eyebrow">3-Agent Trace</span>
+            <h3 className="section-title">What the formal agentic pipeline returned for this user</h3>
             <p className="muted">
-              This trace exposes the decision-making steps behind the final agentic recommendations,
-              from inferred shopping intention through feedback adaptation state.
+              This trace exposes the saved intention, retrieval, and ranking steps behind the final
+              agentic recommendations for the formal evaluation run.
             </p>
           </section>
-          <AgentProcessPanel stages={comparison.agentic_process} />
+          <AgentProcessPanel stages={displayedStages} />
         </div>
       ) : null}
     </div>

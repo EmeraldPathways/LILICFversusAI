@@ -26,6 +26,7 @@ export type ExperimentSummary = {
 export type ExperimentSetup = {
   dataset: string;
   sample_size: number;
+  experiment_mode?: string | null;
   split_method: string;
   benchmark: string;
   proposed_framework: string;
@@ -79,21 +80,27 @@ export type AgentProcessStage = {
 
 export type ModelMetrics = {
   hit_rate_at_10: number;
-  preference_alignment: number;
-  diversity: number;
+  preference_alignment?: number | null;
+  diversity?: number | null;
+  ndcg_at_10?: number | null;
+  intra_list_diversity_at_10?: number | null;
+  hits_count?: number | null;
+  miss_count?: number | null;
   explanation_quality?: number | null;
   feedback_adaptability?: number | null;
 };
 
 export type MetricsResponse = {
-  collaborative_filtering: ModelMetrics;
+  collaborative_filtering?: ModelMetrics | null;
+  svd_matrix_factorization?: ModelMetrics | null;
   agentic_ai_framework: ModelMetrics;
   business_mapping: Record<string, string>;
   evaluated_users: number;
-  generated_at: string;
+  generated_at?: string | null;
 };
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8000";
+const FORMAL_EXPERIMENT_MODE = "svd_top10_experiment";
 
 async function apiFetch<T>(path: string, init?: RequestInit): Promise<T> {
   const headers = new Headers(init?.headers);
@@ -117,7 +124,7 @@ async function apiFetch<T>(path: string, init?: RequestInit): Promise<T> {
 
 export async function getSetup(): Promise<ExperimentSetup | null> {
   try {
-    return await apiFetch<ExperimentSetup>("/experiment/setup");
+    return await apiFetch<ExperimentSetup>(`/experiment/setup?mode=${FORMAL_EXPERIMENT_MODE}`);
   } catch {
     return null;
   }
@@ -125,18 +132,20 @@ export async function getSetup(): Promise<ExperimentSetup | null> {
 
 export async function getMetrics(): Promise<MetricsResponse | null> {
   try {
-    return await apiFetch<MetricsResponse>("/metrics");
+    return await apiFetch<MetricsResponse>(`/metrics?mode=${FORMAL_EXPERIMENT_MODE}`);
   } catch {
     return null;
   }
 }
 
 export async function getUserIntent(userId: string): Promise<UserIntent> {
-  return apiFetch<UserIntent>(`/users/${userId}/intent`);
+  return apiFetch<UserIntent>(`/users/${userId}/intent?mode=${FORMAL_EXPERIMENT_MODE}`);
 }
 
 export async function getRecommendationComparison(userId: string): Promise<RecommendationComparison> {
-  return apiFetch<RecommendationComparison>(`/recommendations/compare/${userId}`);
+  return apiFetch<RecommendationComparison>(
+    `/recommendations/compare/${userId}?mode=${FORMAL_EXPERIMENT_MODE}`,
+  );
 }
 
 export async function sendFeedback(

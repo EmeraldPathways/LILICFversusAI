@@ -55,18 +55,23 @@ class RecommendationComparisonResponse(BaseModel):
 
 class ModelMetrics(BaseModel):
     hit_rate_at_10: float
-    preference_alignment: float
-    diversity: float
+    preference_alignment: float | None = None
+    diversity: float | None = None
+    ndcg_at_10: float | None = None
+    intra_list_diversity_at_10: float | None = None
+    hits_count: int | None = None
+    miss_count: int | None = None
     explanation_quality: float | None = None
     feedback_adaptability: float | None = None
 
 
 class MetricsResponse(BaseModel):
-    collaborative_filtering: ModelMetrics
+    collaborative_filtering: ModelMetrics | None = None
+    svd_matrix_factorization: ModelMetrics | None = None
     agentic_ai_framework: ModelMetrics
     business_mapping: dict[str, str]
     evaluated_users: int
-    generated_at: datetime
+    generated_at: datetime | None = None
 
 
 class RunExperimentResponse(BaseModel):
