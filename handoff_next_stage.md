@@ -301,3 +301,36 @@ Allowed careful framing:
 - Standalone 3-Agent is an ablation, not a failure to hide
 - Hybrid is an augmentation / reranking layer
 - Results are offline ranking quality and explainability-related, not proof of live customer engagement
+
+## 21. Seed99 Robustness Run Completed
+
+- seed99 run completed: yes
+- users_evaluated = 1000
+- validation passed = yes
+
+Seed99 metrics:
+
+- SVD: HitRate@10 `0.505000`, NDCG@10 `0.296245`, ILD@10 `0.755089`
+- Standalone 3-Agent: HitRate@10 `0.269000`, NDCG@10 `0.154352`, ILD@10 `0.539319`
+- Hybrid: HitRate@10 `0.526000`, NDCG@10 `0.312443`, ILD@10 `0.692919`
+
+Key pairwise CI interpretation:
+
+- Hybrid minus SVD HitRate@10 CI: `[-0.001000, 0.042000]`
+- Hybrid minus SVD NDCG@10 CI: `[0.007190, 0.025000]`
+- Hybrid minus SVD ILD@10 CI: `[-0.066816, -0.057555]`
+- Hybrid minus Standalone 3-Agent HitRate@10 CI: `[0.225950, 0.286000]`
+- Hybrid minus Standalone 3-Agent NDCG@10 CI: `[0.133920, 0.180924]`
+- Hybrid minus Standalone 3-Agent ILD@10 CI: `[0.146976, 0.160104]`
+
+Careful final interpretation:
+
+The seed99 robustness run broadly confirms the previous 1,000-user findings. SVD remains much stronger than the standalone 3-agent recommender. The Hybrid method remains much stronger than standalone 3-agent. In seed99, Hybrid improves NDCG@10 over SVD, but it does not clearly improve HitRate@10 because the confidence interval crosses zero. Hybrid remains less diverse than SVD. Therefore, the dissertation should frame the Hybrid method as an augmentation and reranking layer that can improve ranking position quality and provide evidence-based explainability, not as a full replacement for SVD.
+
+Guardrails:
+
+- Do not claim live customer engagement improvement.
+- Do not claim CTR/CVR improvement.
+- Do not claim feedback adaptation was validated.
+- Do not claim Hybrid universally beats SVD.
+- Do not hide the standalone 3-agent ablation result.
