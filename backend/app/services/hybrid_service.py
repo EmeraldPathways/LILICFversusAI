@@ -19,10 +19,19 @@ class HybridRecommendationService:
     cf_service: CollaborativeFilteringService
     agentic_service: AgenticRecommendationService
 
-    def build_hybrid_svd_agentic_reranker(self, subset_size: int = 1000, random_state: int = 42) -> dict[str, object]:
+    def build_hybrid_svd_agentic_reranker(
+        self,
+        subset_size: int = 1000,
+        random_state: int = 42,
+        artifact_prefix: str | None = None,
+        allow_overwrite: bool | None = None,
+    ) -> dict[str, object]:
         processed = self.cf_service._load_processed_interactions_with_articles()
         subset_rows = json.loads(
-            self.settings.evaluation_base_table_svd_top10_json_path(subset_size).read_text(encoding="utf-8")
+            self.settings.evaluation_base_table_svd_top10_json_path(
+                subset_size,
+                artifact_prefix=artifact_prefix,
+            ).read_text(encoding="utf-8")
         )
         metadata = self.cf_service._formal_article_metadata(processed)
         catalogue = self.agentic_service._build_formal_catalogue(processed)
@@ -77,11 +86,35 @@ class HybridRecommendationService:
                 users_with_equal_agentic_scores += 1
             missing_metadata_for_diversity_count += int(result["missing_metadata_for_diversity_count"])
 
-        self.settings.hybrid_svd_agentic_recommendations_top10_json_path(subset_size).write_text(
+        output_json_path = self.settings.ensure_output_path(
+            self.settings.hybrid_svd_agentic_recommendations_top10_json_path(
+                subset_size,
+                artifact_prefix=artifact_prefix,
+            ),
+            artifact_prefix=artifact_prefix,
+            allow_overwrite=allow_overwrite,
+        )
+        output_csv_path = self.settings.ensure_output_path(
+            self.settings.hybrid_svd_agentic_recommendations_top10_csv_path(
+                subset_size,
+                artifact_prefix=artifact_prefix,
+            ),
+            artifact_prefix=artifact_prefix,
+            allow_overwrite=allow_overwrite,
+        )
+        validation_path = self.settings.ensure_output_path(
+            self.settings.hybrid_svd_agentic_validation_report_top10_path(
+                subset_size,
+                artifact_prefix=artifact_prefix,
+            ),
+            artifact_prefix=artifact_prefix,
+            allow_overwrite=allow_overwrite,
+        )
+        output_json_path.write_text(
             json.dumps(results, indent=2),
             encoding="utf-8",
         )
-        self.settings.hybrid_svd_agentic_recommendations_top10_csv_path(subset_size).write_text(
+        output_csv_path.write_text(
             pd.DataFrame(
                 [
                     {
@@ -111,7 +144,7 @@ class HybridRecommendationService:
             "example_hybrid_recommendation_users": example_hybrid_recommendation_users,
             "example_hybrid_failure_users": example_hybrid_failure_users,
         }
-        self.settings.hybrid_svd_agentic_validation_report_top10_path(subset_size).write_text(
+        validation_path.write_text(
             json.dumps(report, indent=2),
             encoding="utf-8",
         )

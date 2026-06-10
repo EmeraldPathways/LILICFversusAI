@@ -423,6 +423,8 @@ class DataService:
         sample_size: int = 100,
         random_seed: int = 42,
         candidate_pool_size: int | None = None,
+        artifact_prefix: str | None = None,
+        allow_overwrite: bool | None = None,
     ) -> dict[str, object]:
         candidate_pool_target_size = candidate_pool_size or self.settings.candidate_pool_size
         all_valid_rows = json.loads(
@@ -481,11 +483,35 @@ class DataService:
                     if reason:
                         invalid_reason_counts[reason] = invalid_reason_counts.get(reason, 0) + 1
 
-        self.settings.evaluation_base_table_svd_top10_csv_path(sample_size).write_text(
+        evaluation_base_csv_path = self.settings.ensure_output_path(
+            self.settings.evaluation_base_table_svd_top10_csv_path(
+                sample_size,
+                artifact_prefix=artifact_prefix,
+            ),
+            artifact_prefix=artifact_prefix,
+            allow_overwrite=allow_overwrite,
+        )
+        evaluation_base_json_path = self.settings.ensure_output_path(
+            self.settings.evaluation_base_table_svd_top10_json_path(
+                sample_size,
+                artifact_prefix=artifact_prefix,
+            ),
+            artifact_prefix=artifact_prefix,
+            allow_overwrite=allow_overwrite,
+        )
+        candidate_pool_output_path = self.settings.ensure_output_path(
+            self.settings.candidate_pool_validation_report_svd_top10_path(
+                sample_size,
+                artifact_prefix=artifact_prefix,
+            ),
+            artifact_prefix=artifact_prefix,
+            allow_overwrite=allow_overwrite,
+        )
+        evaluation_base_csv_path.write_text(
             pd.DataFrame(augmented_rows).to_csv(index=False),
             encoding="utf-8",
         )
-        self.settings.evaluation_base_table_svd_top10_json_path(sample_size).write_text(
+        evaluation_base_json_path.write_text(
             json.dumps(augmented_rows, indent=2),
             encoding="utf-8",
         )
@@ -515,8 +541,8 @@ class DataService:
             "example_selected_users": [row["customer_id"] for row in augmented_rows[:5]],
             "example_invalid_candidate_pool_users": example_invalid_candidate_pool_users,
         }
-        self.settings.candidate_pool_validation_report_svd_top10_path(sample_size).write_text(
-            json.dumps(report, indent=2),
+        candidate_pool_output_path.write_text(
+            json.dumps(augmented_rows if artifact_prefix else report, indent=2),
             encoding="utf-8",
         )
 

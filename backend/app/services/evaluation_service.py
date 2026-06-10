@@ -95,13 +95,26 @@ class EvaluationService:
         subset_size: int = 100,
         bootstrap_samples: int = 0,
         random_seed: int = 42,
+        artifact_prefix: str | None = None,
+        allow_overwrite: bool | None = None,
     ) -> dict[str, object]:
         evaluation_rows = json.loads(
-            self.settings.evaluation_base_table_svd_top10_json_path(subset_size).read_text(encoding="utf-8")
+            self.settings.evaluation_base_table_svd_top10_json_path(
+                subset_size,
+                artifact_prefix=artifact_prefix,
+            ).read_text(encoding="utf-8")
         )
-        svd_rows = json.loads(self.settings.svd_recommendations_top10_json_path(subset_size).read_text(encoding="utf-8"))
+        svd_rows = json.loads(
+            self.settings.svd_recommendations_top10_json_path(
+                subset_size,
+                artifact_prefix=artifact_prefix,
+            ).read_text(encoding="utf-8")
+        )
         agentic_rows = json.loads(
-            self.settings.agentic_recommendations_top10_json_path(subset_size).read_text(encoding="utf-8")
+            self.settings.agentic_recommendations_top10_json_path(
+                subset_size,
+                artifact_prefix=artifact_prefix,
+            ).read_text(encoding="utf-8")
         )
         processed = pd.read_csv(
             self.settings.processed_interactions_with_articles_csv_path,
@@ -200,21 +213,61 @@ class EvaluationService:
                 }
             )
 
-        self.settings.per_user_metrics_top10_json_path(subset_size).write_text(
+        per_user_json_path = self.settings.ensure_output_path(
+            self.settings.per_user_metrics_top10_json_path(
+                subset_size,
+                artifact_prefix=artifact_prefix,
+            ),
+            artifact_prefix=artifact_prefix,
+            allow_overwrite=allow_overwrite,
+        )
+        per_user_csv_path = self.settings.ensure_output_path(
+            self.settings.per_user_metrics_top10_csv_path(
+                subset_size,
+                artifact_prefix=artifact_prefix,
+            ),
+            artifact_prefix=artifact_prefix,
+            allow_overwrite=allow_overwrite,
+        )
+        metric_summary_json_path = self.settings.ensure_output_path(
+            self.settings.metric_summary_top10_json_path(
+                subset_size,
+                artifact_prefix=artifact_prefix,
+            ),
+            artifact_prefix=artifact_prefix,
+            allow_overwrite=allow_overwrite,
+        )
+        metric_summary_csv_path = self.settings.ensure_output_path(
+            self.settings.metric_summary_top10_csv_path(
+                subset_size,
+                artifact_prefix=artifact_prefix,
+            ),
+            artifact_prefix=artifact_prefix,
+            allow_overwrite=allow_overwrite,
+        )
+        metric_validation_path = self.settings.ensure_output_path(
+            self.settings.metric_validation_report_top10_path(
+                subset_size,
+                artifact_prefix=artifact_prefix,
+            ),
+            artifact_prefix=artifact_prefix,
+            allow_overwrite=allow_overwrite,
+        )
+        per_user_json_path.write_text(
             json.dumps(per_user_rows, indent=2),
             encoding="utf-8",
         )
-        self.settings.per_user_metrics_top10_csv_path(subset_size).write_text(
+        per_user_csv_path.write_text(
             pd.DataFrame(per_user_rows).to_csv(index=False),
             encoding="utf-8",
         )
 
         summary = self._build_metric_summary(per_user_rows, subset_size=subset_size)
-        self.settings.metric_summary_top10_json_path(subset_size).write_text(
+        metric_summary_json_path.write_text(
             json.dumps(summary, indent=2),
             encoding="utf-8",
         )
-        self.settings.metric_summary_top10_csv_path(subset_size).write_text(
+        metric_summary_csv_path.write_text(
             pd.DataFrame([self._flatten_metric_summary(summary)]).to_csv(index=False),
             encoding="utf-8",
         )
@@ -234,7 +287,7 @@ class EvaluationService:
             "example_miss_users_svd": example_miss_users_svd,
             "example_miss_users_agentic": example_miss_users_agentic,
         }
-        self.settings.metric_validation_report_top10_path(subset_size).write_text(
+        metric_validation_path.write_text(
             json.dumps(validation_report, indent=2),
             encoding="utf-8",
         )
@@ -246,11 +299,27 @@ class EvaluationService:
                 bootstrap_samples=bootstrap_samples,
                 random_seed=random_seed,
             )
-            self.settings.metric_summary_top10_with_ci_json_path(subset_size).write_text(
+            metric_summary_with_ci_path = self.settings.ensure_output_path(
+                self.settings.metric_summary_top10_with_ci_json_path(
+                    subset_size,
+                    artifact_prefix=artifact_prefix,
+                ),
+                artifact_prefix=artifact_prefix,
+                allow_overwrite=allow_overwrite,
+            )
+            bootstrap_ci_path = self.settings.ensure_output_path(
+                self.settings.bootstrap_ci_report_top10_json_path(
+                    subset_size,
+                    artifact_prefix=artifact_prefix,
+                ),
+                artifact_prefix=artifact_prefix,
+                allow_overwrite=allow_overwrite,
+            )
+            metric_summary_with_ci_path.write_text(
                 json.dumps({**summary, "confidence_intervals": bootstrap_report["confidence_intervals"]}, indent=2),
                 encoding="utf-8",
             )
-            self.settings.bootstrap_ci_report_top10_json_path(subset_size).write_text(
+            bootstrap_ci_path.write_text(
                 json.dumps(bootstrap_report, indent=2),
                 encoding="utf-8",
             )
@@ -278,16 +347,32 @@ class EvaluationService:
         subset_size: int = 1000,
         bootstrap_samples: int = 1000,
         random_seed: int = 42,
+        artifact_prefix: str | None = None,
+        allow_overwrite: bool | None = None,
     ) -> dict[str, object]:
         evaluation_rows = json.loads(
-            self.settings.evaluation_base_table_svd_top10_json_path(subset_size).read_text(encoding="utf-8")
+            self.settings.evaluation_base_table_svd_top10_json_path(
+                subset_size,
+                artifact_prefix=artifact_prefix,
+            ).read_text(encoding="utf-8")
         )
-        svd_rows = json.loads(self.settings.svd_recommendations_top10_json_path(subset_size).read_text(encoding="utf-8"))
+        svd_rows = json.loads(
+            self.settings.svd_recommendations_top10_json_path(
+                subset_size,
+                artifact_prefix=artifact_prefix,
+            ).read_text(encoding="utf-8")
+        )
         agentic_rows = json.loads(
-            self.settings.agentic_recommendations_top10_json_path(subset_size).read_text(encoding="utf-8")
+            self.settings.agentic_recommendations_top10_json_path(
+                subset_size,
+                artifact_prefix=artifact_prefix,
+            ).read_text(encoding="utf-8")
         )
         hybrid_rows = json.loads(
-            self.settings.hybrid_svd_agentic_recommendations_top10_json_path(subset_size).read_text(encoding="utf-8")
+            self.settings.hybrid_svd_agentic_recommendations_top10_json_path(
+                subset_size,
+                artifact_prefix=artifact_prefix,
+            ).read_text(encoding="utf-8")
         )
         processed = pd.read_csv(
             self.settings.processed_interactions_with_articles_csv_path,
@@ -375,22 +460,74 @@ class EvaluationService:
 
             per_user_rows.append(row_result)
 
-        self.settings.per_user_metrics_top10_three_methods_json_path(subset_size).write_text(
+        per_user_json_path = self.settings.ensure_output_path(
+            self.settings.per_user_metrics_top10_three_methods_json_path(
+                subset_size,
+                artifact_prefix=artifact_prefix,
+            ),
+            artifact_prefix=artifact_prefix,
+            allow_overwrite=allow_overwrite,
+        )
+        per_user_csv_path = self.settings.ensure_output_path(
+            self.settings.per_user_metrics_top10_three_methods_csv_path(
+                subset_size,
+                artifact_prefix=artifact_prefix,
+            ),
+            artifact_prefix=artifact_prefix,
+            allow_overwrite=allow_overwrite,
+        )
+        metric_summary_json_path = self.settings.ensure_output_path(
+            self.settings.metric_summary_top10_three_methods_json_path(
+                subset_size,
+                artifact_prefix=artifact_prefix,
+            ),
+            artifact_prefix=artifact_prefix,
+            allow_overwrite=allow_overwrite,
+        )
+        metric_summary_csv_path = self.settings.ensure_output_path(
+            self.settings.metric_summary_top10_three_methods_csv_path(
+                subset_size,
+                artifact_prefix=artifact_prefix,
+            ),
+            artifact_prefix=artifact_prefix,
+            allow_overwrite=allow_overwrite,
+        )
+        validation_report_path = self.settings.ensure_output_path(
+            self.settings.validation_report_top10_three_methods_json_path(
+                subset_size,
+                artifact_prefix=artifact_prefix,
+            ),
+            artifact_prefix=artifact_prefix,
+            allow_overwrite=allow_overwrite,
+        )
+        bootstrap_report_path = self.settings.ensure_output_path(
+            self.settings.bootstrap_ci_report_top10_three_methods_json_path(
+                subset_size,
+                artifact_prefix=artifact_prefix,
+            ),
+            artifact_prefix=artifact_prefix,
+            allow_overwrite=allow_overwrite,
+        )
+        per_user_json_path.write_text(
             json.dumps(per_user_rows, indent=2),
             encoding="utf-8",
         )
-        self.settings.per_user_metrics_top10_three_methods_csv_path(subset_size).write_text(
+        per_user_csv_path.write_text(
             pd.DataFrame(per_user_rows).to_csv(index=False),
             encoding="utf-8",
         )
 
         summary = self._build_three_method_metric_summary(per_user_rows, subset_size=subset_size)
-        self.settings.metric_summary_top10_three_methods_json_path(subset_size).write_text(
+        metric_summary_json_path.write_text(
             json.dumps(summary, indent=2),
             encoding="utf-8",
         )
-        self.settings.metric_summary_top10_three_methods_csv_path(subset_size).write_text(
+        metric_summary_csv_path.write_text(
             pd.DataFrame([self._flatten_three_method_metric_summary(summary)]).to_csv(index=False),
+            encoding="utf-8",
+        )
+        validation_report_path.write_text(
+            json.dumps(validation_report, indent=2),
             encoding="utf-8",
         )
 
@@ -399,7 +536,7 @@ class EvaluationService:
             bootstrap_samples=bootstrap_samples,
             random_seed=random_seed,
         )
-        self.settings.bootstrap_ci_report_top10_three_methods_json_path(subset_size).write_text(
+        bootstrap_report_path.write_text(
             json.dumps(bootstrap_report, indent=2),
             encoding="utf-8",
         )
@@ -409,6 +546,8 @@ class EvaluationService:
             summary=summary,
             bootstrap_report=bootstrap_report,
             validation_report=validation_report,
+            artifact_prefix=artifact_prefix,
+            allow_overwrite=allow_overwrite,
         )
 
         return {
@@ -1010,6 +1149,8 @@ class EvaluationService:
         summary: dict[str, object],
         bootstrap_report: dict[str, object],
         validation_report: dict[str, object],
+        artifact_prefix: str | None = None,
+        allow_overwrite: bool | None = None,
     ) -> None:
         ci = bootstrap_report["confidence_intervals"]
         hybrid = summary["hybrid"]
@@ -1107,7 +1248,15 @@ class EvaluationService:
                 "- The hybrid uses a fixed heuristic formula and was not tuned in this step.",
             ]
         )
-        self.settings.hybrid_svd_agentic_audit_report_top10_path(subset_size).write_text(
+        report_path = self.settings.ensure_output_path(
+            self.settings.hybrid_svd_agentic_audit_report_top10_path(
+                subset_size,
+                artifact_prefix=artifact_prefix,
+            ),
+            artifact_prefix=artifact_prefix,
+            allow_overwrite=allow_overwrite,
+        )
+        report_path.write_text(
             "\n".join(lines) + "\n",
             encoding="utf-8",
         )

@@ -73,10 +73,15 @@ class CollaborativeFilteringService:
         subset_size: int = 100,
         n_components: int = 50,
         random_state: int = 42,
+        artifact_prefix: str | None = None,
+        allow_overwrite: bool | None = None,
     ) -> dict[str, object]:
         processed = self._load_processed_interactions_with_articles()
         subset_rows = json.loads(
-            self.settings.evaluation_base_table_svd_top10_json_path(subset_size).read_text(encoding="utf-8")
+            self.settings.evaluation_base_table_svd_top10_json_path(
+                subset_size,
+                artifact_prefix=artifact_prefix,
+            ).read_text(encoding="utf-8")
         )
         metadata = self._formal_article_metadata(processed)
         train_df = self._build_svd_training_interactions(processed, subset_rows)
@@ -130,11 +135,35 @@ class CollaborativeFilteringService:
                 users_with_unscoreable_candidates += 1
             scoreable_candidate_counts.append(int(result["svd_scoreable_candidate_count"]))
 
-        self.settings.svd_recommendations_top10_json_path(subset_size).write_text(
+        output_json_path = self.settings.ensure_output_path(
+            self.settings.svd_recommendations_top10_json_path(
+                subset_size,
+                artifact_prefix=artifact_prefix,
+            ),
+            artifact_prefix=artifact_prefix,
+            allow_overwrite=allow_overwrite,
+        )
+        output_csv_path = self.settings.ensure_output_path(
+            self.settings.svd_recommendations_top10_csv_path(
+                subset_size,
+                artifact_prefix=artifact_prefix,
+            ),
+            artifact_prefix=artifact_prefix,
+            allow_overwrite=allow_overwrite,
+        )
+        validation_path = self.settings.ensure_output_path(
+            self.settings.svd_baseline_validation_report_top10_path(
+                subset_size,
+                artifact_prefix=artifact_prefix,
+            ),
+            artifact_prefix=artifact_prefix,
+            allow_overwrite=allow_overwrite,
+        )
+        output_json_path.write_text(
             json.dumps(results, indent=2),
             encoding="utf-8",
         )
-        self.settings.svd_recommendations_top10_csv_path(subset_size).write_text(
+        output_csv_path.write_text(
             pd.DataFrame(
                 [
                     {
@@ -171,7 +200,7 @@ class CollaborativeFilteringService:
             "example_svd_recommendation_users": example_svd_recommendation_users,
             "example_svd_failure_users": example_svd_failure_users,
         }
-        self.settings.svd_baseline_validation_report_top10_path(subset_size).write_text(
+        validation_path.write_text(
             json.dumps(report, indent=2),
             encoding="utf-8",
         )

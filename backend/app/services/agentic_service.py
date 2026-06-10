@@ -271,6 +271,15 @@ class AgenticRecommendationService:
         return enriched, trace
 
     def build_top10_formal_experiment(self, subset_size: int = 100) -> dict[str, object]:
+        return self._build_top10_formal_experiment(subset_size=subset_size)
+
+    def _build_top10_formal_experiment(
+        self,
+        *,
+        subset_size: int = 100,
+        artifact_prefix: str | None = None,
+        allow_overwrite: bool | None = None,
+    ) -> dict[str, object]:
         processed = pd.read_csv(
             self.settings.processed_interactions_with_articles_csv_path,
             dtype={"article_id": "string", "customer_id": "string"},
@@ -280,7 +289,10 @@ class AgenticRecommendationService:
         processed["t_dat"] = pd.to_datetime(processed["t_dat"], errors="coerce")
 
         evaluation_rows = json.loads(
-            self.settings.evaluation_base_table_svd_top10_json_path(subset_size).read_text(encoding="utf-8")
+            self.settings.evaluation_base_table_svd_top10_json_path(
+                subset_size,
+                artifact_prefix=artifact_prefix,
+            ).read_text(encoding="utf-8")
         )
         catalogue = self._build_formal_catalogue(processed)
 
@@ -316,11 +328,35 @@ class AgenticRecommendationService:
             if bool(result["detail_desc_missing_but_handled"]):
                 users_where_detail_desc_missing_but_handled += 1
 
-        self.settings.agentic_recommendations_top10_json_path(subset_size).write_text(
+        output_json_path = self.settings.ensure_output_path(
+            self.settings.agentic_recommendations_top10_json_path(
+                subset_size,
+                artifact_prefix=artifact_prefix,
+            ),
+            artifact_prefix=artifact_prefix,
+            allow_overwrite=allow_overwrite,
+        )
+        output_csv_path = self.settings.ensure_output_path(
+            self.settings.agentic_recommendations_top10_csv_path(
+                subset_size,
+                artifact_prefix=artifact_prefix,
+            ),
+            artifact_prefix=artifact_prefix,
+            allow_overwrite=allow_overwrite,
+        )
+        validation_path = self.settings.ensure_output_path(
+            self.settings.agentic_top10_validation_report_path(
+                subset_size,
+                artifact_prefix=artifact_prefix,
+            ),
+            artifact_prefix=artifact_prefix,
+            allow_overwrite=allow_overwrite,
+        )
+        output_json_path.write_text(
             json.dumps(results, indent=2),
             encoding="utf-8",
         )
-        self.settings.agentic_recommendations_top10_csv_path(subset_size).write_text(
+        output_csv_path.write_text(
             pd.DataFrame(
                 [
                     {
@@ -350,7 +386,7 @@ class AgenticRecommendationService:
             "example_agentic_recommendation_users": example_agentic_recommendation_users,
             "example_agentic_failure_users": example_agentic_failure_users,
         }
-        self.settings.agentic_top10_validation_report_path(subset_size).write_text(
+        validation_path.write_text(
             json.dumps(report, indent=2),
             encoding="utf-8",
         )

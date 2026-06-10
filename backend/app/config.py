@@ -37,6 +37,28 @@ class Settings(BaseSettings):
     LEGACY_DEBUG_EXPERIMENT_MODE: ClassVar[str] = "legacy_debug"
     SVD_TOP10_EXPERIMENT_MODE: ClassVar[str] = "svd_top10_experiment"
 
+    @staticmethod
+    def _apply_artifact_prefix(filename: str, artifact_prefix: str | None = None) -> str:
+        normalized_prefix = (artifact_prefix or "").strip()
+        if not normalized_prefix:
+            return filename
+        return f"{normalized_prefix}_{filename}"
+
+    def _processed_artifact_path(self, filename: str, artifact_prefix: str | None = None) -> Path:
+        return self.processed_data_dir / self._apply_artifact_prefix(filename, artifact_prefix)
+
+    def ensure_output_path(
+        self,
+        path: Path,
+        *,
+        artifact_prefix: str | None = None,
+        allow_overwrite: bool | None = None,
+    ) -> Path:
+        overwrite_allowed = artifact_prefix is None if allow_overwrite is None else allow_overwrite
+        if path.exists() and not overwrite_allowed:
+            raise FileExistsError(f"Refusing to overwrite existing artifact: {path}")
+        return path
+
     @property
     def raw_data_dir(self) -> Path:
         if self.backend_data_dir:
@@ -185,80 +207,276 @@ class Settings(BaseSettings):
     def metric_validation_report_top10_100_path(self) -> Path:
         return self.processed_data_dir / "metric_validation_report_top10_100.json"
 
-    def evaluation_base_table_svd_top10_json_path(self, sample_size: int) -> Path:
-        return self.processed_data_dir / f"evaluation_base_table_svd_top10_{sample_size}.json"
+    def evaluation_base_table_svd_top10_json_path(
+        self,
+        sample_size: int,
+        artifact_prefix: str | None = None,
+    ) -> Path:
+        filename = (
+            f"evaluation_base_table_svd_top10_{sample_size}.json"
+            if artifact_prefix is None
+            else f"evaluation_base_table_top10_{sample_size}.json"
+        )
+        return self._processed_artifact_path(filename, artifact_prefix)
 
-    def evaluation_base_table_svd_top10_csv_path(self, sample_size: int) -> Path:
-        return self.processed_data_dir / f"evaluation_base_table_svd_top10_{sample_size}.csv"
+    def evaluation_base_table_svd_top10_csv_path(
+        self,
+        sample_size: int,
+        artifact_prefix: str | None = None,
+    ) -> Path:
+        filename = (
+            f"evaluation_base_table_svd_top10_{sample_size}.csv"
+            if artifact_prefix is None
+            else f"evaluation_base_table_top10_{sample_size}.csv"
+        )
+        return self._processed_artifact_path(filename, artifact_prefix)
 
-    def candidate_pool_validation_report_svd_top10_path(self, sample_size: int) -> Path:
-        return self.processed_data_dir / f"candidate_pool_validation_report_svd_top10_{sample_size}.json"
+    def candidate_pool_validation_report_svd_top10_path(
+        self,
+        sample_size: int,
+        artifact_prefix: str | None = None,
+    ) -> Path:
+        filename = (
+            f"candidate_pool_validation_report_svd_top10_{sample_size}.json"
+            if artifact_prefix is None
+            else f"candidate_pools_top10_{sample_size}.json"
+        )
+        return self._processed_artifact_path(filename, artifact_prefix)
 
-    def svd_recommendations_top10_json_path(self, sample_size: int) -> Path:
-        return self.processed_data_dir / f"svd_recommendations_top10_{sample_size}.json"
+    def svd_recommendations_top10_json_path(
+        self,
+        sample_size: int,
+        artifact_prefix: str | None = None,
+    ) -> Path:
+        return self._processed_artifact_path(
+            f"svd_recommendations_top10_{sample_size}.json",
+            artifact_prefix,
+        )
 
-    def svd_recommendations_top10_csv_path(self, sample_size: int) -> Path:
-        return self.processed_data_dir / f"svd_recommendations_top10_{sample_size}.csv"
+    def svd_recommendations_top10_csv_path(
+        self,
+        sample_size: int,
+        artifact_prefix: str | None = None,
+    ) -> Path:
+        return self._processed_artifact_path(
+            f"svd_recommendations_top10_{sample_size}.csv",
+            artifact_prefix,
+        )
 
-    def svd_baseline_validation_report_top10_path(self, sample_size: int) -> Path:
-        return self.processed_data_dir / f"svd_baseline_validation_report_top10_{sample_size}.json"
+    def svd_baseline_validation_report_top10_path(
+        self,
+        sample_size: int,
+        artifact_prefix: str | None = None,
+    ) -> Path:
+        return self._processed_artifact_path(
+            f"svd_baseline_validation_report_top10_{sample_size}.json",
+            artifact_prefix,
+        )
 
-    def agentic_recommendations_top10_json_path(self, sample_size: int) -> Path:
-        return self.processed_data_dir / f"agentic_recommendations_top10_{sample_size}.json"
+    def agentic_recommendations_top10_json_path(
+        self,
+        sample_size: int,
+        artifact_prefix: str | None = None,
+    ) -> Path:
+        return self._processed_artifact_path(
+            f"agentic_recommendations_top10_{sample_size}.json",
+            artifact_prefix,
+        )
 
-    def agentic_recommendations_top10_csv_path(self, sample_size: int) -> Path:
-        return self.processed_data_dir / f"agentic_recommendations_top10_{sample_size}.csv"
+    def agentic_recommendations_top10_csv_path(
+        self,
+        sample_size: int,
+        artifact_prefix: str | None = None,
+    ) -> Path:
+        return self._processed_artifact_path(
+            f"agentic_recommendations_top10_{sample_size}.csv",
+            artifact_prefix,
+        )
 
-    def agentic_top10_validation_report_path(self, sample_size: int) -> Path:
-        return self.processed_data_dir / f"agentic_top10_validation_report_{sample_size}.json"
+    def agentic_top10_validation_report_path(
+        self,
+        sample_size: int,
+        artifact_prefix: str | None = None,
+    ) -> Path:
+        return self._processed_artifact_path(
+            f"agentic_top10_validation_report_{sample_size}.json",
+            artifact_prefix,
+        )
 
-    def per_user_metrics_top10_json_path(self, sample_size: int) -> Path:
-        return self.processed_data_dir / f"per_user_metrics_top10_{sample_size}.json"
+    def per_user_metrics_top10_json_path(
+        self,
+        sample_size: int,
+        artifact_prefix: str | None = None,
+    ) -> Path:
+        return self._processed_artifact_path(
+            f"per_user_metrics_top10_{sample_size}.json",
+            artifact_prefix,
+        )
 
-    def per_user_metrics_top10_csv_path(self, sample_size: int) -> Path:
-        return self.processed_data_dir / f"per_user_metrics_top10_{sample_size}.csv"
+    def per_user_metrics_top10_csv_path(
+        self,
+        sample_size: int,
+        artifact_prefix: str | None = None,
+    ) -> Path:
+        return self._processed_artifact_path(
+            f"per_user_metrics_top10_{sample_size}.csv",
+            artifact_prefix,
+        )
 
-    def metric_summary_top10_json_path(self, sample_size: int) -> Path:
-        return self.processed_data_dir / f"metric_summary_top10_{sample_size}.json"
+    def metric_summary_top10_json_path(
+        self,
+        sample_size: int,
+        artifact_prefix: str | None = None,
+    ) -> Path:
+        return self._processed_artifact_path(
+            f"metric_summary_top10_{sample_size}.json",
+            artifact_prefix,
+        )
 
-    def metric_summary_top10_csv_path(self, sample_size: int) -> Path:
-        return self.processed_data_dir / f"metric_summary_top10_{sample_size}.csv"
+    def metric_summary_top10_csv_path(
+        self,
+        sample_size: int,
+        artifact_prefix: str | None = None,
+    ) -> Path:
+        return self._processed_artifact_path(
+            f"metric_summary_top10_{sample_size}.csv",
+            artifact_prefix,
+        )
 
-    def metric_validation_report_top10_path(self, sample_size: int) -> Path:
-        return self.processed_data_dir / f"metric_validation_report_top10_{sample_size}.json"
+    def metric_validation_report_top10_path(
+        self,
+        sample_size: int,
+        artifact_prefix: str | None = None,
+    ) -> Path:
+        return self._processed_artifact_path(
+            f"metric_validation_report_top10_{sample_size}.json",
+            artifact_prefix,
+        )
 
-    def metric_summary_top10_with_ci_json_path(self, sample_size: int) -> Path:
-        return self.processed_data_dir / f"metric_summary_top10_{sample_size}_with_ci.json"
+    def metric_summary_top10_with_ci_json_path(
+        self,
+        sample_size: int,
+        artifact_prefix: str | None = None,
+    ) -> Path:
+        return self._processed_artifact_path(
+            f"metric_summary_top10_{sample_size}_with_ci.json",
+            artifact_prefix,
+        )
 
-    def bootstrap_ci_report_top10_json_path(self, sample_size: int) -> Path:
-        return self.processed_data_dir / f"bootstrap_ci_report_top10_{sample_size}.json"
+    def bootstrap_ci_report_top10_json_path(
+        self,
+        sample_size: int,
+        artifact_prefix: str | None = None,
+    ) -> Path:
+        return self._processed_artifact_path(
+            f"bootstrap_ci_report_top10_{sample_size}.json",
+            artifact_prefix,
+        )
 
-    def hybrid_svd_agentic_recommendations_top10_json_path(self, sample_size: int) -> Path:
-        return self.processed_data_dir / f"hybrid_svd_agentic_recommendations_top10_{sample_size}.json"
+    def hybrid_svd_agentic_recommendations_top10_json_path(
+        self,
+        sample_size: int,
+        artifact_prefix: str | None = None,
+    ) -> Path:
+        return self._processed_artifact_path(
+            f"hybrid_svd_agentic_recommendations_top10_{sample_size}.json",
+            artifact_prefix,
+        )
 
-    def hybrid_svd_agentic_recommendations_top10_csv_path(self, sample_size: int) -> Path:
-        return self.processed_data_dir / f"hybrid_svd_agentic_recommendations_top10_{sample_size}.csv"
+    def hybrid_svd_agentic_recommendations_top10_csv_path(
+        self,
+        sample_size: int,
+        artifact_prefix: str | None = None,
+    ) -> Path:
+        return self._processed_artifact_path(
+            f"hybrid_svd_agentic_recommendations_top10_{sample_size}.csv",
+            artifact_prefix,
+        )
 
-    def hybrid_svd_agentic_validation_report_top10_path(self, sample_size: int) -> Path:
-        return self.processed_data_dir / f"hybrid_svd_agentic_validation_report_top10_{sample_size}.json"
+    def hybrid_svd_agentic_validation_report_top10_path(
+        self,
+        sample_size: int,
+        artifact_prefix: str | None = None,
+    ) -> Path:
+        return self._processed_artifact_path(
+            f"hybrid_svd_agentic_validation_report_top10_{sample_size}.json",
+            artifact_prefix,
+        )
 
-    def per_user_metrics_top10_three_methods_json_path(self, sample_size: int) -> Path:
-        return self.processed_data_dir / f"per_user_metrics_top10_{sample_size}_three_methods.json"
+    def per_user_metrics_top10_three_methods_json_path(
+        self,
+        sample_size: int,
+        artifact_prefix: str | None = None,
+    ) -> Path:
+        return self._processed_artifact_path(
+            f"per_user_metrics_top10_{sample_size}_three_methods.json",
+            artifact_prefix,
+        )
 
-    def per_user_metrics_top10_three_methods_csv_path(self, sample_size: int) -> Path:
-        return self.processed_data_dir / f"per_user_metrics_top10_{sample_size}_three_methods.csv"
+    def per_user_metrics_top10_three_methods_csv_path(
+        self,
+        sample_size: int,
+        artifact_prefix: str | None = None,
+    ) -> Path:
+        return self._processed_artifact_path(
+            f"per_user_metrics_top10_{sample_size}_three_methods.csv",
+            artifact_prefix,
+        )
 
-    def metric_summary_top10_three_methods_json_path(self, sample_size: int) -> Path:
-        return self.processed_data_dir / f"metric_summary_top10_{sample_size}_three_methods.json"
+    def metric_summary_top10_three_methods_json_path(
+        self,
+        sample_size: int,
+        artifact_prefix: str | None = None,
+    ) -> Path:
+        return self._processed_artifact_path(
+            f"metric_summary_top10_{sample_size}_three_methods.json",
+            artifact_prefix,
+        )
 
-    def metric_summary_top10_three_methods_csv_path(self, sample_size: int) -> Path:
-        return self.processed_data_dir / f"metric_summary_top10_{sample_size}_three_methods.csv"
+    def metric_summary_top10_three_methods_csv_path(
+        self,
+        sample_size: int,
+        artifact_prefix: str | None = None,
+    ) -> Path:
+        return self._processed_artifact_path(
+            f"metric_summary_top10_{sample_size}_three_methods.csv",
+            artifact_prefix,
+        )
 
-    def bootstrap_ci_report_top10_three_methods_json_path(self, sample_size: int) -> Path:
-        return self.processed_data_dir / f"bootstrap_ci_report_top10_{sample_size}_three_methods.json"
+    def bootstrap_ci_report_top10_three_methods_json_path(
+        self,
+        sample_size: int,
+        artifact_prefix: str | None = None,
+    ) -> Path:
+        return self._processed_artifact_path(
+            f"bootstrap_ci_report_top10_{sample_size}_three_methods.json",
+            artifact_prefix,
+        )
 
-    def hybrid_svd_agentic_audit_report_top10_path(self, sample_size: int) -> Path:
-        return self.processed_data_dir / f"hybrid_svd_agentic_audit_report_top10_{sample_size}.md"
+    def validation_report_top10_three_methods_json_path(
+        self,
+        sample_size: int,
+        artifact_prefix: str | None = None,
+    ) -> Path:
+        return self._processed_artifact_path(
+            f"validation_report_top10_{sample_size}_three_methods.json",
+            artifact_prefix,
+        )
+
+    def hybrid_svd_agentic_audit_report_top10_path(
+        self,
+        sample_size: int,
+        artifact_prefix: str | None = None,
+    ) -> Path:
+        filename = (
+            f"hybrid_svd_agentic_audit_report_top10_{sample_size}.md"
+            if artifact_prefix is None
+            else f"experiment_report_top10_{sample_size}.md"
+        )
+        return self._processed_artifact_path(filename, artifact_prefix)
+
+    def seed99_output_naming_readiness_report_path(self) -> Path:
+        return self.processed_data_dir / "seed99_output_naming_readiness_report.md"
 
     def experiment_artifact_path(self, experiment_mode: str, artifact_name: str) -> Path:
         if experiment_mode == self.LEGACY_DEBUG_EXPERIMENT_MODE:
