@@ -74,6 +74,10 @@ class ExplainabilityService:
         evaluation_rows = self._load_json_rows(discovered["evaluation"])
         svd_rows = self._load_json_rows(discovered["svd"])
         hybrid_rows = self._load_json_rows(discovered["hybrid"])
+        evaluation_lookup = {
+            normalize_customer_id(row.get("customer_id")): row
+            for row in evaluation_rows
+        }
         generated_at = self._deterministic_generated_at(
             [
                 discovered["evaluation"],
@@ -82,22 +86,38 @@ class ExplainabilityService:
                 self.settings.processed_interactions_with_articles_csv_path,
             ]
         )
-        processed = pd.read_csv(
-            self.settings.processed_interactions_with_articles_csv_path,
-            dtype={"customer_id": "string", "article_id": "string"},
-        )
-        processed = self._normalize_processed(processed)
-        metadata_lookup = self._build_metadata_lookup(processed)
         users_available = len(hybrid_rows)
         selected_hybrid_rows = sorted(
             hybrid_rows,
             key=lambda row: normalize_customer_id(row.get("customer_id")),
         )[:sample_size]
-
-        evaluation_lookup = {
-            normalize_customer_id(row.get("customer_id")): row
-            for row in evaluation_rows
+        selected_customer_ids = {
+            normalize_customer_id(row.get("customer_id"))
+            for row in selected_hybrid_rows
         }
+        selected_train_article_ids_by_customer = {
+            customer_id: evaluation_lookup.get(customer_id, {}).get("train_article_ids", [])
+            for customer_id in selected_customer_ids
+        }
+        needed_article_ids = {
+            normalize_article_id(article_id)
+            for train_article_ids in selected_train_article_ids_by_customer.values()
+            for article_id in train_article_ids
+        }
+        needed_article_ids.update(
+            normalize_article_id(item.get("article_id"))
+            for row in selected_hybrid_rows
+            for item in row.get("top_10_recommendations", [])
+        )
+        processed = self._load_filtered_processed_rows(
+            selected_customer_ids=selected_customer_ids,
+            needed_article_ids=needed_article_ids,
+        )
+        metadata_lookup = self._build_metadata_lookup(processed)
+        user_history_summaries = self._build_user_history_summaries(
+            processed=processed,
+            train_article_ids_by_customer=selected_train_article_ids_by_customer,
+        )
         svd_lookup = {
             normalize_customer_id(row.get("customer_id")): row
             for row in svd_rows
@@ -120,10 +140,9 @@ class ExplainabilityService:
             if evaluation_row is None:
                 continue
             svd_row = svd_lookup.get(customer_id, {})
-            user_history_summary = self._build_user_history_summary(
-                processed=processed,
-                customer_id=customer_id,
-                train_article_ids=evaluation_row.get("train_article_ids", []),
+            user_history_summary = user_history_summaries.get(
+                customer_id,
+                self._empty_user_history_summary(),
             )
             svd_rank_lookup = {
                 normalize_article_id(item.get("article_id")): item
@@ -261,6 +280,39 @@ class ExplainabilityService:
         normalized["article_id"] = normalized["article_id"].map(normalize_article_id)
         return normalized
 
+    def _load_filtered_processed_rows(
+        self,
+        *,
+        selected_customer_ids: set[str],
+        needed_article_ids: set[str],
+    ) -> pd.DataFrame:
+        available_columns = pd.read_csv(
+            self.settings.processed_interactions_with_articles_csv_path,
+            nrows=0,
+        ).columns.tolist()
+        usecols = [
+            column
+            for column in ("customer_id", "article_id", *self.METADATA_FIELDS)
+            if column in available_columns
+        ]
+        chunks: list[pd.DataFrame] = []
+        for chunk in pd.read_csv(
+            self.settings.processed_interactions_with_articles_csv_path,
+            usecols=usecols,
+            dtype={"customer_id": "string", "article_id": "string"},
+            chunksize=250_000,
+        ):
+            normalized_chunk = self._normalize_processed(chunk)
+            filtered_chunk = normalized_chunk[
+                normalized_chunk["customer_id"].isin(selected_customer_ids)
+                | normalized_chunk["article_id"].isin(needed_article_ids)
+            ].copy()
+            if not filtered_chunk.empty:
+                chunks.append(filtered_chunk)
+        if not chunks:
+            return pd.DataFrame(columns=usecols)
+        return pd.concat(chunks, ignore_index=True)
+
     def _build_metadata_lookup(self, processed: pd.DataFrame) -> dict[str, dict[str, object]]:
         fields = [field for field in self.METADATA_FIELDS if field in processed.columns]
         lookup: dict[str, dict[str, object]] = {}
@@ -269,17 +321,37 @@ class ExplainabilityService:
             lookup[str(article_id)] = {field: self._clean_value(row.get(field)) for field in fields}
         return lookup
 
+    def _build_user_history_summaries(
+        self,
+        *,
+        processed: pd.DataFrame,
+        train_article_ids_by_customer: dict[str, list[object]],
+    ) -> dict[str, dict[str, list[dict[str, object]]]]:
+        summaries: dict[str, dict[str, list[dict[str, object]]]] = {}
+        processed_by_customer = {
+            customer_id: frame.copy()
+            for customer_id, frame in processed.groupby("customer_id", sort=False)
+        }
+        for customer_id, train_article_ids in train_article_ids_by_customer.items():
+            summaries[customer_id] = self._build_user_history_summary(
+                processed=processed,
+                customer_history=processed_by_customer.get(customer_id),
+                train_article_ids=train_article_ids,
+            )
+        return summaries
+
     def _build_user_history_summary(
         self,
         *,
         processed: pd.DataFrame,
-        customer_id: str,
+        customer_history: pd.DataFrame | None,
         train_article_ids: list[object],
     ) -> dict[str, list[dict[str, object]]]:
         normalized_train_ids = [normalize_article_id(article_id) for article_id in train_article_ids]
-        history = processed[
-            (processed["customer_id"] == customer_id) & (processed["article_id"].isin(normalized_train_ids))
-        ].copy()
+        if customer_history is not None and not customer_history.empty:
+            history = customer_history[customer_history["article_id"].isin(normalized_train_ids)].copy()
+        else:
+            history = pd.DataFrame(columns=processed.columns)
         if history.empty:
             history = processed[processed["article_id"].isin(normalized_train_ids)].copy()
         summary: dict[str, list[dict[str, object]]] = {}
@@ -297,6 +369,12 @@ class ExplainabilityService:
                 for value, count in sorted(counts.items(), key=lambda item: (-item[1], item[0]))
             ]
         return summary
+
+    def _empty_user_history_summary(self) -> dict[str, list[dict[str, object]]]:
+        return {
+            summary_key: []
+            for summary_key in self.HISTORY_FIELD_MAP.values()
+        }
 
     def _build_explanation_record(
         self,

@@ -351,3 +351,21 @@ def test_explainability_service_reports_missing_required_artifacts(isolated_env)
 
     assert "seed99_robustness" in message
     assert "evaluation_base_table_top10" in message
+
+
+def test_explainability_service_precomputes_filtered_history_summaries(isolated_env):
+    _write_explainability_source_artifacts(isolated_env)
+    service = ExplainabilityService(isolated_env)
+
+    filtered = service._load_filtered_processed_rows(
+        selected_customer_ids={"u1"},
+        needed_article_ids={"a1", "a2", "a3"},
+    )
+    summaries = service._build_user_history_summaries(
+        processed=filtered,
+        train_article_ids_by_customer={"u1": ["a1", "a2"]},
+    )
+
+    assert sorted(filtered["customer_id"].dropna().unique().tolist()) == ["u1"]
+    assert summaries["u1"]["frequent_product_groups"] == [{"value": "Garment Upper body", "count": 2}]
+    assert summaries["u1"]["frequent_colours"] == [{"value": "Black", "count": 2}]
