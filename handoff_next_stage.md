@@ -362,6 +362,11 @@ Generated files:
 - `seed99_rank_shift_analysis.csv`
 - `seed99_case_studies.md`
 
+Additional validated output sets now exist:
+
+- `seed99_perf_check_*` for the post-optimisation 100-user verification run
+- `seed99_full_retry_*` for the completed full 1,000-user explainability audit
+
 ### Explainability metrics
 
 - `evidence_coverage_rate`: share of Hybrid explanation rows with at least one usable core metadata field
@@ -379,3 +384,70 @@ Generated files:
 - The explainability layer is an offline evidence audit over saved artifacts.
 - The diversity trade-off must remain explicit:
   `Hybrid improves explainability and remains competitive on ranking quality, but it reduces intra-list diversity compared with SVD.`
+
+## 23. Explainability Audit Performance And Full-Scale Result
+
+The full 1,000-user explainability audit originally timed out because the explainability service repeatedly filtered the full `processed_interactions_with_articles.csv` table inside the per-user loop when building user-history summaries.
+
+That bottleneck has now been removed inside the read-only explainability path only. The optimisation:
+
+- selects the relevant users from saved Hybrid artifacts first
+- collects only the needed training and recommendation article IDs
+- reads only required columns from the processed CSV
+- filters relevant rows in chunks
+- precomputes metadata and user-history summaries once before the per-user loop
+
+This optimisation does **not** modify:
+
+- SVD recommendation logic
+- Standalone 3-Agent logic
+- Hybrid recommendation logic
+- Hybrid formula
+- formal ranking metrics
+- candidate pool logic
+- saved formal experiment artifacts
+
+### 100-user explainability verification
+
+The post-optimisation 100-user explainability performance check reproduced the prior key metrics exactly:
+
+- `users_included = 100`
+- `recommendations_explained = 1000`
+- `evidence_coverage_rate = 1.000`
+- `preference_trace_rate = 1.000`
+- `score_component_coverage_rate = 1.000`
+- `groundedness_rate = 1.000`
+- `rank_shift_coverage_rate = 0.682`
+- `ungrounded_claim_count = 0`
+- `average_rank_shift_for_ground_truth_hits = 0.212766`
+
+### Full 1,000-user explainability audit
+
+The full explainability audit now completes successfully for:
+
+- command:
+  `python -m backend.scripts.run_explainability_audit --artifact-prefix seed99_robustness --sample-size 1000 --output-prefix seed99_full_retry`
+- runtime observed in Codex: about `252.8` seconds
+
+Full 1,000-user explainability metrics:
+
+- `users_included = 1000`
+- `recommendations_explained = 10000`
+- `evidence_coverage_rate = 1.0000`
+- `preference_trace_rate = 0.9954`
+- `score_component_coverage_rate = 1.0000`
+- `groundedness_rate = 1.0000`
+- `rank_shift_coverage_rate = 0.6974`
+- `ungrounded_claim_count = 0`
+- `average_rank_shift_for_ground_truth_hits = 0.274725`
+
+Warnings:
+
+- `prod_name` remains unavailable in the processed source and is reported as missing rather than fabricated.
+
+Validation outcome:
+
+- full backend tests passed after the optimisation
+- explainability service tests passed after the optimisation
+- 100-user explainability outputs remained semantically consistent
+- the four checked `seed99_robustness_*` formal source artifacts remained unchanged by size and timestamp

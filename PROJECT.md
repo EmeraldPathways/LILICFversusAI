@@ -761,6 +761,45 @@ Explainability metrics include:
 - `ungrounded_claim_count`
 - `average_rank_shift_for_ground_truth_hits`
 
+### Explainability performance note
+
+The explainability audit originally timed out at the full 1,000-user scale because it repeatedly filtered the full `processed_interactions_with_articles.csv` file inside the per-user loop. The current implementation avoids repeated full-dataframe scans by:
+
+- selecting users from the saved Hybrid artifact first
+- collecting only the needed `customer_id` and `article_id` values
+- reading only required columns from the processed CSV
+- filtering relevant rows in chunks
+- precomputing metadata and user-history summaries once before explanation generation
+
+This is a read-only explainability-path optimisation only. It does not change recommendation logic, ranking metrics, candidate pools, or saved formal experiment artifacts.
+
+### Explainability audit results
+
+Two explainability audit scales are now available for the `seed99_robustness` artifacts:
+
+- 100-user audit:
+  - output prefix: `seed99`
+  - results path: `backend/app/data/processed/explainability/seed99_explainability_summary.json`
+- full 1,000-user audit:
+  - output prefix: `seed99_full_retry`
+  - results path: `backend/app/data/processed/explainability/seed99_full_retry_explainability_summary.json`
+
+Key full 1,000-user explainability metrics:
+
+- `users_included = 1000`
+- `recommendations_explained = 10000`
+- `evidence_coverage_rate = 1.0000`
+- `preference_trace_rate = 0.9954`
+- `score_component_coverage_rate = 1.0000`
+- `groundedness_rate = 1.0000`
+- `rank_shift_coverage_rate = 0.6974`
+- `ungrounded_claim_count = 0`
+- `average_rank_shift_for_ground_truth_hits = 0.274725`
+
+Current explainability warning:
+
+- `prod_name` is not available in the processed source and is correctly reported as missing rather than fabricated.
+
 Interpretation limits remain strict:
 
 - this is not a live user study
