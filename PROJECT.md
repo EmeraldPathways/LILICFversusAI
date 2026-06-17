@@ -764,7 +764,7 @@ Explainability metrics include:
 Interpretation limits remain strict:
 
 - this is not a live user study
-- it does not prove CTR, CVR, customer engagement, conversion, add-to-cart, dwell time, or feedback adaptation
+- it does not prove CTR, CVR, customer engagement, conversion, add-to-cart, dwell time, or live feedback adaptation
 - Hybrid improves explainability and remains competitive on ranking quality, but it reduces intra-list diversity compared with SVD
 
 ## Summary

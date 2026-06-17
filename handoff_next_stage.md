@@ -375,7 +375,7 @@ Generated files:
 ### Interpretation guardrails
 
 - This is not a live user study.
-- Do not claim CTR, CVR, customer engagement, conversion, add-to-cart, dwell time, or feedback adaptation improvement.
+- Do not claim CTR, CVR, customer engagement, conversion, add-to-cart, dwell time, or live feedback adaptation improvement.
 - The explainability layer is an offline evidence audit over saved artifacts.
 - The diversity trade-off must remain explicit:
   `Hybrid improves explainability and remains competitive on ranking quality, but it reduces intra-list diversity compared with SVD.`

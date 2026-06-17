@@ -53,7 +53,7 @@ class ExplainabilityService:
         "Null means rank shift is not observable from saved artifacts."
     )
     LIMITATION_TEXT = (
-        "This explainability audit is offline and does not prove live customer engagement, CTR, CVR or conversion improvement."
+        "This explainability audit is offline and does not prove CTR, CVR, customer engagement, conversion, add-to-cart, dwell time, or live feedback adaptation improvement."
     )
     TRADEOFF_TEXT = (
         "Hybrid improves explainability and remains competitive on ranking quality, but it reduces intra-list diversity compared with SVD."
