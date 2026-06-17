@@ -99,6 +99,87 @@ export type MetricsResponse = {
   generated_at?: string | null;
 };
 
+export type ExplainabilitySummaryMetrics = {
+  evidence_coverage_rate: number;
+  preference_trace_rate: number;
+  score_component_coverage_rate: number;
+  groundedness_rate: number;
+  rank_shift_coverage_rate: number;
+  ungrounded_claim_count: number;
+  average_rank_shift_for_ground_truth_hits?: number | null;
+};
+
+export type ExplainabilitySummary = {
+  run_context: {
+    artifact_prefix: string;
+    output_prefix: string;
+    sample_size_requested: number;
+    users_available: number;
+    users_included: number;
+    recommendations_explained: number;
+    generated_at: string;
+  };
+  summary_metrics: ExplainabilitySummaryMetrics;
+  interpretation: {
+    safe_claim: string;
+    limitation: string;
+    diversity_tradeoff: string;
+  };
+  warnings: string[];
+};
+
+export type ExplainabilityExampleRow = {
+  customer_id: string;
+  article_id: string;
+  hybrid_rank: number;
+  svd_rank?: number | string | null;
+  rank_shift?: number | string | null;
+  is_ground_truth: boolean | string;
+  normalized_svd_score?: number | string | null;
+  normalized_agentic_score?: number | string | null;
+  diversity_bonus?: number | string | null;
+  hybrid_score?: number | string | null;
+  product_type_name?: string | null;
+  product_group_name?: string | null;
+  graphical_appearance_name?: string | null;
+  colour_group_name?: string | null;
+  garment_group_name?: string | null;
+  department_name?: string | null;
+  section_name?: string | null;
+  index_name?: string | null;
+  prod_name?: string | null;
+  detail_desc?: string | null;
+  matched_preference_fields_json: string;
+  explanation_text: string;
+  grounded_claim_count: number;
+  ungrounded_claim_count: number;
+};
+
+export type ExplainabilityCaseStudy = {
+  customer_id: string;
+  ground_truth_article_id?: string | null;
+  recommended_article_id: string;
+  is_ground_truth: boolean;
+  user_history_summary: Record<string, unknown>;
+  item_metadata: Record<string, unknown>;
+  svd_rank?: number | null;
+  hybrid_rank: number;
+  rank_shift?: number | null;
+  score_components: Record<string, unknown>;
+  matched_preference_fields: Array<Record<string, unknown>>;
+  explanation_text: string;
+  limitation_note?: string | null;
+};
+
+export type ExplainabilityPageResponse = {
+  summary: ExplainabilitySummary;
+  examples: ExplainabilityExampleRow[];
+  rank_shift_highlights: Record<string, unknown>;
+  case_study?: ExplainabilityCaseStudy | null;
+  warnings: string[];
+  limitations: string[];
+};
+
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8000";
 const FORMAL_EXPERIMENT_MODE = "svd_top10_experiment";
 
@@ -146,6 +227,16 @@ export async function getRecommendationComparison(userId: string): Promise<Recom
   return apiFetch<RecommendationComparison>(
     `/recommendations/compare/${userId}?mode=${FORMAL_EXPERIMENT_MODE}`,
   );
+}
+
+export async function getExplainabilityEvidence(): Promise<ExplainabilityPageResponse | null> {
+  try {
+    return await apiFetch<ExplainabilityPageResponse>(
+      "/metrics/explainability?mode=svd_top10_experiment&artifact_prefix=seed99_robustness&output_prefix=seed99",
+    );
+  } catch {
+    return null;
+  }
 }
 
 export async function sendFeedback(

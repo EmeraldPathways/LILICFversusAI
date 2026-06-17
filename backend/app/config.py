@@ -72,6 +72,10 @@ class Settings(BaseSettings):
         return PROCESSED_DATA_DIR
 
     @property
+    def explainability_data_dir(self) -> Path:
+        return self.processed_data_dir / "explainability"
+
+    @property
     def transactions_path(self) -> Path:
         return self.raw_data_dir / "transactions_train.csv"
 
@@ -483,6 +487,21 @@ class Settings(BaseSettings):
             return getattr(self, f"{artifact_name}_path")
         return self.processed_data_dir / f"{experiment_mode}_{artifact_name}.json"
 
+    def explainability_summary_path(self, output_prefix: str) -> Path:
+        return self.explainability_data_dir / f"{output_prefix}_explainability_summary.json"
+
+    def explainability_audit_path(self, output_prefix: str) -> Path:
+        return self.explainability_data_dir / f"{output_prefix}_explainability_audit.json"
+
+    def explainability_examples_csv_path(self, output_prefix: str) -> Path:
+        return self.explainability_data_dir / f"{output_prefix}_explainability_examples.csv"
+
+    def rank_shift_analysis_csv_path(self, output_prefix: str) -> Path:
+        return self.explainability_data_dir / f"{output_prefix}_rank_shift_analysis.csv"
+
+    def explainability_case_studies_path(self, output_prefix: str) -> Path:
+        return self.explainability_data_dir / f"{output_prefix}_case_studies.md"
+
 
 @lru_cache(maxsize=1)
 def get_settings() -> Settings:
@@ -493,4 +512,5 @@ def get_settings() -> Settings:
         settings = Settings()
     settings.raw_data_dir.mkdir(parents=True, exist_ok=True)
     settings.processed_data_dir.mkdir(parents=True, exist_ok=True)
+    settings.explainability_data_dir.mkdir(parents=True, exist_ok=True)
     return settings

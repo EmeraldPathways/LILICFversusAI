@@ -334,3 +334,48 @@ Guardrails:
 - Do not claim feedback adaptation was validated.
 - Do not claim Hybrid universally beats SVD.
 - Do not hide the standalone 3-agent ablation result.
+
+## 22. Explainability Evidence Layer
+
+The repository now includes a separate explainability evidence layer for the Hybrid SVD + 3-Agent reranker.
+
+This layer does not change the recommendation algorithms or formal ranking metrics. Instead, it audits whether the Hybrid SVD + 3-Agent reranker exposes source-grounded evidence from user history, item metadata, score components and reranking movement. This supports the interpretation of Hybrid as an explainability-oriented augmentation layer over SVD, while preserving the limitation that the study is offline and cannot establish live customer engagement or conversion gains.
+
+### Backend additions
+
+- Service: `backend/app/services/explainability_service.py`
+- CLI: `python -m backend.scripts.run_explainability_audit --artifact-prefix seed99_robustness --sample-size 100 --output-prefix seed99`
+- API endpoint: `GET /metrics/explainability`
+- Frontend route: `/explainability-evidence`
+
+### Explainability artifacts
+
+All explainability outputs are written under:
+
+- `backend/app/data/processed/explainability/`
+
+Generated files:
+
+- `seed99_explainability_summary.json`
+- `seed99_explainability_audit.json`
+- `seed99_explainability_examples.csv`
+- `seed99_rank_shift_analysis.csv`
+- `seed99_case_studies.md`
+
+### Explainability metrics
+
+- `evidence_coverage_rate`: share of Hybrid explanation rows with at least one usable core metadata field
+- `preference_trace_rate`: share of rows with at least one user-history metadata match
+- `score_component_coverage_rate`: share of rows where all saved Hybrid score components are present
+- `groundedness_rate`: grounded structured claims divided by all structured claims
+- `rank_shift_coverage_rate`: share of rows where both SVD and Hybrid rank positions are observable
+- `ungrounded_claim_count`: number of unsupported structured claims
+- `average_rank_shift_for_ground_truth_hits`: average promotion/demotion of the held-out item where observable
+
+### Interpretation guardrails
+
+- This is not a live user study.
+- Do not claim CTR, CVR, customer engagement, conversion, add-to-cart, dwell time, or feedback adaptation improvement.
+- The explainability layer is an offline evidence audit over saved artifacts.
+- The diversity trade-off must remain explicit:
+  `Hybrid improves explainability and remains competitive on ranking quality, but it reduces intra-list diversity compared with SVD.`

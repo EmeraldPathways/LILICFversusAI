@@ -734,6 +734,39 @@ Key test files:
 3. Persist the final metric report for the formal 100-user SVD vs 3-agent comparison in a dedicated artifact path.
 4. Document frontend pages against the current backend artifacts if the UI will be part of the final paper demo.
 
+## Explainability Evidence Layer
+
+The repository now includes a read-only explainability evidence layer for the saved Hybrid SVD + 3-Agent reranker artifacts.
+
+Key additions:
+
+- backend service: `backend/app/services/explainability_service.py`
+- CLI runner: `python -m backend.scripts.run_explainability_audit --artifact-prefix seed99_robustness --sample-size 100 --output-prefix seed99`
+- API endpoint: `GET /metrics/explainability`
+- frontend page: `/explainability-evidence`
+
+The explainability evidence layer does not change the recommendation algorithms or formal ranking metrics. Instead, it audits whether the Hybrid SVD + 3-Agent reranker exposes source-grounded evidence from user history, item metadata, score components and reranking movement. This supports the interpretation of Hybrid as an explainability-oriented augmentation layer over SVD, while preserving the limitation that the study is offline and cannot establish live customer engagement or conversion gains.
+
+Explainability outputs are written to:
+
+- `backend/app/data/processed/explainability/`
+
+Explainability metrics include:
+
+- `evidence_coverage_rate`
+- `preference_trace_rate`
+- `score_component_coverage_rate`
+- `groundedness_rate`
+- `rank_shift_coverage_rate`
+- `ungrounded_claim_count`
+- `average_rank_shift_for_ground_truth_hits`
+
+Interpretation limits remain strict:
+
+- this is not a live user study
+- it does not prove CTR, CVR, customer engagement, conversion, add-to-cart, dwell time, or feedback adaptation
+- Hybrid improves explainability and remains competitive on ranking quality, but it reduces intra-list diversity compared with SVD
+
 ## Summary
 
 This codebase now supports both:

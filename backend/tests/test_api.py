@@ -4,6 +4,7 @@ import json
 
 import pandas as pd
 
+from tests.test_explainability_service import _write_explainability_source_artifacts
 from tests.conftest import write_processed_artifacts
 
 
@@ -188,3 +189,38 @@ def test_recommendation_comparison_includes_agent_process(client, isolated_env, 
     payload = response.json()
     assert payload["agentic_recommendations"][0]["article_id"] == "a5"
     assert payload["agentic_process"][0]["agent"] == "Agent 1"
+
+
+def test_explainability_endpoint_returns_generated_payload(client, isolated_env):
+    _write_explainability_source_artifacts(isolated_env)
+    from app.services.explainability_service import ExplainabilityService
+
+    ExplainabilityService(isolated_env).generate_explainability_artifacts(
+        artifact_prefix="seed99_robustness",
+        output_prefix="seed99",
+        sample_size=2,
+    )
+
+    response = client.get(
+        "/metrics/explainability?mode=svd_top10_experiment&artifact_prefix=seed99_robustness&output_prefix=seed99"
+    )
+
+    assert response.status_code == 200
+    payload = response.json()
+    assert payload["summary"]["summary_metrics"]["evidence_coverage_rate"] >= 0
+    assert len(payload["examples"]) == 4
+    assert payload["case_study"]["customer_id"] == "u1"
+    assert payload["limitations"][0].startswith("This explainability audit is offline")
+
+
+def test_explainability_endpoint_returns_controlled_missing_artifact_message(client, isolated_env):
+    response = client.get(
+        "/metrics/explainability?mode=svd_top10_experiment&artifact_prefix=seed99_robustness&output_prefix=seed99"
+    )
+
+    assert response.status_code == 400
+    assert (
+        response.json()["detail"]
+        == "Explainability artifacts not found. Run python -m backend.scripts.run_explainability_audit "
+        "--artifact-prefix seed99_robustness --sample-size 100 --output-prefix seed99 first."
+    )

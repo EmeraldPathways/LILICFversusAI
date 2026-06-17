@@ -122,3 +122,65 @@ class ProcessingSummaryResponse(BaseModel):
     train_size: int
     test_size: int
     split_boundary_date: str
+
+
+class ExplainabilitySummaryMetrics(BaseModel):
+    evidence_coverage_rate: float
+    preference_trace_rate: float
+    score_component_coverage_rate: float
+    groundedness_rate: float
+    rank_shift_coverage_rate: float
+    ungrounded_claim_count: int
+    average_rank_shift_for_ground_truth_hits: float | None = None
+
+
+class ExplainabilityExampleRow(BaseModel):
+    customer_id: str
+    article_id: str
+    hybrid_rank: int
+    svd_rank: int | str | None = None
+    rank_shift: int | str | None = None
+    is_ground_truth: bool | str
+    normalized_svd_score: float | str | None = None
+    normalized_agentic_score: float | str | None = None
+    diversity_bonus: float | str | None = None
+    hybrid_score: float | str | None = None
+    product_type_name: str | None = None
+    product_group_name: str | None = None
+    graphical_appearance_name: str | None = None
+    colour_group_name: str | None = None
+    garment_group_name: str | None = None
+    department_name: str | None = None
+    section_name: str | None = None
+    index_name: str | None = None
+    prod_name: str | None = None
+    detail_desc: str | None = None
+    matched_preference_fields_json: str
+    explanation_text: str
+    grounded_claim_count: int
+    ungrounded_claim_count: int
+
+
+class ExplainabilityCaseStudy(BaseModel):
+    customer_id: str
+    ground_truth_article_id: str | None = None
+    recommended_article_id: str
+    is_ground_truth: bool
+    user_history_summary: dict[str, object]
+    item_metadata: dict[str, object]
+    svd_rank: int | None = None
+    hybrid_rank: int
+    rank_shift: int | None = None
+    score_components: dict[str, object]
+    matched_preference_fields: list[dict[str, object]]
+    explanation_text: str
+    limitation_note: str | None = None
+
+
+class ExplainabilityPageResponse(BaseModel):
+    summary: dict[str, object]
+    examples: list[ExplainabilityExampleRow]
+    rank_shift_highlights: dict[str, object]
+    case_study: ExplainabilityCaseStudy | None = None
+    warnings: list[str]
+    limitations: list[str]

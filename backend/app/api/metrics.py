@@ -7,7 +7,8 @@ from fastapi import Query
 
 from app.api.experiment import get_experiment_service
 from app.config import Settings
-from app.models.schemas import MetricsResponse
+from app.models.schemas import ExplainabilityPageResponse, MetricsResponse
+from app.services.explainability_service import ExplainabilityService
 from app.services.experiment_service import ExperimentService
 
 router = APIRouter(tags=["metrics"])
@@ -41,3 +42,16 @@ def get_metrics(
     if metrics is None:
         raise FileNotFoundError("Run the experiment first to generate evaluation metrics.")
     return metrics
+
+
+@router.get("/metrics/explainability", response_model=ExplainabilityPageResponse)
+def get_explainability_metrics(
+    mode: str = Query(default=Settings.SVD_TOP10_EXPERIMENT_MODE),
+    artifact_prefix: str = Query(default="seed99_robustness"),
+    output_prefix: str = Query(default="seed99"),
+    service: ExperimentService = Depends(get_experiment_service),
+) -> dict[str, object]:
+    if mode != service.settings.SVD_TOP10_EXPERIMENT_MODE:
+        raise FileNotFoundError("Explainability evidence is only available for the formal Top-10 experiment.")
+    explainability_service = ExplainabilityService(service.settings)
+    return explainability_service.load_explainability_page(output_prefix=output_prefix)

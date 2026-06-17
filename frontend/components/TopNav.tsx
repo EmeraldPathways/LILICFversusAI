@@ -10,6 +10,7 @@ const links = [
   ["/user-intention", "User Intention"],
   ["/comparison", "Comparison"],
   ["/evaluation", "Evaluation"],
+  ["/explainability-evidence", "Explainability Evidence"],
 ] as const;
 
 export function TopNav() {
