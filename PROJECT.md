@@ -29,6 +29,12 @@ The repository supports three related goals:
 2. Build repeatable offline experiment artifacts from raw H&M data.
 3. Compare a formal collaborative filtering baseline against the existing agentic framework under controlled conditions.
 
+The current supervisor-facing artifact now uses the final three-method dissertation framing:
+
+- SVD Matrix Factorisation baseline
+- Standalone 3-Agent comparison / ablation method
+- Hybrid SVD + 3-Agent reranker as the final artifact method
+
 ## Current Comparison Design
 
 ### Legacy debug path
@@ -209,6 +215,12 @@ Coordinates end-to-end runs by experiment mode:
 - legacy debug run
 - `svd_top10_experiment`
 
+#### `ArtifactDemoService`
+
+- `backend/app/services/artifact_demo_service.py`
+
+Provides a read-only adapter for the final artifact demo UI. It does not generate recommendations or write artifacts. Instead, it assembles saved formal experiment outputs and saved explainability rows into deterministic walkthrough cases for the supervisor-facing demo route.
+
 ## API Surface
 
 ### Health
@@ -233,6 +245,12 @@ Examples:
 - `POST /users/{user_id}/feedback`
 - `GET /recommendations/compare/{user_id}`
 
+### Demo
+
+- `GET /demo/workflow-cases`
+
+This endpoint is read-only and returns saved walkthrough cases for the final `/artifact-demo` route using existing offline artifacts only.
+
 ### Metrics
 
 - `GET /metrics`
@@ -240,6 +258,32 @@ Examples:
 ## Frontend
 
 The frontend is a Next.js application intended to consume backend artifacts and API responses for the research/demo UI.
+
+The primary supervisor-facing route is now:
+
+- `/artifact-demo`
+
+The current artifact page is a one-page dark card layout with exactly three visible method tabs:
+
+1. `SVD`
+2. `3-Agent`
+3. `Hybrid`
+
+The route uses the final dissertation framing:
+
+- SVD Matrix Factorisation as the formal behavioural baseline
+- Standalone 3-Agent as the comparison / ablation method
+- Hybrid SVD + 3-Agent as the final reranking and explainability-oriented artifact
+
+The UI is now card-based rather than table-heavy:
+
+- header card with dissertation framing
+- shared real demo-user selector
+- SVD recommendation cards
+- 3-Agent preference profile, evidence set, and final recommendation cards
+- Hybrid workflow cards, formula card, Top-10 cards, and structured explainability audit cards
+
+The old `three-agent-demo/` folder remains in the repository only as a visual reference and is not the live app.
 
 This document focuses on the backend experiment system because that is where the formal SVD vs 3-agent comparison is implemented.
 
@@ -623,7 +667,7 @@ npm.cmd install
 
 ```bash
 cd backend
-uvicorn app.main:app --reload
+.\.venv\Scripts\python.exe -m uvicorn app.main:app --host 127.0.0.1 --port 8000
 ```
 
 Health check:
@@ -631,6 +675,80 @@ Health check:
 ```bash
 curl http://127.0.0.1:8000/health
 ```
+
+Notes:
+
+- The working backend port for the current artifact demo is `8000`.
+- Run from `backend/` so `app.main:app` resolves correctly.
+- Use the project venv command above instead of relying on a global `uvicorn`.
+
+## Running the Frontend
+
+Install once:
+
+```bash
+cd frontend
+npm.cmd install
+```
+
+Development mode:
+
+```bash
+cd frontend
+$env:PORT='3005'
+npm.cmd run dev
+```
+
+Production-style local run used for the artifact demo:
+
+```bash
+cd frontend
+npm.cmd run build
+npm.cmd run start -- --port 3005
+```
+
+Notes:
+
+- The working frontend port for the current artifact demo is `3005`.
+- The live supervisor-facing page is `http://127.0.0.1:3005/artifact-demo`.
+- If `npx.cmd tsc --noEmit` complains about missing `.next/types/...`, run `npm.cmd run build` first, then rerun typecheck.
+- If the page shows an old layout after restart, do one hard refresh in the browser.
+
+## Standard Startup Sequence
+
+From a clean terminal, use this order every time:
+
+1. Start the backend:
+
+```bash
+cd backend
+.\.venv\Scripts\python.exe -m uvicorn app.main:app --host 127.0.0.1 --port 8000
+```
+
+2. In a second terminal, start the frontend:
+
+```bash
+cd frontend
+npm.cmd run build
+npm.cmd run start -- --port 3005
+```
+
+3. Open the artifact page:
+
+```text
+http://127.0.0.1:3005/artifact-demo
+```
+
+4. Optional backend health check:
+
+```text
+http://127.0.0.1:8000/health
+```
+
+Current known-good local process ports:
+
+- backend: `8000`
+- frontend: `3005`
 
 ## Running Tests
 
@@ -741,11 +859,22 @@ The repository now includes a read-only explainability evidence layer for the sa
 Key additions:
 
 - backend service: `backend/app/services/explainability_service.py`
+- backend walkthrough adapter: `backend/app/services/artifact_demo_service.py`
 - CLI runner: `python -m backend.scripts.run_explainability_audit --artifact-prefix seed99_robustness --sample-size 100 --output-prefix seed99`
 - API endpoint: `GET /metrics/explainability`
+- walkthrough API endpoint: `GET /demo/workflow-cases`
+- primary frontend page: `/artifact-demo`
 - frontend page: `/explainability-evidence`
 
 The explainability evidence layer does not change the recommendation algorithms or formal ranking metrics. Instead, it audits whether the Hybrid SVD + 3-Agent reranker exposes source-grounded evidence from user history, item metadata, score components and reranking movement. This supports the interpretation of Hybrid as an explainability-oriented augmentation layer over SVD, while preserving the limitation that the study is offline and cannot establish live customer engagement or conversion gains.
+
+The current final frontend artifact page now keeps the walkthrough focused on three method tabs only:
+
+- `SVD` shows the behavioural baseline as Top-10 recommendation cards
+- `3-Agent` shows preference, evidence, and decision workflow sections
+- `Hybrid` shows reranking, score components, and read-only explainability audit sections
+
+Global experiment summaries, old comparison panels, and old five-tab artifact structure are no longer the primary `/artifact-demo` presentation.
 
 Explainability outputs are written to:
 
@@ -814,3 +943,33 @@ This codebase now supports both:
 - a structurally separate formal experiment workflow for SVD vs 3-agent evaluation
 
 The important architectural decision is that the old user-based cosine collaborative filtering baseline remains in place only for legacy/debug use, while the formal comparison baseline is SVD Matrix Factorisation under a controlled leave-one-out, shared-candidate-pool, Top-10 evaluation design.
+
+## Current Working State
+
+Current branch during this update:
+
+- `artifacts`
+
+Latest artifact-demo implementation status:
+
+- frontend route: `/artifact-demo`
+- backend read-only walkthrough endpoint: `GET /demo/workflow-cases`
+- selected users come from saved formal seed99 artifacts only
+- the page uses a one-page dark card layout inspired by the old demo screenshot
+- the dropdown is backed by a client-side recovery fetch if the initial server render misses backend data
+- no product image placeholders are used
+- no Top-5 or Hit@5 wording is used
+
+Latest verification commands that passed:
+
+```bash
+cd frontend
+npx.cmd tsc --noEmit
+npm.cmd run build
+```
+
+Backend tests were previously verified with:
+
+```bash
+.\backend\.venv\Scripts\python.exe -m pytest backend/tests -q -p no:cacheprovider
+```
