@@ -180,6 +180,45 @@ export type ExplainabilityPageResponse = {
   limitations: string[];
 };
 
+export type ArtifactDemoMethodItem = {
+  article_id: string;
+  rank?: number | null;
+  score?: number | null;
+  reason?: string | null;
+  is_ground_truth: boolean;
+  product_type_name?: string | null;
+  product_group_name?: string | null;
+  colour_group_name?: string | null;
+  graphical_appearance_name?: string | null;
+  garment_group_name?: string | null;
+};
+
+export type ArtifactDemoWorkflowCase = {
+  label: string;
+  category: string;
+  customer_id: string;
+  customer_id_short: string;
+  training_history_summary: Record<string, unknown>;
+  ground_truth: Record<string, unknown>;
+  candidate_pool_size: number;
+  preference_agent: Record<string, unknown>;
+  evidence_agent: Record<string, unknown>;
+  decision_agent: Record<string, unknown>;
+  svd_top10: ArtifactDemoMethodItem[];
+  agentic_top10: ArtifactDemoMethodItem[];
+  hybrid_top10: ArtifactDemoMethodItem[];
+  hybrid_selected_explanation: Record<string, unknown>;
+  hybrid_score_components: Record<string, unknown>;
+  rank_shift?: number | null;
+  diversity_comparison: Record<string, unknown>;
+};
+
+export type ArtifactDemoWorkflowCasesResponse = {
+  artifact_prefix: string;
+  explainability_prefix: string;
+  cases: ArtifactDemoWorkflowCase[];
+};
+
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8000";
 const FORMAL_EXPERIMENT_MODE = "svd_top10_experiment";
 
@@ -229,10 +268,25 @@ export async function getRecommendationComparison(userId: string): Promise<Recom
   );
 }
 
-export async function getExplainabilityEvidence(): Promise<ExplainabilityPageResponse | null> {
+export async function getExplainabilityEvidence(options?: {
+  artifactPrefix?: string;
+  outputPrefix?: string;
+}): Promise<ExplainabilityPageResponse | null> {
   try {
+    const artifactPrefix = options?.artifactPrefix ?? "seed99_robustness";
+    const outputPrefix = options?.outputPrefix ?? "seed99";
     return await apiFetch<ExplainabilityPageResponse>(
-      "/metrics/explainability?mode=svd_top10_experiment&artifact_prefix=seed99_robustness&output_prefix=seed99",
+      `/metrics/explainability?mode=svd_top10_experiment&artifact_prefix=${artifactPrefix}&output_prefix=${outputPrefix}`,
+    );
+  } catch {
+    return null;
+  }
+}
+
+export async function getWorkflowCases(): Promise<ArtifactDemoWorkflowCasesResponse | null> {
+  try {
+    return await apiFetch<ArtifactDemoWorkflowCasesResponse>(
+      "/demo/workflow-cases?artifact_prefix=seed99_robustness&explainability_prefix=seed99_full_retry",
     );
   } catch {
     return null;

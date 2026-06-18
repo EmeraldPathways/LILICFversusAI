@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const links = [
+  ["/artifact-demo", "Artifact Demo"],
   ["/", "Overview"],
   ["/research-setup", "Research Setup"],
   ["/data-processing", "Data Processing"],

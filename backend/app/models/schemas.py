@@ -184,3 +184,42 @@ class ExplainabilityPageResponse(BaseModel):
     case_study: ExplainabilityCaseStudy | None = None
     warnings: list[str]
     limitations: list[str]
+
+
+class ArtifactDemoMethodItem(BaseModel):
+    article_id: str
+    rank: int | None = None
+    score: float | None = None
+    reason: str | None = None
+    is_ground_truth: bool = False
+    product_type_name: str | None = None
+    product_group_name: str | None = None
+    colour_group_name: str | None = None
+    graphical_appearance_name: str | None = None
+    garment_group_name: str | None = None
+
+
+class ArtifactDemoWorkflowCase(BaseModel):
+    label: str
+    category: str
+    customer_id: str
+    customer_id_short: str
+    training_history_summary: dict[str, object]
+    ground_truth: dict[str, object]
+    candidate_pool_size: int
+    preference_agent: dict[str, object]
+    evidence_agent: dict[str, object]
+    decision_agent: dict[str, object]
+    svd_top10: list[ArtifactDemoMethodItem]
+    agentic_top10: list[ArtifactDemoMethodItem]
+    hybrid_top10: list[ArtifactDemoMethodItem]
+    hybrid_selected_explanation: dict[str, object]
+    hybrid_score_components: dict[str, object]
+    rank_shift: int | None = None
+    diversity_comparison: dict[str, object]
+
+
+class ArtifactDemoWorkflowCasesResponse(BaseModel):
+    artifact_prefix: str
+    explainability_prefix: str
+    cases: list[ArtifactDemoWorkflowCase]

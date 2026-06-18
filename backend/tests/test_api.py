@@ -8,6 +8,253 @@ from tests.test_explainability_service import _write_explainability_source_artif
 from tests.conftest import write_processed_artifacts
 
 
+def _write_workflow_case_artifacts(settings) -> None:
+    settings.evaluation_base_table_svd_top10_json_path(1000, artifact_prefix="seed99_robustness").write_text(
+        json.dumps(
+            [
+                {
+                    "customer_id": "u1",
+                    "train_article_ids": ["a1", "a2", "a3"],
+                    "ground_truth_article_id": "a4",
+                    "ground_truth_product_type_name": "Dress",
+                    "ground_truth_product_group_name": "Garment Full body",
+                    "ground_truth_colour_group_name": "Black",
+                    "ground_truth_graphical_appearance_name": "Solid",
+                    "ground_truth_garment_group_name": "Dresses Ladies",
+                    "candidate_pool_article_ids": ["a4", "a5", "a6"],
+                },
+                {
+                    "customer_id": "u2",
+                    "train_article_ids": ["b1", "b2"],
+                    "ground_truth_article_id": "b3",
+                    "ground_truth_product_type_name": "Top",
+                    "ground_truth_product_group_name": "Garment Upper body",
+                    "ground_truth_colour_group_name": "White",
+                    "ground_truth_graphical_appearance_name": "Solid",
+                    "ground_truth_garment_group_name": "Jersey Basic",
+                    "candidate_pool_article_ids": ["b3", "b4", "b5"],
+                },
+            ]
+        ),
+        encoding="utf-8",
+    )
+    settings.svd_recommendations_top10_json_path(1000, artifact_prefix="seed99_robustness").write_text(
+        json.dumps(
+            [
+                {
+                    "customer_id": "u1",
+                    "top_10_recommendations": [
+                        {
+                            "rank": 1,
+                            "article_id": "a4",
+                            "score": 0.91,
+                            "product_type_name": "Dress",
+                            "product_group_name": "Garment Full body",
+                            "colour_group_name": "Black",
+                            "graphical_appearance_name": "Solid",
+                        }
+                    ],
+                },
+                {
+                    "customer_id": "u2",
+                    "top_10_recommendations": [
+                        {
+                            "rank": 1,
+                            "article_id": "b4",
+                            "score": 0.51,
+                            "product_type_name": "Top",
+                            "product_group_name": "Garment Upper body",
+                            "colour_group_name": "White",
+                            "graphical_appearance_name": "Solid",
+                        }
+                    ],
+                },
+            ]
+        ),
+        encoding="utf-8",
+    )
+    settings.agentic_recommendations_top10_json_path(1000, artifact_prefix="seed99_robustness").write_text(
+        json.dumps(
+            [
+                {
+                    "customer_id": "u1",
+                    "preference_profile": {
+                        "user_id": "u1",
+                        "inferred_intent": "occasionwear",
+                        "preferred_categories": ["Garment Full body"],
+                        "preferred_product_types": ["Dress"],
+                        "preferred_colours": ["Black"],
+                        "preferred_appearance": ["Solid"],
+                        "shopping_context": "offline historical preference evaluation",
+                    },
+                    "top_10_recommendations": [
+                        {
+                            "rank": 1,
+                            "article_id": "a5",
+                            "score": 0.73,
+                            "product_type_name": "Dress",
+                            "product_group_name": "Garment Full body",
+                            "colour_group_name": "Black",
+                            "graphical_appearance_name": "Solid",
+                            "garment_group_name": "Dresses Ladies",
+                            "recommendation_reason": "Matches the user's saved preference profile.",
+                            "matched_evidence": ["product_group_name=Garment Full body"],
+                        }
+                    ],
+                },
+                {
+                    "customer_id": "u2",
+                    "preference_profile": {
+                        "user_id": "u2",
+                        "inferred_intent": "daily tops",
+                        "preferred_categories": ["Garment Upper body"],
+                        "preferred_product_types": ["Top"],
+                        "preferred_colours": ["White"],
+                        "preferred_appearance": ["Solid"],
+                        "shopping_context": "offline historical preference evaluation",
+                    },
+                    "top_10_recommendations": [
+                        {
+                            "rank": 1,
+                            "article_id": "b3",
+                            "score": 0.66,
+                            "product_type_name": "Top",
+                            "product_group_name": "Garment Upper body",
+                            "colour_group_name": "White",
+                            "graphical_appearance_name": "Solid",
+                            "garment_group_name": "Jersey Basic",
+                            "recommendation_reason": "Matches the user's saved preference profile.",
+                            "matched_evidence": ["product_group_name=Garment Upper body"],
+                        }
+                    ],
+                },
+            ]
+        ),
+        encoding="utf-8",
+    )
+    settings.hybrid_svd_agentic_recommendations_top10_json_path(1000, artifact_prefix="seed99_robustness").write_text(
+        json.dumps(
+            [
+                {
+                    "customer_id": "u1",
+                    "top_10_recommendations": [
+                        {
+                            "rank": 1,
+                            "article_id": "a4",
+                            "hybrid_score": 0.95,
+                            "normalized_svd_score": 1.0,
+                            "normalized_agentic_score": 0.8,
+                            "diversity_bonus": 0.1,
+                            "product_type_name": "Dress",
+                            "product_group_name": "Garment Full body",
+                            "colour_group_name": "Black",
+                            "graphical_appearance_name": "Solid",
+                            "garment_group_name": "Dresses Ladies",
+                            "recommendation_reason": "Hybrid reranking promoted a known preference match.",
+                        }
+                    ],
+                },
+                {
+                    "customer_id": "u2",
+                    "top_10_recommendations": [
+                        {
+                            "rank": 1,
+                            "article_id": "b3",
+                            "hybrid_score": 0.88,
+                            "normalized_svd_score": 0.7,
+                            "normalized_agentic_score": 0.9,
+                            "diversity_bonus": 0.05,
+                            "product_type_name": "Top",
+                            "product_group_name": "Garment Upper body",
+                            "colour_group_name": "White",
+                            "graphical_appearance_name": "Solid",
+                            "garment_group_name": "Jersey Basic",
+                            "recommendation_reason": "Hybrid reranking promoted a known preference match.",
+                        }
+                    ],
+                },
+            ]
+        ),
+        encoding="utf-8",
+    )
+    settings.per_user_metrics_top10_three_methods_json_path(1000, artifact_prefix="seed99_robustness").write_text(
+        json.dumps(
+            [
+                {
+                    "customer_id": "u1",
+                    "ground_truth_article_id": "a4",
+                    "svd_hit_rate_at_10": 1,
+                    "svd_ground_truth_rank": 1,
+                    "svd_ndcg_at_10": 1.0,
+                    "svd_ild_at_10": 0.8,
+                    "agentic_hit_rate_at_10": 0,
+                    "agentic_ground_truth_rank": None,
+                    "agentic_ndcg_at_10": 0.0,
+                    "agentic_ild_at_10": 0.5,
+                    "hybrid_hit_rate_at_10": 1,
+                    "hybrid_ground_truth_rank": 1,
+                    "hybrid_ndcg_at_10": 1.0,
+                    "hybrid_ild_at_10": 0.7,
+                },
+                {
+                    "customer_id": "u2",
+                    "ground_truth_article_id": "b3",
+                    "svd_hit_rate_at_10": 0,
+                    "svd_ground_truth_rank": None,
+                    "svd_ndcg_at_10": 0.0,
+                    "svd_ild_at_10": 0.9,
+                    "agentic_hit_rate_at_10": 1,
+                    "agentic_ground_truth_rank": 1,
+                    "agentic_ndcg_at_10": 1.0,
+                    "agentic_ild_at_10": 0.6,
+                    "hybrid_hit_rate_at_10": 1,
+                    "hybrid_ground_truth_rank": 1,
+                    "hybrid_ndcg_at_10": 1.0,
+                    "hybrid_ild_at_10": 0.72,
+                },
+            ]
+        ),
+        encoding="utf-8",
+    )
+    settings.explainability_examples_csv_path("seed99_full_retry").write_text(
+        "\n".join(
+            [
+                "customer_id,article_id,hybrid_rank,svd_rank,rank_shift,is_ground_truth,normalized_svd_score,normalized_agentic_score,diversity_bonus,hybrid_score,product_type_name,product_group_name,graphical_appearance_name,colour_group_name,garment_group_name,department_name,section_name,index_name,prod_name,detail_desc,matched_preference_fields_json,explanation_text,grounded_claim_count,ungrounded_claim_count",
+                'u1,a4,1,2,1,True,1.0,0.8,0.1,0.95,Dress,Garment Full body,Solid,Black,Dresses Ladies,,,,,"[]","Grounded hybrid explanation for u1.",2,0',
+                'u2,b3,1,, ,True,0.7,0.9,0.05,0.88,Top,Garment Upper body,Solid,White,Jersey Basic,,,,,"[]","Grounded hybrid explanation for u2.",2,0',
+            ]
+        ),
+        encoding="utf-8",
+    )
+    settings.explainability_audit_path("seed99_full_retry").write_text(
+        json.dumps(
+            {
+                "case_study_preview": {
+                    "customer_id": "u1",
+                    "ground_truth_article_id": "a4",
+                    "recommended_article_id": "a4",
+                    "is_ground_truth": True,
+                    "user_history_summary": {"recent_product_types": ["Dress"]},
+                    "item_metadata": {"article_id": "a4"},
+                    "svd_rank": 2,
+                    "hybrid_rank": 1,
+                    "rank_shift": 1,
+                    "score_components": {
+                        "normalized_svd_score": 1.0,
+                        "normalized_agentic_score": 0.8,
+                        "diversity_bonus": 0.1,
+                        "hybrid_score": 0.95,
+                    },
+                    "matched_preference_fields": [{"field": "product_group_name", "item_value": "Garment Full body"}],
+                    "explanation_text": "Grounded hybrid explanation for u1.",
+                    "limitation_note": None,
+                }
+            }
+        ),
+        encoding="utf-8",
+    )
+
+
 def test_setup_endpoint(client, isolated_env, sample_interactions: pd.DataFrame):
     write_processed_artifacts(isolated_env, sample_interactions)
 
@@ -224,3 +471,34 @@ def test_explainability_endpoint_returns_controlled_missing_artifact_message(cli
         == "Explainability artifacts not found. Run python -m backend.scripts.run_explainability_audit "
         "--artifact-prefix seed99_robustness --sample-size 100 --output-prefix seed99 first."
     )
+
+
+def test_workflow_cases_endpoint_returns_saved_artifact_cases(client, isolated_env):
+    _write_workflow_case_artifacts(isolated_env)
+
+    response = client.get(
+        "/demo/workflow-cases?artifact_prefix=seed99_robustness&explainability_prefix=seed99_full_retry"
+    )
+
+    assert response.status_code == 200
+    payload = response.json()
+    assert payload["artifact_prefix"] == "seed99_robustness"
+    assert payload["explainability_prefix"] == "seed99_full_retry"
+    assert len(payload["cases"]) == 2
+    assert payload["cases"][0]["customer_id"] == "u1"
+    assert payload["cases"][0]["customer_id_short"] == "u1"
+    assert payload["cases"][0]["hybrid_selected_explanation"]["article_id"] == "a4"
+    assert payload["cases"][0]["hybrid_score_components"]["hybrid_score"] == 0.95
+    assert payload["cases"][0]["rank_shift"] == 1
+    assert payload["cases"][0]["svd_top10"][0]["article_id"] == "a4"
+    assert payload["cases"][0]["agentic_top10"][0]["article_id"] == "a5"
+    assert payload["cases"][0]["hybrid_top10"][0]["article_id"] == "a4"
+
+
+def test_workflow_cases_endpoint_returns_missing_artifact_error(client, isolated_env):
+    response = client.get(
+        "/demo/workflow-cases?artifact_prefix=seed99_robustness&explainability_prefix=seed99_full_retry"
+    )
+
+    assert response.status_code == 400
+    assert "Missing required walkthrough artifacts" in response.json()["detail"]
