@@ -190,7 +190,12 @@ class ArtifactDemoMethodItem(BaseModel):
     article_id: str
     rank: int | None = None
     score: float | None = None
+    hybrid_score: float | None = None
+    normalized_svd_score: float | None = None
+    normalized_agentic_score: float | None = None
+    diversity_bonus: float | None = None
     reason: str | None = None
+    matched_evidence: list[str] = Field(default_factory=list)
     is_ground_truth: bool = False
     product_type_name: str | None = None
     product_group_name: str | None = None
@@ -199,24 +204,129 @@ class ArtifactDemoMethodItem(BaseModel):
     garment_group_name: str | None = None
 
 
-class ArtifactDemoWorkflowCase(BaseModel):
+class ArtifactDemoValueCount(BaseModel):
+    value: str
+    count: int
+
+
+class ArtifactDemoDemoUser(BaseModel):
     label: str
-    category: str
     customer_id: str
     customer_id_short: str
-    training_history_summary: dict[str, object]
-    ground_truth: dict[str, object]
+
+
+class ArtifactDemoLeaveOneOutContext(BaseModel):
+    training_history_count: int
+    ground_truth_article_id: str | None = None
     candidate_pool_size: int
-    preference_agent: dict[str, object]
-    evidence_agent: dict[str, object]
-    decision_agent: dict[str, object]
+    ground_truth_in_candidate_pool: bool | None = None
+
+
+class ArtifactDemoGroundTruth(BaseModel):
+    article_id: str | None = None
+    product_type_name: str | None = None
+    product_group_name: str | None = None
+    colour_group_name: str | None = None
+    graphical_appearance_name: str | None = None
+    garment_group_name: str | None = None
+
+
+class ArtifactDemoPreferenceAvailability(BaseModel):
+    has_preference_summary: bool
+    has_history_summary: bool
+
+
+class ArtifactDemoPreferenceSummary(BaseModel):
+    inferred_intent: str | None = None
+    preferred_categories: list[str] = Field(default_factory=list)
+    preferred_product_types: list[str] = Field(default_factory=list)
+    preferred_colours: list[str] = Field(default_factory=list)
+    preferred_appearance: list[str] = Field(default_factory=list)
+    frequent_product_types: list[ArtifactDemoValueCount] = Field(default_factory=list)
+    frequent_product_groups: list[ArtifactDemoValueCount] = Field(default_factory=list)
+    frequent_colours: list[ArtifactDemoValueCount] = Field(default_factory=list)
+    frequent_graphical_appearances: list[ArtifactDemoValueCount] = Field(default_factory=list)
+    availability: ArtifactDemoPreferenceAvailability
+
+
+class ArtifactDemoEvidenceAvailability(BaseModel):
+    has_item_metadata: bool
+    has_matched_evidence: bool
+
+
+class ArtifactDemoItemMetadata(BaseModel):
+    article_id: str | None = None
+    product_type_name: str | None = None
+    product_group_name: str | None = None
+    colour_group_name: str | None = None
+    graphical_appearance_name: str | None = None
+    garment_group_name: str | None = None
+    prod_name: str | None = None
+
+
+class ArtifactDemoEvidencePanel(BaseModel):
+    headline: str | None = None
+    matched_evidence: list[str] = Field(default_factory=list)
+    item_metadata: ArtifactDemoItemMetadata
+    availability: ArtifactDemoEvidenceAvailability
+
+
+class ArtifactDemoDecisionPanel(BaseModel):
+    headline: str | None = None
+    selected_article_id: str | None = None
+    selected_rank: int | None = None
+    selected_score: float | None = None
+
+
+class ArtifactDemoMethodHits(BaseModel):
+    svd: bool
+    agentic: bool
+    hybrid: bool
+
+
+class ArtifactDemoScoreBreakdown(BaseModel):
+    normalized_svd_score: float | None = None
+    normalized_agentic_score: float | None = None
+    diversity_bonus: float | None = None
+    hybrid_score: float | None = None
+
+
+class ArtifactDemoExplanationAvailability(BaseModel):
+    has_explanation_text: bool
+    has_score_breakdown: bool
+    has_rank_shift: bool
+    has_item_metadata: bool
+    prod_name_available: bool
+
+
+class ArtifactDemoExplanationPanel(BaseModel):
+    article_id: str | None = None
+    hybrid_rank: int | None = None
+    svd_rank: int | None = None
+    rank_shift: int | None = None
+    is_ground_truth: bool = False
+    explanation_text: str | None = None
+    matched_preference_fields: list[dict[str, object]] = Field(default_factory=list)
+    score_components: ArtifactDemoScoreBreakdown
+    item_metadata: ArtifactDemoItemMetadata
+    groundedness_status: str | None = None
+    warnings: list[str] = Field(default_factory=list)
+    availability: ArtifactDemoExplanationAvailability
+
+
+class ArtifactDemoWorkflowCase(BaseModel):
+    demo_user: ArtifactDemoDemoUser
+    leave_one_out: ArtifactDemoLeaveOneOutContext
+    ground_truth: ArtifactDemoGroundTruth
+    method_hits: ArtifactDemoMethodHits
+    preference_agent: ArtifactDemoPreferenceSummary
+    evidence_agent: ArtifactDemoEvidencePanel
+    decision_agent: ArtifactDemoDecisionPanel
+    label: str
     svd_top10: list[ArtifactDemoMethodItem]
     agentic_top10: list[ArtifactDemoMethodItem]
     hybrid_top10: list[ArtifactDemoMethodItem]
-    hybrid_selected_explanation: dict[str, object]
-    hybrid_score_components: dict[str, object]
-    rank_shift: int | None = None
-    diversity_comparison: dict[str, object]
+    hybrid_explainability: ArtifactDemoExplanationPanel
 
 
 class ArtifactDemoWorkflowCasesResponse(BaseModel):

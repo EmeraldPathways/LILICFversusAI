@@ -216,16 +216,62 @@ def _write_workflow_case_artifacts(settings) -> None:
         ),
         encoding="utf-8",
     )
-    settings.explainability_examples_csv_path("seed99_full_retry").write_text(
-        "\n".join(
-            [
-                "customer_id,article_id,hybrid_rank,svd_rank,rank_shift,is_ground_truth,normalized_svd_score,normalized_agentic_score,diversity_bonus,hybrid_score,product_type_name,product_group_name,graphical_appearance_name,colour_group_name,garment_group_name,department_name,section_name,index_name,prod_name,detail_desc,matched_preference_fields_json,explanation_text,grounded_claim_count,ungrounded_claim_count",
-                'u1,a4,1,2,1,True,1.0,0.8,0.1,0.95,Dress,Garment Full body,Solid,Black,Dresses Ladies,,,,,"[]","Grounded hybrid explanation for u1.",2,0',
-                'u2,b3,1,, ,True,0.7,0.9,0.05,0.88,Top,Garment Upper body,Solid,White,Jersey Basic,,,,,"[]","Grounded hybrid explanation for u2.",2,0',
-            ]
-        ),
-        encoding="utf-8",
-    )
+    pd.DataFrame(
+        [
+            {
+                "customer_id": "u1",
+                "article_id": "a4",
+                "hybrid_rank": 1,
+                "svd_rank": 2,
+                "rank_shift": 1,
+                "is_ground_truth": True,
+                "normalized_svd_score": 1.0,
+                "normalized_agentic_score": 0.8,
+                "diversity_bonus": 0.1,
+                "hybrid_score": 0.95,
+                "product_type_name": "Dress",
+                "product_group_name": "Garment Full body",
+                "graphical_appearance_name": "Solid",
+                "colour_group_name": "Black",
+                "garment_group_name": "Dresses Ladies",
+                "department_name": "",
+                "section_name": "",
+                "index_name": "",
+                "prod_name": "",
+                "detail_desc": "",
+                "matched_preference_fields_json": "[]",
+                "explanation_text": "Grounded hybrid explanation for u1.",
+                "grounded_claim_count": 2,
+                "ungrounded_claim_count": 0,
+            },
+            {
+                "customer_id": "u2",
+                "article_id": "b3",
+                "hybrid_rank": 1,
+                "svd_rank": "",
+                "rank_shift": "",
+                "is_ground_truth": True,
+                "normalized_svd_score": 0.7,
+                "normalized_agentic_score": 0.9,
+                "diversity_bonus": 0.05,
+                "hybrid_score": 0.88,
+                "product_type_name": "Top",
+                "product_group_name": "Garment Upper body",
+                "graphical_appearance_name": "Solid",
+                "colour_group_name": "White",
+                "garment_group_name": "Jersey Basic",
+                "department_name": "",
+                "section_name": "",
+                "index_name": "",
+                "prod_name": "",
+                "detail_desc": "",
+                "matched_preference_fields_json": "[]",
+                "explanation_text": "Grounded hybrid explanation for u2.",
+                "grounded_claim_count": 2,
+                "ungrounded_claim_count": 0,
+            },
+        ]
+    ).to_csv(settings.explainability_examples_csv_path("seed99_full_retry"), index=False)
     settings.explainability_audit_path("seed99_full_retry").write_text(
         json.dumps(
             {
@@ -485,14 +531,29 @@ def test_workflow_cases_endpoint_returns_saved_artifact_cases(client, isolated_e
     assert payload["artifact_prefix"] == "seed99_robustness"
     assert payload["explainability_prefix"] == "seed99_full_retry"
     assert len(payload["cases"]) == 2
-    assert payload["cases"][0]["customer_id"] == "u1"
-    assert payload["cases"][0]["customer_id_short"] == "u1"
-    assert payload["cases"][0]["hybrid_selected_explanation"]["article_id"] == "a4"
-    assert payload["cases"][0]["hybrid_score_components"]["hybrid_score"] == 0.95
-    assert payload["cases"][0]["rank_shift"] == 1
+    assert payload["cases"][0]["demo_user"]["label"] == "Demo User 1"
+    assert payload["cases"][0]["demo_user"]["customer_id"] == "u1"
+    assert payload["cases"][0]["demo_user"]["customer_id_short"] == "u1"
+    assert payload["cases"][0]["leave_one_out"]["training_history_count"] == 3
+    assert payload["cases"][0]["leave_one_out"]["ground_truth_article_id"] == "a4"
+    assert payload["cases"][0]["leave_one_out"]["candidate_pool_size"] == 3
+    assert payload["cases"][0]["leave_one_out"]["ground_truth_in_candidate_pool"] is True
+    assert payload["cases"][0]["method_hits"] == {"svd": True, "agentic": False, "hybrid": True}
+    assert payload["cases"][0]["preference_agent"]["availability"]["has_preference_summary"] is True
+    assert payload["cases"][0]["evidence_agent"]["availability"]["has_item_metadata"] is True
+    assert payload["cases"][0]["decision_agent"]["selected_article_id"] == "a5"
+    assert payload["cases"][0]["decision_agent"]["selected_score"] == 0.73
+    assert payload["cases"][0]["hybrid_explainability"]["article_id"] == "a4"
+    assert payload["cases"][0]["hybrid_explainability"]["score_components"]["hybrid_score"] == 0.95
+    assert payload["cases"][0]["hybrid_explainability"]["availability"]["has_score_breakdown"] is True
+    assert payload["cases"][0]["hybrid_explainability"]["availability"]["prod_name_available"] is False
+    assert payload["cases"][0]["hybrid_explainability"]["groundedness_status"] == "Grounded"
+    assert payload["cases"][0]["hybrid_explainability"]["rank_shift"] == 1
     assert payload["cases"][0]["svd_top10"][0]["article_id"] == "a4"
     assert payload["cases"][0]["agentic_top10"][0]["article_id"] == "a5"
     assert payload["cases"][0]["hybrid_top10"][0]["article_id"] == "a4"
+    assert payload["cases"][0]["hybrid_top10"][0]["hybrid_score"] == 0.95
+    assert payload["cases"][1]["demo_user"]["label"] == "Demo User 2"
 
 
 def test_workflow_cases_endpoint_returns_missing_artifact_error(client, isolated_env):

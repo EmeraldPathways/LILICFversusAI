@@ -184,7 +184,12 @@ export type ArtifactDemoMethodItem = {
   article_id: string;
   rank?: number | null;
   score?: number | null;
+  hybrid_score?: number | null;
+  normalized_svd_score?: number | null;
+  normalized_agentic_score?: number | null;
+  diversity_bonus?: number | null;
   reason?: string | null;
+  matched_evidence: string[];
   is_ground_truth: boolean;
   product_type_name?: string | null;
   product_group_name?: string | null;
@@ -193,24 +198,121 @@ export type ArtifactDemoMethodItem = {
   garment_group_name?: string | null;
 };
 
-export type ArtifactDemoWorkflowCase = {
+export type ArtifactDemoValueCount = {
+  value: string;
+  count: number;
+};
+
+export type ArtifactDemoDemoUser = {
   label: string;
-  category: string;
   customer_id: string;
   customer_id_short: string;
-  training_history_summary: Record<string, unknown>;
-  ground_truth: Record<string, unknown>;
+};
+
+export type ArtifactDemoLeaveOneOutContext = {
+  training_history_count: number;
+  ground_truth_article_id?: string | null;
   candidate_pool_size: number;
-  preference_agent: Record<string, unknown>;
-  evidence_agent: Record<string, unknown>;
-  decision_agent: Record<string, unknown>;
+  ground_truth_in_candidate_pool?: boolean | null;
+};
+
+export type ArtifactDemoGroundTruth = {
+  article_id?: string | null;
+  product_type_name?: string | null;
+  product_group_name?: string | null;
+  colour_group_name?: string | null;
+  graphical_appearance_name?: string | null;
+  garment_group_name?: string | null;
+};
+
+export type ArtifactDemoMethodHits = {
+  svd: boolean;
+  agentic: boolean;
+  hybrid: boolean;
+};
+
+export type ArtifactDemoPreferenceSummary = {
+  inferred_intent?: string | null;
+  preferred_categories: string[];
+  preferred_product_types: string[];
+  preferred_colours: string[];
+  preferred_appearance: string[];
+  frequent_product_types: ArtifactDemoValueCount[];
+  frequent_product_groups: ArtifactDemoValueCount[];
+  frequent_colours: ArtifactDemoValueCount[];
+  frequent_graphical_appearances: ArtifactDemoValueCount[];
+  availability: {
+    has_preference_summary: boolean;
+    has_history_summary: boolean;
+  };
+};
+
+export type ArtifactDemoItemMetadata = {
+  article_id?: string | null;
+  product_type_name?: string | null;
+  product_group_name?: string | null;
+  colour_group_name?: string | null;
+  graphical_appearance_name?: string | null;
+  garment_group_name?: string | null;
+  prod_name?: string | null;
+};
+
+export type ArtifactDemoEvidencePanel = {
+  headline?: string | null;
+  matched_evidence: string[];
+  item_metadata: ArtifactDemoItemMetadata;
+  availability: {
+    has_item_metadata: boolean;
+    has_matched_evidence: boolean;
+  };
+};
+
+export type ArtifactDemoDecisionPanel = {
+  headline?: string | null;
+  selected_article_id?: string | null;
+  selected_rank?: number | null;
+  selected_score?: number | null;
+};
+
+export type ArtifactDemoExplanationPanel = {
+  article_id?: string | null;
+  hybrid_rank?: number | null;
+  svd_rank?: number | null;
+  rank_shift?: number | null;
+  is_ground_truth: boolean;
+  explanation_text?: string | null;
+  matched_preference_fields: Array<Record<string, unknown>>;
+  score_components: {
+    normalized_svd_score?: number | null;
+    normalized_agentic_score?: number | null;
+    diversity_bonus?: number | null;
+    hybrid_score?: number | null;
+  };
+  item_metadata: ArtifactDemoItemMetadata;
+  groundedness_status?: string | null;
+  warnings: string[];
+  availability: {
+    has_explanation_text: boolean;
+    has_score_breakdown: boolean;
+    has_rank_shift: boolean;
+    has_item_metadata: boolean;
+    prod_name_available: boolean;
+  };
+};
+
+export type ArtifactDemoWorkflowCase = {
+  demo_user: ArtifactDemoDemoUser;
+  leave_one_out: ArtifactDemoLeaveOneOutContext;
+  ground_truth: ArtifactDemoGroundTruth;
+  method_hits: ArtifactDemoMethodHits;
+  preference_agent: ArtifactDemoPreferenceSummary;
+  evidence_agent: ArtifactDemoEvidencePanel;
+  decision_agent: ArtifactDemoDecisionPanel;
+  label: string;
   svd_top10: ArtifactDemoMethodItem[];
   agentic_top10: ArtifactDemoMethodItem[];
   hybrid_top10: ArtifactDemoMethodItem[];
-  hybrid_selected_explanation: Record<string, unknown>;
-  hybrid_score_components: Record<string, unknown>;
-  rank_shift?: number | null;
-  diversity_comparison: Record<string, unknown>;
+  hybrid_explainability: ArtifactDemoExplanationPanel;
 };
 
 export type ArtifactDemoWorkflowCasesResponse = {
