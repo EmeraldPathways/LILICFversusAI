@@ -1232,6 +1232,19 @@ th {
   align-items: flex-start;
 }
 
+.artifact-hero-right {
+  display: grid;
+  gap: 12px;
+  justify-items: end;
+  align-content: start;
+  min-width: 260px;
+}
+
+.artifact-hero-right .artifact-tabbar {
+  margin-top: 0;
+  padding-top: 0;
+}
+
 .artifact-hero-copy {
   display: grid;
   gap: 10px;
@@ -1667,6 +1680,11 @@ th {
 
   .artifact-hero-top {
     flex-direction: column;
+  }
+
+  .artifact-hero-right {
+    width: 100%;
+    justify-items: stretch;
   }
 
   .artifact-evidence-grid {

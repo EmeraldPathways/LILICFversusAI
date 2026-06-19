@@ -490,12 +490,15 @@ function ArtifactHero({
 }) {
   return (
     <section className="artifact-hero">
-      <div className="artifact-hero-copy">
-        <span className="artifact-eyebrow artifact-eyebrow-cyan">
-          H&amp;M-Style Mock Multi-Agent Recommender
-        </span>
-        <div className="artifact-hero-title-row">
-          <h1 className="artifact-hero-title">3-Agent Fashion Recommendation Demo</h1>
+      <div className="artifact-hero-top">
+        <div className="artifact-hero-copy">
+          <span className="artifact-eyebrow artifact-eyebrow-cyan">
+            H&amp;M-Style Mock Multi-Agent Recommender
+          </span>
+          <h1 className="artifact-hero-title">3-Agent Demo</h1>
+        </div>
+
+        <div className="artifact-hero-right">
           <select
             className="artifact-hero-select"
             value={selectedCaseId}
@@ -508,22 +511,22 @@ function ArtifactHero({
               </option>
             ))}
           </select>
-        </div>
-      </div>
 
-      <div className="artifact-tabbar" role="tablist" aria-label="Artefact methods">
-        {tabs.map((tab) => (
-          <button
-            key={tab.id}
-            type="button"
-            role="tab"
-            aria-selected={activeTab === tab.id}
-            className={activeTab === tab.id ? "artifact-tab artifact-tab-active" : "artifact-tab"}
-            onClick={() => onSelectTab(tab.id)}
-          >
-            {tab.label}
-          </button>
-        ))}
+          <div className="artifact-tabbar" role="tablist" aria-label="Artefact methods">
+            {tabs.map((tab) => (
+              <button
+                key={tab.id}
+                type="button"
+                role="tab"
+                aria-selected={activeTab === tab.id}
+                className={activeTab === tab.id ? "artifact-tab artifact-tab-active" : "artifact-tab"}
+                onClick={() => onSelectTab(tab.id)}
+              >
+                {tab.label}
+              </button>
+            ))}
+          </div>
+        </div>
       </div>
     </section>
   );
@@ -679,6 +682,9 @@ export function ArtifactDemoTabs({ workflowCases }: ArtifactDemoTabsProps) {
 
           <div className="grid two">
             <UserSummaryPanel workflowCase={selectedCase} method="svd" compact />
+          </div>
+
+          <div className="grid two">
             <article className="card artifact-shell artifact-signal-card">
               <div className="artifact-section-header">
                 <span className="artifact-eyebrow artifact-eyebrow-warm">SVD Signal</span>
