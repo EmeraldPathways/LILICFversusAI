@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, type ReactNode } from "react";
 
 import {
   getWorkflowCases,
@@ -42,6 +42,20 @@ function compactValueCounts(items: ArtifactDemoValueCount[]) {
   return items.map((item) => `${item.value} (${item.count})`).join(", ");
 }
 
+function calculatePercentages(items: ArtifactDemoValueCount[]) {
+  if (!items.length) {
+    return [];
+  }
+  const maxCount = Math.max(...items.map((item) => item.count));
+  if (!maxCount) {
+    return items.map((item) => ({ ...item, percentage: 0 }));
+  }
+  return items.map((item) => ({
+    ...item,
+    percentage: Math.round((item.count / maxCount) * 100),
+  }));
+}
+
 function MetadataDefinition({
   label,
   value,
@@ -53,6 +67,21 @@ function MetadataDefinition({
     <div className="artifact-definition">
       <span className="artifact-definition-label">{label}</span>
       <span className="artifact-definition-value">{value || "Not available"}</span>
+    </div>
+  );
+}
+
+function AgenticMetaBox({
+  label,
+  value,
+}: {
+  label: string;
+  value: string | null | undefined;
+}) {
+  return (
+    <div className="artifact-agentic-meta-box">
+      <span className="artifact-agentic-meta-label">{label}</span>
+      <strong className="artifact-agentic-meta-value">{value || "Not available"}</strong>
     </div>
   );
 }
@@ -143,37 +172,115 @@ function UserSummaryPanel({
   );
 }
 
-function RecommendationCard({
-  item,
-  mode,
-  hybridAuditArticleId,
+function AgenticExplanation({
+  score,
+  reason,
+  fallback,
 }: {
-  item: ArtifactDemoMethodItem;
-  mode: TabId;
-  hybridAuditArticleId?: string | null;
+  score?: number | null;
+  reason?: string | null;
+  fallback: string;
 }) {
-  const primaryScore = mode === "hybrid" ? item.hybrid_score ?? item.score : item.score;
-  const hasHybridAudit = mode === "hybrid" && hybridAuditArticleId === item.article_id;
+  if (!reason) {
+    return <p className="muted artifact-card-copy">{fallback}</p>;
+  }
 
   return (
-    <article className={hasHybridAudit ? "artifact-rec-card artifact-rec-card-selected" : "artifact-rec-card"}>
+    <p className="muted artifact-card-copy">
+      {score !== null && score !== undefined ? `Score ${formatNumber(score)}. ` : ""}
+      {reason}
+    </p>
+  );
+}
+
+function EvidenceProductCard({ item }: { item: ArtifactDemoMethodItem }) {
+  return (
+    <article className="artifact-rec-card artifact-rec-card-agentic artifact-rec-card-evidence">
+      <div className="artifact-rec-topline artifact-rec-topline-start">
+        <div className="artifact-agentic-rank-stack">
+          <span className="artifact-rank">Evidence Candidate</span>
+          <h4 className="artifact-rec-title">
+            {item.product_type_name || "Not available"} · {item.article_id}
+          </h4>
+        </div>
+        <div className="artifact-match-badge artifact-match-badge-emerald">
+          <span>Matches</span>
+          <strong>{item.matched_evidence.length}</strong>
+        </div>
+      </div>
+      <div className="artifact-agentic-meta-grid">
+        <AgenticMetaBox label="Group" value={item.product_group_name} />
+        <AgenticMetaBox label="Colour" value={item.colour_group_name} />
+        <AgenticMetaBox label="Appearance" value={item.graphical_appearance_name} />
+      </div>
+      <AgenticExplanation reason={item.reason} fallback="Evidence explanation not available" />
+      {item.matched_evidence.length ? (
+        <div className="artifact-chip-row artifact-chip-row-spaced">
+          {item.matched_evidence.map((evidence) => (
+            <span key={`${item.article_id}-${evidence}`} className="artifact-chip artifact-chip-evidence">
+              {evidence}
+            </span>
+          ))}
+        </div>
+      ) : (
+        <p className="muted artifact-card-copy">No matched evidence fields available.</p>
+      )}
+    </article>
+  );
+}
+
+function AgenticEvidenceCard({ item }: { item: ArtifactDemoMethodItem }) {
+  return <EvidenceProductCard item={item} />;
+}
+
+function DecisionRecommendationCard({ item }: { item: ArtifactDemoMethodItem }) {
+  return (
+    <article className="artifact-rec-card artifact-rec-card-agentic">
+      <div className="artifact-rec-topline artifact-rec-topline-start">
+        <div className="artifact-agentic-rank-stack">
+          <span className="artifact-rank">Rank #{item.rank ?? "NA"}</span>
+          <h4 className="artifact-rec-title">
+            {item.product_type_name || "Not available"} · {item.article_id}
+          </h4>
+        </div>
+        {item.score !== null && item.score !== undefined ? (
+          <div className="artifact-match-badge">
+            <span>Match Score</span>
+            <strong>{formatNumber(item.score)}</strong>
+          </div>
+        ) : null}
+      </div>
+      <div className="artifact-agentic-meta-grid">
+        <AgenticMetaBox label="Group" value={item.product_group_name} />
+        <AgenticMetaBox label="Colour" value={item.colour_group_name} />
+        <AgenticMetaBox label="Appearance" value={item.graphical_appearance_name} />
+        <AgenticMetaBox label="Constraint Status" value="No hard constraints applied" />
+      </div>
+      <AgenticExplanation score={item.score} reason={item.reason} fallback="Score explanation not available" />
+      {item.matched_evidence.length ? (
+        <div className="artifact-chip-row artifact-chip-row-spaced">
+          {item.matched_evidence.map((evidence) => (
+            <span key={`${item.article_id}-${evidence}`} className="artifact-chip artifact-chip-evidence">
+              {evidence}
+            </span>
+          ))}
+        </div>
+      ) : (
+        <p className="muted artifact-card-copy">No matched evidence fields available.</p>
+      )}
+    </article>
+  );
+}
+
+function SvdRecommendationCard({ item }: { item: ArtifactDemoMethodItem }) {
+  return (
+    <article className="artifact-rec-card">
       <div className="artifact-rec-topline">
         <span className="artifact-rank">Rank {item.rank ?? "NA"}</span>
-        {item.is_ground_truth ? <span className="artifact-badge artifact-badge-hit">Ground Truth</span> : null}
       </div>
       <h4 className="artifact-rec-title">{item.article_id}</h4>
       <div className="artifact-score-row">
-        <ScorePill
-          label={mode === "svd" ? "SVD score" : mode === "agentic" ? "Agentic score" : "Hybrid score"}
-          value={primaryScore}
-        />
-        {mode === "hybrid" ? (
-          <>
-            <ScorePill label="SVD score" value={item.normalized_svd_score} />
-            <ScorePill label="Agentic score" value={item.normalized_agentic_score} />
-            <ScorePill label="Diversity bonus" value={item.diversity_bonus} />
-          </>
-        ) : null}
+        <ScorePill label="SVD score" value={item.score} />
       </div>
       <div className="artifact-meta-grid">
         <MetadataDefinition label="Type" value={item.product_type_name} />
@@ -181,33 +288,55 @@ function RecommendationCard({
         <MetadataDefinition label="Colour" value={item.colour_group_name} />
         <MetadataDefinition label="Appearance" value={item.graphical_appearance_name} />
       </div>
-      {mode === "agentic" && item.matched_evidence.length ? (
-        <div className="artifact-chip-row artifact-chip-row-spaced">
-          {item.matched_evidence.map((evidence) => (
-            <span key={`${item.article_id}-${evidence}`} className="artifact-chip">
-              {evidence}
-            </span>
-          ))}
-        </div>
-      ) : null}
-      {mode !== "svd" && item.reason ? <p className="muted artifact-card-copy">{item.reason}</p> : null}
-      {mode === "hybrid" ? (
-        <span className={hasHybridAudit ? "artifact-badge artifact-badge-hybrid" : "artifact-badge artifact-badge-muted"}>
-          {hasHybridAudit ? "Explanation available" : "Hybrid-ranked item"}
-        </span>
-      ) : null}
+    </article>
+  );
+}
+
+function HybridRecommendationCard({
+  item,
+  hasAudit,
+}: {
+  item: ArtifactDemoMethodItem;
+  hasAudit: boolean;
+}) {
+  return (
+    <article className={hasAudit ? "artifact-rec-card artifact-rec-card-selected" : "artifact-rec-card"}>
+      <div className="artifact-rec-topline">
+        <span className="artifact-rank">Rank {item.rank ?? "NA"}</span>
+        {item.is_ground_truth ? <span className="artifact-badge artifact-badge-hit">Ground Truth</span> : null}
+      </div>
+      <h4 className="artifact-rec-title">
+        {item.product_type_name || "Not available"} · {item.article_id}
+      </h4>
+      <div className="artifact-score-row">
+        <ScorePill label="Hybrid score" value={item.hybrid_score ?? item.score} />
+        <ScorePill label="SVD score" value={item.normalized_svd_score} />
+        <ScorePill label="Agentic score" value={item.normalized_agentic_score} />
+        <ScorePill label="Diversity bonus" value={item.diversity_bonus} />
+      </div>
+      <div className="artifact-meta-grid">
+        <MetadataDefinition label="Group" value={item.product_group_name} />
+        <MetadataDefinition label="Colour" value={item.colour_group_name} />
+        <MetadataDefinition label="Appearance" value={item.graphical_appearance_name} />
+      </div>
+      {item.reason ? <p className="muted artifact-card-copy">{item.reason}</p> : null}
+      <span className={hasAudit ? "artifact-badge artifact-badge-hybrid" : "artifact-badge artifact-badge-muted"}>
+        {hasAudit ? "Explanation available" : "Hybrid-ranked item"}
+      </span>
     </article>
   );
 }
 
 function RecommendationSection({
   title,
+  eyebrow,
   intro,
   items,
   mode,
   hybridAuditArticleId,
 }: {
   title: string;
+  eyebrow?: string;
   intro?: string;
   items: ArtifactDemoMethodItem[];
   mode: TabId;
@@ -215,22 +344,40 @@ function RecommendationSection({
 }) {
   return (
     <section className="card artifact-shell">
-      <div className="artifact-section-head">
-        <span className="eyebrow">{title}</span>
-        {intro ? <p className="muted artifact-copy-small">{intro}</p> : null}
+      <div className="artifact-section-header">
+        {eyebrow ? <span className="artifact-eyebrow artifact-eyebrow-fuchsia">{eyebrow}</span> : null}
+        <h3>{title}</h3>
+        {intro ? <p>{intro}</p> : null}
       </div>
-      <div className="artifact-rec-grid">
+      <div className={mode === "svd" ? "artifact-rec-grid" : "artifact-rec-grid artifact-rec-grid-agentic"}>
         {items.length ? (
-          items.map((item) => (
-            <RecommendationCard
-              key={`${mode}-${item.article_id}-${item.rank ?? 0}`}
-              item={item}
-              mode={mode}
-              hybridAuditArticleId={hybridAuditArticleId}
-            />
-          ))
+          items.map((item) => {
+            if (mode === "agentic") {
+              return (
+                <DecisionRecommendationCard
+                  key={`agentic-${item.article_id}-${item.rank ?? 0}`}
+                  item={item}
+                />
+              );
+            }
+            if (mode === "hybrid") {
+              return (
+                <HybridRecommendationCard
+                  key={`hybrid-${item.article_id}-${item.rank ?? 0}`}
+                  item={item}
+                  hasAudit={hybridAuditArticleId === item.article_id}
+                />
+              );
+            }
+            return (
+              <SvdRecommendationCard
+                key={`svd-${item.article_id}-${item.rank ?? 0}`}
+                item={item}
+              />
+            );
+          })
         ) : (
-          <div className="muted">Saved recommendations unavailable.</div>
+          <div className="artifact-empty-state">Saved recommendations unavailable.</div>
         )}
       </div>
     </section>
@@ -259,6 +406,160 @@ function FlowNode({
       <span className="artifact-flow-label">{title}</span>
       <p>{body}</p>
     </article>
+  );
+}
+
+function MethodHeaderCard({
+  eyebrow,
+  title,
+  description,
+  eyebrowColor = "cyan",
+}: {
+  eyebrow: string;
+  title: string;
+  description: string;
+  eyebrowColor?: "cyan" | "emerald" | "fuchsia" | "warm";
+}) {
+  const colorClass =
+    eyebrowColor === "cyan"
+      ? "artifact-eyebrow-cyan"
+      : eyebrowColor === "emerald"
+        ? "artifact-eyebrow-emerald"
+        : eyebrowColor === "fuchsia"
+          ? "artifact-eyebrow-fuchsia"
+          : "artifact-eyebrow-warm";
+
+  return (
+    <article className="card artifact-shell artifact-method-header">
+      <div className="artifact-section-header">
+        <span className={`artifact-eyebrow ${colorClass}`}>{eyebrow}</span>
+        <h3>{title}</h3>
+        <p>{description}</p>
+      </div>
+    </article>
+  );
+}
+
+function PreferenceBarChart({
+  title,
+  items,
+}: {
+  title: string;
+  items: ArtifactDemoValueCount[];
+}) {
+  const data = useMemo(() => calculatePercentages(items), [items]);
+
+  return (
+    <article className="artifact-profile-panel">
+      <span className="artifact-profile-label">{title}</span>
+      {data.length ? (
+        <div className="artifact-bar-chart">
+          {data.map((item) => (
+            <div key={item.value} className="artifact-bar-item">
+              <div className="artifact-bar-labels">
+                <span>{item.value}</span>
+                <span>{item.percentage}%</span>
+              </div>
+              <div className="artifact-bar-track">
+                <div className="artifact-bar-fill" style={{ width: `${Math.max(item.percentage, 2)}%` }} />
+              </div>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <div className="artifact-empty-state" style={{ padding: 18 }}>
+          No preference data available for this dimension.
+        </div>
+      )}
+    </article>
+  );
+}
+
+function ArtifactHero({
+  selectedCaseId,
+  cases,
+  activeTab,
+  onSelectCase,
+  onSelectTab,
+}: {
+  selectedCaseId: string;
+  cases: ArtifactDemoWorkflowCase[];
+  activeTab: TabId;
+  onSelectCase: (value: string) => void;
+  onSelectTab: (tab: TabId) => void;
+}) {
+  return (
+    <section className="artifact-hero">
+      <div className="artifact-hero-copy">
+        <span className="artifact-eyebrow artifact-eyebrow-cyan">
+          H&amp;M-Style Mock Multi-Agent Recommender
+        </span>
+        <div className="artifact-hero-title-row">
+          <h1 className="artifact-hero-title">3-Agent Fashion Recommendation Demo</h1>
+          <select
+            className="artifact-hero-select"
+            value={selectedCaseId}
+            onChange={(event) => onSelectCase(event.target.value)}
+            disabled={!cases.length}
+          >
+            {cases.map((item) => (
+              <option key={item.demo_user.customer_id} value={item.demo_user.customer_id}>
+                {item.demo_user.label} - {item.demo_user.customer_id_short}
+              </option>
+            ))}
+          </select>
+        </div>
+      </div>
+
+      <div className="artifact-tabbar" role="tablist" aria-label="Artefact methods">
+        {tabs.map((tab) => (
+          <button
+            key={tab.id}
+            type="button"
+            role="tab"
+            aria-selected={activeTab === tab.id}
+            className={activeTab === tab.id ? "artifact-tab artifact-tab-active" : "artifact-tab"}
+            onClick={() => onSelectTab(tab.id)}
+          >
+            {tab.label}
+          </button>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function SectionHeader({
+  eyebrow,
+  title,
+  subtitle,
+  eyebrowColor = "cyan",
+  action,
+}: {
+  eyebrow: string;
+  title: string;
+  subtitle?: string;
+  eyebrowColor?: "cyan" | "emerald" | "fuchsia" | "warm";
+  action?: ReactNode;
+}) {
+  const colorClass =
+    eyebrowColor === "cyan"
+      ? "artifact-eyebrow-cyan"
+      : eyebrowColor === "emerald"
+        ? "artifact-eyebrow-emerald"
+        : eyebrowColor === "fuchsia"
+          ? "artifact-eyebrow-fuchsia"
+          : "artifact-eyebrow-warm";
+
+  return (
+    <div className="artifact-profile-header" style={{ marginBottom: 0 }}>
+      <div className="artifact-section-header" style={{ marginBottom: 0 }}>
+        <span className={`artifact-eyebrow ${colorClass}`}>{eyebrow}</span>
+        <h3>{title}</h3>
+        {subtitle ? <p>{subtitle}</p> : null}
+      </div>
+      {action ? <div>{action}</div> : null}
+    </div>
   );
 }
 
@@ -345,66 +646,13 @@ export function ArtifactDemoTabs({ workflowCases }: ArtifactDemoTabsProps) {
 
   return (
     <div className="artifact-page artifact-one-page">
-      <section className="card artifact-shell artifact-hero-redesign">
-        <div className="artifact-hero-grid">
-          <div className="artifact-hero-copy">
-            <span className="eyebrow">Phase 1 Dissertation Artefact</span>
-            <h2 className="section-title artifact-title-main">H&amp;M Next-Item Recommendation Artefact</h2>
-            <p className="muted artifact-copy">
-              A runnable offline recommender-system demo showing SVD, a structured 3-Agent workflow,
-              and a Hybrid SVD + 3-Agent reranker using real saved H&amp;M experiment artifacts.
-            </p>
-            <p className="muted artifact-copy">
-              This artefact demonstrates three method modes: SVD baseline as behavioural collaborative
-              filtering signal, 3-Agent as the preference-evidence-decision workflow, and Hybrid as the
-              final reranking and explainability-oriented method.
-            </p>
-            <p className="muted artifact-copy artifact-copy-small">
-              Offline evaluation only. No CTR, CVR, conversion, live customer engagement, add-to-cart,
-              dwell time, or live feedback adaptation is claimed.
-            </p>
-          </div>
-          {selectedCase ? <UserSummaryPanel workflowCase={selectedCase} method={activeTab} compact /> : null}
-        </div>
-        <div className="artifact-tabbar" role="tablist" aria-label="Artefact methods">
-          {tabs.map((tab) => (
-            <button
-              key={tab.id}
-              type="button"
-              role="tab"
-              aria-selected={activeTab === tab.id}
-              className={activeTab === tab.id ? "artifact-tab artifact-tab-active" : "artifact-tab"}
-              onClick={() => setActiveTab(tab.id)}
-            >
-              {tab.label}
-            </button>
-          ))}
-        </div>
-      </section>
-
-      <section className="card artifact-shell artifact-controls artifact-controls-redesign">
-        <div>
-          <span className="eyebrow">Demo User Selection</span>
-          <p className="muted artifact-copy-small">
-            These users are selected from saved formal experiment artifacts to demonstrate the artefact
-            workflow. The full quantitative evaluation is reported separately in the dissertation.
-          </p>
-        </div>
-        <label className="artifact-select-wrap">
-          <span className="artifact-label">Selected User</span>
-          <select
-            value={selectedCaseId}
-            onChange={(event) => setSelectedCaseId(event.target.value)}
-            disabled={!cases.length}
-          >
-            {cases.map((item) => (
-              <option key={item.demo_user.customer_id} value={item.demo_user.customer_id}>
-                {item.demo_user.label} - {item.demo_user.customer_id_short}
-              </option>
-            ))}
-          </select>
-        </label>
-      </section>
+      <ArtifactHero
+        selectedCaseId={selectedCaseId}
+        cases={cases}
+        activeTab={activeTab}
+        onSelectCase={setSelectedCaseId}
+        onSelectTab={setActiveTab}
+      />
 
       {!selectedCase && isLoadingCases ? (
         <section className="card artifact-shell muted">Loading saved artifact cases...</section>
@@ -419,22 +667,24 @@ export function ArtifactDemoTabs({ workflowCases }: ArtifactDemoTabsProps) {
       {selectedCase && activeTab === "svd" ? (
         <div className="stack">
           <section className="card artifact-shell artifact-method-header">
-            <span className="eyebrow">SVD Baseline</span>
-            <h3 className="section-title">SVD Matrix Factorisation Baseline</h3>
-            <p className="muted artifact-copy">
-              SVD is the formal collaborative filtering baseline. It uses user-item purchase interactions
-              to produce behavioural recommendation scores for candidate items.
-            </p>
+            <div className="artifact-section-header">
+              <span className="artifact-eyebrow artifact-eyebrow-warm">SVD Baseline</span>
+              <h3>SVD Matrix Factorisation Baseline</h3>
+              <p>
+                SVD is the formal collaborative filtering baseline. It uses user-item purchase interactions
+                to produce behavioural recommendation scores for candidate items.
+              </p>
+            </div>
           </section>
 
-          <section className="grid two">
-            <UserSummaryPanel workflowCase={selectedCase} method="svd" />
+          <div className="grid two">
+            <UserSummaryPanel workflowCase={selectedCase} method="svd" compact />
             <article className="card artifact-shell artifact-signal-card">
-              <span className="eyebrow">SVD Signal</span>
-              <p className="muted artifact-copy-small">
-                SVD uses behavioural interaction patterns only. It does not inspect item explanations or
-                agentic evidence.
-              </p>
+              <div className="artifact-section-header">
+                <span className="artifact-eyebrow artifact-eyebrow-warm">SVD Signal</span>
+                <h3>Behavioural Interaction Pattern</h3>
+                <p>SVD uses behavioural interaction patterns only. It does not inspect item explanations or agentic evidence.</p>
+              </div>
               <div className="artifact-meta-grid artifact-meta-grid-tight">
                 <MetadataDefinition label="Ground Truth Article" value={selectedCase.ground_truth.article_id} />
                 <MetadataDefinition label="Type" value={selectedCase.ground_truth.product_type_name} />
@@ -442,175 +692,140 @@ export function ArtifactDemoTabs({ workflowCases }: ArtifactDemoTabsProps) {
                 <MetadataDefinition label="Colour" value={selectedCase.ground_truth.colour_group_name} />
               </div>
             </article>
-          </section>
+          </div>
 
-          <RecommendationSection title="SVD Top-10 Recommendations" items={selectedCase.svd_top10} mode="svd" />
+          <RecommendationSection
+            eyebrow="SVD Top-10"
+            title="SVD Top-10 Recommendations"
+            intro="Candidate-pool-restricted behavioural recommendations ranked by SVD score."
+            items={selectedCase.svd_top10}
+            mode="svd"
+          />
         </div>
       ) : null}
 
       {selectedCase && activeTab === "agentic" ? (
         <div className="stack">
-          <section className="card artifact-shell artifact-method-header">
-            <span className="eyebrow">Standalone 3-Agent</span>
-            <h3 className="section-title">Standalone 3-Agent Recommender</h3>
-            <p className="muted artifact-copy">
-              The standalone 3-Agent recommender uses user history and item metadata to rank candidate
-              items without SVD. It is evaluated as the agentic comparison / ablation method.
-            </p>
-          </section>
+          <div className="grid three">
+            <MethodHeaderCard
+              eyebrow="1. Preference Agent"
+              title="User Preference Profile"
+              description="Analyze transaction history and produce a preference profile."
+              eyebrowColor="cyan"
+            />
+            <MethodHeaderCard
+              eyebrow="2. Evidence Agent"
+              title="Candidate Evidence Set"
+              description="Retrieve candidate products and explain matched evidence."
+              eyebrowColor="emerald"
+            />
+            <MethodHeaderCard
+              eyebrow="3. Decision Agent"
+              title="Final Recommendations"
+              description="Score, validate constraints, and output top recommendations."
+              eyebrowColor="fuchsia"
+            />
+          </div>
 
-          <section className="grid three artifact-agent-rail">
-            <article className="card artifact-shell artifact-agent-card-dark">
-              <span className="eyebrow">1. Preference Agent</span>
-              <p className="muted">Extracts preferences from real H&amp;M purchase history.</p>
-            </article>
-            <article className="card artifact-shell artifact-agent-card-dark">
-              <span className="eyebrow">2. Evidence / Item Agent</span>
-              <p className="muted">Builds candidate item evidence from catalogue metadata.</p>
-            </article>
-            <article className="card artifact-shell artifact-agent-card-dark">
-              <span className="eyebrow">3. Decision Agent</span>
-              <p className="muted">Ranks candidate items using preference and evidence signals.</p>
-            </article>
-          </section>
+          <div className="grid two">
+            <UserSummaryPanel workflowCase={selectedCase} method="agentic" compact />
+          </div>
 
           <section className="card artifact-shell">
-            <div className="artifact-profile-header">
-              <div>
-                <span className="eyebrow">Preference Agent</span>
-                <h3 className="section-title">User Preference Profile</h3>
-              </div>
-              <div className="artifact-profile-stat">
-                <span>Transactions Analysed</span>
-                <strong>{selectedCase.leave_one_out.training_history_count}</strong>
-              </div>
-            </div>
-            <p className="muted artifact-copy-small">
-              {selectedCase.preference_agent.inferred_intent
-                ? `Preference Agent summary: ${selectedCase.preference_agent.inferred_intent}.`
-                : "Preference summary not available in the saved artifacts."}
-            </p>
+            <SectionHeader
+              eyebrow="Preference Agent"
+              title="User Preference Profile"
+              subtitle={selectedCase.preference_agent.inferred_intent || undefined}
+              eyebrowColor="cyan"
+              action={
+                <div className="artifact-profile-stat">
+                  <span>Transactions Analysed</span>
+                  <strong>{selectedCase.leave_one_out.training_history_count}</strong>
+                </div>
+              }
+            />
             <div className="artifact-chip-row artifact-chip-row-spaced">
-              <span className="artifact-chip">{selectedCase.demo_user.label}</span>
-              <span className="artifact-chip">Short ID {selectedCase.demo_user.customer_id_short}</span>
-              <span className="artifact-chip">Candidate pool {selectedCase.leave_one_out.candidate_pool_size}</span>
+              {selectedCase.demo_user.label ? (
+                <span className="artifact-tag">{selectedCase.demo_user.label}</span>
+              ) : null}
+              {selectedCase.preference_agent.preferred_product_types.map((value) => (
+                <span key={`type-${value}`} className="artifact-tag">
+                  Often buys {value}
+                </span>
+              ))}
+              {selectedCase.preference_agent.preferred_categories.map((value) => (
+                <span key={`group-${value}`} className="artifact-tag">
+                  {value}
+                </span>
+              ))}
+              {selectedCase.preference_agent.preferred_colours.map((value) => (
+                <span key={`colour-${value}`} className="artifact-tag">
+                  {value}
+                </span>
+              ))}
+              {selectedCase.preference_agent.preferred_appearance.map((value) => (
+                <span key={`appearance-${value}`} className="artifact-tag">
+                  {value}
+                </span>
+              ))}
             </div>
-            <div className="artifact-profile-grid">
-              <PreferenceChipList
-                label="Preferred Product Types"
-                values={selectedCase.preference_agent.preferred_product_types}
+            <div className="artifact-profile-grid" style={{ marginTop: 18 }}>
+              <PreferenceBarChart
+                title="Preferred Product Types"
+                items={selectedCase.preference_agent.frequent_product_types}
               />
-              <PreferenceChipList
-                label="Preferred Product Groups"
-                values={selectedCase.preference_agent.preferred_categories}
+              <PreferenceBarChart
+                title="Preferred Product Groups"
+                items={selectedCase.preference_agent.frequent_product_groups}
               />
-              <PreferenceChipList
-                label="Preferred Colours"
-                values={selectedCase.preference_agent.preferred_colours}
+              <PreferenceBarChart
+                title="Preferred Colours"
+                items={selectedCase.preference_agent.frequent_colours}
               />
-              <PreferenceChipList
-                label="Preferred Appearances"
-                values={selectedCase.preference_agent.preferred_appearance}
+              <PreferenceBarChart
+                title="Preferred Appearances"
+                items={selectedCase.preference_agent.frequent_graphical_appearances}
               />
-            </div>
-            <div className="artifact-profile-summary-grid">
-              <article className="artifact-summary-strip">
-                <span className="artifact-profile-label">Frequent Product Types</span>
-                <p>{compactValueCounts(selectedCase.preference_agent.frequent_product_types)}</p>
-              </article>
-              <article className="artifact-summary-strip">
-                <span className="artifact-profile-label">Frequent Product Groups</span>
-                <p>{compactValueCounts(selectedCase.preference_agent.frequent_product_groups)}</p>
-              </article>
-              <article className="artifact-summary-strip">
-                <span className="artifact-profile-label">Frequent Colours</span>
-                <p>{compactValueCounts(selectedCase.preference_agent.frequent_colours)}</p>
-              </article>
-              <article className="artifact-summary-strip">
-                <span className="artifact-profile-label">Frequent Appearances</span>
-                <p>{compactValueCounts(selectedCase.preference_agent.frequent_graphical_appearances)}</p>
-              </article>
             </div>
           </section>
 
           <section className="card artifact-shell">
-            <div className="artifact-section-head">
-              <span className="eyebrow">Evidence Agent</span>
-              <h3 className="section-title">Candidate Evidence Set</h3>
-              <p className="muted artifact-copy-small">
-                Retrieved candidate evidence by matching saved preference signals against product metadata.
+            <div className="artifact-section-header">
+              <span className="artifact-eyebrow artifact-eyebrow-emerald">Evidence Agent</span>
+              <h3>Candidate Evidence Set</h3>
+              <p>
+                Retrieved {evidencePreviewItems.length} catalog candidates by matching soft preference signals
+                against product metadata.
               </p>
             </div>
             <div className="artifact-evidence-grid">
               {evidencePreviewItems.length ? (
                 evidencePreviewItems.map((item) => (
-                  <article
-                    key={`evidence-${item.article_id}-${item.rank ?? 0}`}
-                    className="artifact-evidence-card"
-                  >
-                    <div className="artifact-rec-topline">
-                      <span className="artifact-rank">{item.article_id}</span>
-                      <span className="artifact-badge">
-                        {item.matched_evidence.length} {item.matched_evidence.length === 1 ? "match" : "matches"}
-                      </span>
-                    </div>
-                    <div className="artifact-meta-grid artifact-meta-grid-tight">
-                      <MetadataDefinition label="Type" value={item.product_type_name} />
-                      <MetadataDefinition label="Group" value={item.product_group_name} />
-                      <MetadataDefinition label="Colour" value={item.colour_group_name} />
-                      <MetadataDefinition label="Appearance" value={item.graphical_appearance_name} />
-                    </div>
-                    {item.matched_evidence.length ? (
-                      <div className="artifact-chip-row artifact-chip-row-spaced">
-                        {item.matched_evidence.map((evidence) => (
-                          <span key={`${item.article_id}-${evidence}`} className="artifact-chip">
-                            {evidence}
-                          </span>
-                        ))}
-                      </div>
-                    ) : null}
-                    {item.reason ? <p className="muted artifact-card-copy">{item.reason}</p> : null}
-                  </article>
+                  <AgenticEvidenceCard key={`evidence-${item.article_id}-${item.rank ?? 0}`} item={item} />
                 ))
               ) : (
-                <div className="muted">Not available</div>
+                <div className="artifact-empty-state">No evidence candidates available.</div>
               )}
             </div>
           </section>
 
-          <section className="card artifact-shell">
-            <div className="artifact-section-head">
-              <span className="eyebrow">Decision Agent</span>
-              <h3 className="section-title">Final Recommendations</h3>
-              <p className="muted artifact-copy-small">
-                Ranked the evidence set with transparent weighted scoring and returned the top 10 items.
-              </p>
-            </div>
-            <div className="artifact-decision-summary">
-              <ScorePill label="Selected rank" value={selectedCase.decision_agent.selected_rank} />
-              <ScorePill label="Selected score" value={selectedCase.decision_agent.selected_score} />
-              <MetadataDefinition label="Selected article" value={selectedCase.decision_agent.selected_article_id} />
-            </div>
-            {selectedCase.decision_agent.headline ? (
-              <p className="muted artifact-copy-small">{selectedCase.decision_agent.headline}</p>
-            ) : null}
-            <div className="artifact-rec-grid">
-              {selectedCase.agentic_top10.map((item) => (
-                <RecommendationCard key={`agentic-${item.article_id}-${item.rank ?? 0}`} item={item} mode="agentic" />
-              ))}
-            </div>
-          </section>
+          <RecommendationSection
+            eyebrow="Decision Agent"
+            title="Final Recommendations"
+            intro="Ranked the evidence set with transparent weighted scoring and returned the top 10 items."
+            items={selectedCase.agentic_top10}
+            mode="agentic"
+          />
         </div>
       ) : null}
 
       {selectedCase && activeTab === "hybrid" ? (
         <div className="stack">
           <section className="card artifact-shell">
-            <div className="artifact-section-head">
-              <h3 className="section-title">End-to-End Hybrid Recommendation Path</h3>
-              <p className="muted artifact-copy-small">
-                How the selected user moves from history data to explainable Hybrid Top-10 recommendations.
-              </p>
+            <div className="artifact-section-header">
+              <span className="artifact-eyebrow artifact-eyebrow-cyan">End-to-End Path</span>
+              <h3>Hybrid Recommendation Path</h3>
+              <p>How the selected user moves from history data to explainable Hybrid Top-10 recommendations.</p>
             </div>
             <div className="artifact-flow-grid artifact-flow-grid-six">
               <FlowNode
@@ -654,65 +869,16 @@ export function ArtifactDemoTabs({ workflowCases }: ArtifactDemoTabsProps) {
             </div>
           </section>
 
-          <section className="card artifact-shell artifact-user-pill-card">
-            <div className="artifact-section-head">
-              <h3 className="section-title">H&amp;M User Selection</h3>
-            </div>
-            <div className="artifact-user-selection-grid">
-              <div className="artifact-kv-pill-grid">
-                <span className="artifact-kv-pill">
-                  <strong>Demo User</strong>
-                  <span>{selectedCase.demo_user.label}</span>
-                </span>
-                <span className="artifact-kv-pill">
-                  <strong>Customer ID</strong>
-                  <span>{selectedCase.demo_user.customer_id_short}</span>
-                </span>
-                <span className="artifact-kv-pill">
-                  <strong>Training History</strong>
-                  <span>{selectedCase.leave_one_out.training_history_count}</span>
-                </span>
-                <span className="artifact-kv-pill">
-                  <strong>Ground Truth</strong>
-                  <span>{selectedCase.leave_one_out.ground_truth_article_id || "Not available"}</span>
-                </span>
-                <span className="artifact-kv-pill">
-                  <strong>Candidate Pool</strong>
-                  <span>{selectedCase.leave_one_out.candidate_pool_size}</span>
-                </span>
-                <span className="artifact-kv-pill">
-                  <strong>Ground Truth In Pool</strong>
-                  <span>{formatBoolean(selectedCase.leave_one_out.ground_truth_in_candidate_pool)}</span>
-                </span>
-                <span className="artifact-kv-pill artifact-kv-pill-hit">
-                  <strong>Hybrid Hit@10</strong>
-                  <span>{selectedCase.method_hits.hybrid ? "Yes" : "No"}</span>
-                </span>
-              </div>
-              <label className="artifact-select-wrap artifact-inline-select-wrap">
-                <span className="artifact-label">Selected User</span>
-                <select
-                  value={selectedCaseId}
-                  onChange={(event) => setSelectedCaseId(event.target.value)}
-                  disabled={!cases.length}
-                >
-                  {cases.map((item) => (
-                    <option key={item.demo_user.customer_id} value={item.demo_user.customer_id}>
-                      {item.demo_user.label} - {item.demo_user.customer_id_short}
-                    </option>
-                  ))}
-                </select>
-              </label>
-            </div>
-          </section>
+          <div className="grid two">
+            <UserSummaryPanel workflowCase={selectedCase} method="hybrid" compact />
+          </div>
 
           <section className="artifact-hybrid-signal-grid">
             <article className="card artifact-shell">
-              <div className="artifact-section-head">
-                <h3 className="section-title">SVD Behavioural Signal</h3>
-                <p className="muted artifact-copy-small">
-                  This signal comes from saved SVD recommendations and reflects behavioural collaborative filtering relevance.
-                </p>
+              <div className="artifact-section-header">
+                <span className="artifact-eyebrow artifact-eyebrow-warm">SVD Signal</span>
+                <h3>SVD Behavioural Signal</h3>
+                <p>This signal comes from saved SVD recommendations and reflects behavioural collaborative filtering relevance.</p>
               </div>
               <div className="artifact-score-stack artifact-score-stack-compact">
                 <ScorePill label="SVD Rank" value={selectedCase.hybrid_explainability.svd_rank} />
@@ -737,11 +903,10 @@ export function ArtifactDemoTabs({ workflowCases }: ArtifactDemoTabsProps) {
             </article>
 
             <article className="card artifact-shell">
-              <div className="artifact-section-head">
-                <h3 className="section-title">3-Agent Evidence Signal</h3>
-                <p className="muted artifact-copy-small">
-                  This signal comes from the structured 3-Agent workflow: Preference Agent, Evidence Agent, and Decision Agent.
-                </p>
+              <div className="artifact-section-header">
+                <span className="artifact-eyebrow artifact-eyebrow-emerald">3-Agent Signal</span>
+                <h3>3-Agent Evidence Signal</h3>
+                <p>This signal comes from the structured 3-Agent workflow: Preference Agent, Evidence Agent, and Decision Agent.</p>
               </div>
               <div className="artifact-score-stack artifact-score-stack-compact">
                 <ScorePill
@@ -774,19 +939,20 @@ export function ArtifactDemoTabs({ workflowCases }: ArtifactDemoTabsProps) {
                 )}
               </div>
               {selectedAgenticItem?.reason ? (
-                <p className="muted artifact-copy-small artifact-signal-footnote">{selectedAgenticItem.reason}</p>
+                <p className="muted artifact-card-copy artifact-signal-footnote">{selectedAgenticItem.reason}</p>
               ) : null}
             </article>
 
             <article className="card artifact-shell artifact-formula-card-dark">
-              <div className="artifact-section-head">
-                <h3 className="section-title">Hybrid Formula</h3>
+              <div className="artifact-section-header">
+                <span className="artifact-eyebrow artifact-eyebrow-cyan">Hybrid Formula</span>
+                <h3>Score Combination</h3>
               </div>
               <div className="artifact-formula-stack">
                 <strong>hybrid_score =</strong>
-                <span>0.70 x normalized_svd_score</span>
-                <span>0.25 x normalized_agentic_score</span>
-                <span>0.05 x diversity_bonus</span>
+                <span>0.70 × normalized_svd_score</span>
+                <span>0.25 × normalized_agentic_score</span>
+                <span>0.05 × diversity_bonus</span>
               </div>
               <div className="artifact-score-stack artifact-score-stack-compact">
                 <ScorePill
@@ -810,6 +976,7 @@ export function ArtifactDemoTabs({ workflowCases }: ArtifactDemoTabsProps) {
           </section>
 
           <RecommendationSection
+            eyebrow="Hybrid Top-10"
             title="Hybrid Top-10 Recommendations"
             intro="Final ranked recommendations produced by combining behavioural relevance, agentic evidence, and diversity adjustment."
             items={selectedCase.hybrid_top10}
@@ -819,12 +986,10 @@ export function ArtifactDemoTabs({ workflowCases }: ArtifactDemoTabsProps) {
 
           <section className="grid two artifact-hybrid-audit-grid">
             <article className="card artifact-shell">
-              <div className="artifact-section-head">
-                <h3 className="section-title">Explainability Audit</h3>
-                <p className="muted artifact-copy-small">
-                  Read-only explanation evidence for the selected Hybrid recommendation.
-                </p>
-                <p className="muted artifact-copy-small">
+              <div className="artifact-section-header">
+                <span className="artifact-eyebrow artifact-eyebrow-fuchsia">Explainability Audit</span>
+                <h3>Read-Only Explanation Evidence</h3>
+                <p>
                   The explainability layer is a read-only audit of Hybrid recommendations. It does not
                   generate new recommendations and does not change ranking metrics.
                 </p>
@@ -904,7 +1069,7 @@ export function ArtifactDemoTabs({ workflowCases }: ArtifactDemoTabsProps) {
           </section>
 
           <section className="card artifact-shell artifact-limitation-card">
-            <p className="muted artifact-copy-small">
+            <p className="muted artifact-card-copy-small">
               This is an offline recommendation artefact. It demonstrates ranking behaviour and
               source-grounded explanation evidence using saved H&amp;M experiment artifacts. It does not
               claim CTR, CVR, conversion, live customer engagement, add-to-cart, dwell time, or live
