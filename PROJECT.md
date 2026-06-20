@@ -283,7 +283,7 @@ The UI is now card-based rather than table-heavy:
 - 3-Agent preference profile, evidence set, and final recommendation cards
 - Hybrid workflow cards, formula card, Top-10 cards, and structured explainability audit cards
 
-The old `three-agent-demo/` folder remains in the repository only as a visual reference and is not the live app.
+The live supervisor-facing app is served from this repository's FastAPI + Next.js stack, with `/artifact-demo` as the dissertation artefact route.
 
 This document focuses on the backend experiment system because that is where the formal SVD vs 3-agent comparison is implemented.
 
@@ -960,7 +960,7 @@ Latest artifact-demo implementation status:
 - frontend route: `/artifact-demo`
 - backend read-only walkthrough endpoint: `GET /demo/workflow-cases`
 - selected users come from saved formal seed99 artifacts only
-- the page uses a one-page dark card layout inspired by the old demo screenshot
+- the page uses a one-page dark card layout for the dissertation artefact
 - the dropdown is backed by a client-side recovery fetch if the initial server render misses backend data
 - no product image placeholders are used
 - no Top-5 or Hit@5 wording is used
