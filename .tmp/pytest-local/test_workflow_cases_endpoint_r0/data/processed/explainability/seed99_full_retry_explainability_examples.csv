@@ -1,0 +1,3 @@
+customer_id,article_id,hybrid_rank,svd_rank,rank_shift,is_ground_truth,normalized_svd_score,normalized_agentic_score,diversity_bonus,hybrid_score,product_type_name,product_group_name,graphical_appearance_name,colour_group_name,garment_group_name,department_name,section_name,index_name,prod_name,detail_desc,matched_preference_fields_json,explanation_text,grounded_claim_count,ungrounded_claim_count
+u1,a4,1,2,1,True,1.0,0.8,0.1,0.95,Dress,Garment Full body,Solid,Black,Dresses Ladies,,,,,,[],Grounded hybrid explanation for u1.,2,0
+u2,b3,1,,,True,0.7,0.9,0.05,0.88,Top,Garment Upper body,Solid,White,Jersey Basic,,,,,,[],Grounded hybrid explanation for u2.,2,0

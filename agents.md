@@ -76,11 +76,13 @@ For code tasks:
 ## Code reading priority
 
 1. `.ai-codex/*`
-2. Token Savior memory
-3. Token Savior symbol/navigation tools
-4. Minimal file reads
+2. Agentmemory session context and relevant memories
+3. Token Savior memory
+4. Token Savior symbol/navigation tools
+5. Minimal file reads
 
 - Read `.ai-codex` first before broader exploration when it exists.
+- When available, prefer Agentmemory for prior decisions, session continuity, and reusable context.
 - When available, prefer memory and symbol lookup over broad file scanning
 - Avoid full-file reads when smaller targeted reads are enough
 
@@ -93,14 +95,18 @@ After non-trivial work, store:
 - reusable patterns
 - architectural decisions
 
-Persist anything likely to save future time
+Persist anything likely to save future time.
+
+- Use `agentmemory:recall` or `agentmemory:handoff` at the start of longer or resumed sessions when prior context may matter
+- Use `agentmemory:remember` after non-trivial work to save fixes, reusable patterns, and architectural decisions
+- Use `agentmemory:recap` and `agentmemory:handoff` at the end of long conversations when continuity will help the next session
 
 ---
 
 ## Token efficiency
 
 - Avoid re-reading known code
-- Prefer stored memory and symbol lookup when available
+- Prefer stored memory, Agentmemory, and symbol lookup when available
 - Expand context only when required
 
 ---
@@ -116,5 +122,4 @@ Persist anything likely to save future time
 
 - When the user says push to main, perform a one-pass workflow: stage only the task files, commit once with a clear message, and push HEAD to origin/main.
 - Leave unrelated local changes alone.
-- Include PROJECT.md only when the user explicitly asks for it.
-
+- Include `PROJECT.md` only when the user explicitly asks for it.

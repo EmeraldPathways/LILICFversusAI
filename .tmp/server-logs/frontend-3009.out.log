@@ -1,0 +1,10 @@
+
+> agentic-recommendation-demo-frontend@0.1.0 start
+> next start --port 3009
+
+   ▲ Next.js 15.5.18
+   - Local:        http://localhost:3009
+   - Network:      http://192.168.18.8:3009
+
+ ✓ Starting...
+ ✓ Ready in 709ms

@@ -667,18 +667,18 @@ npm.cmd install
 
 ```bash
 cd backend
-.\.venv\Scripts\python.exe -m uvicorn app.main:app --host 127.0.0.1 --port 8000
+.\.venv\Scripts\python.exe -m uvicorn app.main:app --host 127.0.0.1 --port 8009
 ```
 
 Health check:
 
 ```bash
-curl http://127.0.0.1:8000/health
+curl http://127.0.0.1:8009/health
 ```
 
 Notes:
 
-- The working backend port for the current artifact demo is `8000`.
+- The working backend port for the current artifact demo is `8009`.
 - Run from `backend/` so `app.main:app` resolves correctly.
 - Use the project venv command above instead of relying on a global `uvicorn`.
 
@@ -695,7 +695,8 @@ Development mode:
 
 ```bash
 cd frontend
-$env:PORT='3005'
+$env:PORT='3009'
+$env:NEXT_PUBLIC_API_BASE_URL='http://127.0.0.1:8009'
 npm.cmd run dev
 ```
 
@@ -703,15 +704,18 @@ Production-style local run used for the artifact demo:
 
 ```bash
 cd frontend
+$env:NEXT_PUBLIC_API_BASE_URL='http://127.0.0.1:8009'
 npm.cmd run build
-npm.cmd run start -- --port 3005
+npm.cmd run start -- --port 3009
 ```
 
 Notes:
 
-- The working frontend port for the current artifact demo is `3005`.
-- The live supervisor-facing page is `http://127.0.0.1:3005/artifact-demo`.
+- The working frontend port for the current artifact demo is `3009`.
+- Always set `NEXT_PUBLIC_API_BASE_URL` to `http://127.0.0.1:8009` before starting the frontend.
+- The live supervisor-facing page is `http://127.0.0.1:3009/artifact-demo`.
 - If `npx.cmd tsc --noEmit` complains about missing `.next/types/...`, run `npm.cmd run build` first, then rerun typecheck.
+- If another Next.js process for this repo is already running, stop it before starting `3009` to avoid shared `.next` state conflicts.
 - If the page shows an old layout after restart, do one hard refresh in the browser.
 
 ## Standard Startup Sequence
@@ -722,33 +726,34 @@ From a clean terminal, use this order every time:
 
 ```bash
 cd backend
-.\.venv\Scripts\python.exe -m uvicorn app.main:app --host 127.0.0.1 --port 8000
+.\.venv\Scripts\python.exe -m uvicorn app.main:app --host 127.0.0.1 --port 8009
 ```
 
 2. In a second terminal, start the frontend:
 
 ```bash
 cd frontend
+$env:NEXT_PUBLIC_API_BASE_URL='http://127.0.0.1:8009'
 npm.cmd run build
-npm.cmd run start -- --port 3005
+npm.cmd run start -- --port 3009
 ```
 
 3. Open the artifact page:
 
 ```text
-http://127.0.0.1:3005/artifact-demo
+http://127.0.0.1:3009/artifact-demo
 ```
 
 4. Optional backend health check:
 
 ```text
-http://127.0.0.1:8000/health
+http://127.0.0.1:8009/health
 ```
 
 Current known-good local process ports:
 
-- backend: `8000`
-- frontend: `3005`
+- backend: `8009`
+- frontend: `3009`
 
 ## Running Tests
 

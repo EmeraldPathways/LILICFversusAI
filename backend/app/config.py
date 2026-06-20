@@ -20,7 +20,7 @@ class Settings(BaseSettings):
     app_name: str = "Agentic AI Recommendation Demo API"
     dataset_name: str = "H&M Personalized Fashion Recommendations"
     frontend_origin: str = Field(
-        default="http://localhost:3000,http://127.0.0.1:3000",
+        default="http://localhost:3009,http://127.0.0.1:3009",
         alias="FRONTEND_ORIGIN",
     )
     openai_api_key: str | None = Field(default=None, alias="OPENAI_API_KEY")

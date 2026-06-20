@@ -209,6 +209,7 @@ function EvidenceProductCard({ item }: { item: ArtifactDemoMethodItem }) {
         </div>
       </div>
       <div className="artifact-agentic-meta-grid">
+        <AgenticMetaBox label="Type" value={item.product_type_name || "Not available"} />
         <AgenticMetaBox label="Group" value={item.product_group_name} />
         <AgenticMetaBox label="Colour" value={item.colour_group_name} />
         <AgenticMetaBox label="Appearance" value={item.graphical_appearance_name} />
@@ -251,10 +252,11 @@ function DecisionRecommendationCard({ item }: { item: ArtifactDemoMethodItem }) 
         ) : null}
       </div>
       <div className="artifact-agentic-meta-grid">
+        <AgenticMetaBox label="Type" value={item.product_type_name || "Not available"} />
         <AgenticMetaBox label="Group" value={item.product_group_name} />
         <AgenticMetaBox label="Colour" value={item.colour_group_name} />
         <AgenticMetaBox label="Appearance" value={item.graphical_appearance_name} />
-        <AgenticMetaBox label="Constraint Status" value="No hard constraints applied" />
+        
       </div>
       <AgenticExplanation score={item.score} reason={item.reason} fallback="Score explanation not available" />
       {item.matched_evidence.length ? (
@@ -493,9 +495,9 @@ function ArtifactHero({
       <div className="artifact-hero-top">
         <div className="artifact-hero-copy">
           <span className="artifact-eyebrow artifact-eyebrow-cyan">
-            H&amp;M-Style Mock Multi-Agent Recommender
+            OFFLINE H&amp;M RECOMMENDER ARTEFACT
           </span>
-          <h1 className="artifact-hero-title">3-Agent Demo</h1>
+          <h1 className="artifact-hero-title">H&amp;M Hybrid SVD + 3-Agent Recommendation Artefact</h1>
         </div>
 
         <div className="artifact-hero-right">
@@ -851,7 +853,7 @@ export function ArtifactDemoTabs({ workflowCases }: ArtifactDemoTabsProps) {
                 layer="Layer 3"
                 title="3-Agent Signal"
                 body="Preference, evidence, and decision signals score items using user history and metadata."
-                source="3-Agent Artifact"
+                source="3-Agent Evidence Signal"
               />
               <FlowNode
                 layer="Layer 4"
@@ -864,13 +866,13 @@ export function ArtifactDemoTabs({ workflowCases }: ArtifactDemoTabsProps) {
                 layer="Layer 5"
                 title="Hybrid Top-10"
                 body="Outputs the final ranked Top-10 recommendation list."
-                source="Hybrid Artifact"
+                source="Hybrid Top-10 Output"
               />
               <FlowNode
                 layer="Layer 6"
                 title="Explainability Audit"
                 body="Checks groundedness, evidence traceability, rank shift, and score components."
-                source="Explainability Artifact"
+                source="Explainability Audit Layer"
               />
             </div>
           </section>
