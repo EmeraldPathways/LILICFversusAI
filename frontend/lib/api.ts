@@ -321,7 +321,12 @@ export type ArtifactDemoWorkflowCasesResponse = {
   cases: ArtifactDemoWorkflowCase[];
 };
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8000";
+const CLIENT_API_BASE_URL =
+  process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://127.0.0.1:8009";
+const SERVER_API_BASE_URL =
+  process.env.API_BASE_URL ?? CLIENT_API_BASE_URL;
+const API_BASE_URL =
+  typeof window === "undefined" ? SERVER_API_BASE_URL : CLIENT_API_BASE_URL;
 const FORMAL_EXPERIMENT_MODE = "svd_top10_experiment";
 
 async function apiFetch<T>(path: string, init?: RequestInit): Promise<T> {
