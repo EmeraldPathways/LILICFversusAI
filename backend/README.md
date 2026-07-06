@@ -5,7 +5,7 @@ FastAPI backend for the offline recommendation experiment.
 ## Run
 
 ```bash
-uvicorn app.main:app --reload
+.\.venv\Scripts\python.exe -m uvicorn app.main:app --host 127.0.0.1 --port 8009
 ```
 
 ## Tests
@@ -13,4 +13,3 @@ uvicorn app.main:app --reload
 ```bash
 pytest
 ```
-

@@ -35,7 +35,7 @@ cd backend
 python -m venv .venv
 .venv\Scripts\activate
 pip install -r requirements.txt
-uvicorn app.main:app --reload
+.\.venv\Scripts\python.exe -m uvicorn app.main:app --host 127.0.0.1 --port 8009
 ```
 
 ## Frontend Setup
@@ -43,8 +43,22 @@ uvicorn app.main:app --reload
 ```bash
 cd frontend
 npm.cmd install
-npm.cmd run dev
+npm.cmd run build
+$env:NEXT_PUBLIC_API_BASE_URL='http://127.0.0.1:8009'
+npm.cmd run start:artifact-demo
 ```
+
+## Windows Start Scripts
+
+From the repo root:
+
+```bat
+start-backend.cmd
+start-frontend.cmd
+```
+
+- `start-backend.cmd` runs FastAPI on `http://127.0.0.1:8009`
+- `start-frontend.cmd` sets `NEXT_PUBLIC_API_BASE_URL=http://127.0.0.1:8009`, builds Next.js, and serves `http://127.0.0.1:3009/artifact-demo`
 
 ## Environment
 

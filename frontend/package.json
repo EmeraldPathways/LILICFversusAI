@@ -4,8 +4,10 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "dev:artifact-demo": "next dev --port 3009",
     "build": "next build",
     "start": "next start",
+    "start:artifact-demo": "next start --port 3009",
     "lint": "next lint"
   },
   "dependencies": {

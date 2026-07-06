@@ -670,6 +670,12 @@ cd backend
 .\.venv\Scripts\python.exe -m uvicorn app.main:app --host 127.0.0.1 --port 8009
 ```
 
+Repo-root helper:
+
+```bat
+start-backend.cmd
+```
+
 Health check:
 
 ```bash
@@ -706,7 +712,13 @@ Production-style local run used for the artifact demo:
 cd frontend
 $env:NEXT_PUBLIC_API_BASE_URL='http://127.0.0.1:8009'
 npm.cmd run build
-npm.cmd run start -- --port 3009
+npm.cmd run start:artifact-demo
+```
+
+Repo-root helper:
+
+```bat
+start-frontend.cmd
 ```
 
 Notes:
@@ -735,7 +747,7 @@ cd backend
 cd frontend
 $env:NEXT_PUBLIC_API_BASE_URL='http://127.0.0.1:8009'
 npm.cmd run build
-npm.cmd run start -- --port 3009
+npm.cmd run start:artifact-demo
 ```
 
 3. Open the artifact page:
