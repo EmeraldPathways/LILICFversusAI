@@ -1,0 +1,8 @@
+INFO:     127.0.0.1:57511 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57592 - "GET /demo/workflow-cases?artifact_prefix=seed99_robustness&explainability_prefix=seed99_full_retry HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63222 - "GET /demo/workflow-cases?artifact_prefix=seed99_robustness&explainability_prefix=seed99_full_retry HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65171 - "GET /demo/workflow-cases?artifact_prefix=seed99_robustness&explainability_prefix=seed99_full_retry HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51234 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51234 - "GET /favicon.ico HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:51235 - "GET /run-experiment HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:51309 - "GET /experiment HTTP/1.1" 404 Not Found

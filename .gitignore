@@ -19,5 +19,6 @@ frontend/.logs/
 backend/app/data/raw/*.csv
 backend/app/data/processed/*
 !backend/app/data/processed/.gitkeep
+experiment 1 results/
 dist/
 coverage/
