@@ -72,7 +72,8 @@ BLOCKED_AGENTIC_METHODS = (
 
 SMOKE_PREFIX_DEFAULT = "experiment1_deterministic_replay_smoke1"
 SMOKE_PREFIX_REQUIRED = "experiment1_deterministic_replay_smoke"
-FULL_PREFIX_RESERVED = "experiment1_deterministic_replay"
+FULL_PREFIX_DEFAULT = "experiment1_deterministic_replay_full1"
+FULL_PREFIX_REQUIRED = "experiment1_deterministic_replay_full"
 
 PLANNED_SERVICE_SEQUENCE = (
     "Validate frozen replay input file and hashes",
@@ -83,10 +84,11 @@ PLANNED_SERVICE_SEQUENCE = (
     "EvaluationService.compute_three_method_top10_metrics_from_saved_artifacts(subset_size=<sample_size>, bootstrap_samples=1000, random_seed=42, artifact_prefix=<prefix>, allow_overwrite=False)",
 )
 
-FULL_REPLAY_DISABLED_CONFIG = {
-    "enabled": False,
-    "reason": "Full 1,000-user replay is reserved for future approval and intentionally disabled.",
-    "prefix": FULL_PREFIX_RESERVED,
+FULL_REPLAY_MODE_STATUS = {
+    "enabled": True,
+    "confirmation_flag_required": True,
+    "confirmation_flag": "--confirm-frozen-full-replay",
+    "prefix": FULL_PREFIX_DEFAULT,
     "sample_size": 1000,
     "candidate_pool_size": 100,
     "top_k": 10,
@@ -321,15 +323,47 @@ def scrub_openai_env() -> dict[str, Any]:
     }
 
 
-def smoke_config(prefix: str) -> RunConfig:
-    if not prefix.startswith(SMOKE_PREFIX_REQUIRED):
+def validate_prefix(prefix: str, *, required_prefix: str, mode_label: str) -> str:
+    normalized = prefix.strip()
+    if not normalized:
+        raise SafetyError(f"{mode_label} prefix must not be empty.")
+    if not normalized.startswith(required_prefix):
         raise SafetyError(
-            f"Smoke prefix must begin with '{SMOKE_PREFIX_REQUIRED}'. Received: {prefix}"
+            f"{mode_label} prefix must begin with '{required_prefix}'. Received: {prefix}"
         )
+    return normalized
+
+
+def smoke_config(prefix: str) -> RunConfig:
+    normalized_prefix = validate_prefix(
+        prefix,
+        required_prefix=SMOKE_PREFIX_REQUIRED,
+        mode_label="Smoke",
+    )
     return RunConfig(
         mode="smoke",
-        prefix=prefix,
+        prefix=normalized_prefix,
         sample_size=3,
+        candidate_pool_size=100,
+        top_k=10,
+        svd_random_state=42,
+        hybrid_random_state=42,
+        bootstrap_seed=42,
+        bootstrap_samples=1000,
+        allow_overwrite=False,
+    )
+
+
+def full_config(prefix: str) -> RunConfig:
+    normalized_prefix = validate_prefix(
+        prefix,
+        required_prefix=FULL_PREFIX_REQUIRED,
+        mode_label="Full replay",
+    )
+    return RunConfig(
+        mode="full",
+        prefix=normalized_prefix,
+        sample_size=1000,
         candidate_pool_size=100,
         top_k=10,
         svd_random_state=42,
@@ -1113,7 +1147,7 @@ def dry_run_payload(config: RunConfig) -> dict[str, Any]:
         "write_behavior": "no writes in dry-run",
         "openai_environment": {**env_status, "openai_api_key_required": False},
         "feedback_state_isolation": verify_feedback_fallback(config),
-        "full_mode_status": FULL_REPLAY_DISABLED_CONFIG,
+        "full_mode_status": FULL_REPLAY_MODE_STATUS,
         "directory_inventories_identical": inventory_unchanged,
     }
 
@@ -1430,25 +1464,30 @@ def run_smoke(config: RunConfig) -> int:
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Fixed-input deterministic replay runner for Experiment 1.")
-    parser.add_argument("--mode", choices=("dry-run", "smoke"), default="dry-run")
+    parser.add_argument("--mode", choices=("dry-run", "smoke", "full"), default="dry-run")
     parser.add_argument(
         "--smoke-prefix",
         default=SMOKE_PREFIX_DEFAULT,
         help=f"Must begin with {SMOKE_PREFIX_REQUIRED}",
     )
     parser.add_argument(
-        "--future-approval-full-run",
+        "--full-prefix",
+        default=FULL_PREFIX_DEFAULT,
+        help=f"Must begin with {FULL_PREFIX_REQUIRED}",
+    )
+    parser.add_argument(
+        "--confirm-frozen-full-replay",
         action="store_true",
-        help="Reserved for a future explicit 1,000-user replay. Disabled now.",
+        help="Required to execute the guarded 1,000-user frozen-input full replay.",
     )
     args = parser.parse_args(argv)
 
-    if args.future_approval_full_run:
+    if args.mode == "full" and not args.confirm_frozen_full_replay:
         raise SystemExit(
-            "Full 1,000-user replay is intentionally disabled and not implemented here."
+            "Full frozen replay requires both --mode full and --confirm-frozen-full-replay."
         )
 
-    config = smoke_config(args.smoke_prefix)
+    config = full_config(args.full_prefix) if args.mode == "full" else smoke_config(args.smoke_prefix)
 
     try:
         print_observability_stage("runner execution", "started")
