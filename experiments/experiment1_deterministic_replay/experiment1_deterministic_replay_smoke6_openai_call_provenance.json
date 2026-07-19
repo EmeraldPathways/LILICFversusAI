@@ -1,0 +1,15 @@
+{
+  "openai_api_key_existed_before_removal": false,
+  "openai_api_key_exists_during_execution": false,
+  "blocked_method_names": [
+    "infer_user_intent",
+    "generate_explanation",
+    "generate_for_user",
+    "build_candidate_pools",
+    "_request_structured_completion"
+  ],
+  "attempted_openai_call_count": 0,
+  "completed_openai_call_count": 0,
+  "openai_api_key_required": false,
+  "primary_proof": "Only deterministic downstream formal methods were invoked."
+}

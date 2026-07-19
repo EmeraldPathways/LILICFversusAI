@@ -1,0 +1,4 @@
+customer_id,ground_truth_article_id,svd_hit_rate_at_10,svd_ground_truth_rank,svd_ndcg_at_10,svd_ild_at_10,agentic_hit_rate_at_10,agentic_ground_truth_rank,agentic_ndcg_at_10,agentic_ild_at_10,hybrid_hit_rate_at_10,hybrid_ground_truth_rank,hybrid_ndcg_at_10,hybrid_ild_at_10
+08e5a409b104a26b85ed957286de5bc3ff21aea5e12f6c6ea3f1af6f3e9c3f14,0918292004,1,1,1.0,0.762963,0,,0.0,0.577778,1,1.0,1.0,0.718519
+0d784dd0de0aeb1e23101e2bad64b54ce6411a5ceb6d280517aae2b8b45ca54b,0907188001,1,8,0.315465,0.762963,0,,0.0,0.6,0,,0.0,0.622222
+1b0d82881e5dacce207e6dbc0fb31afb20bec9d6a9d5757556d3334d239e2359,0851370002,1,5,0.386853,0.644444,1,8.0,0.315465,0.303704,1,7.0,0.333333,0.585185

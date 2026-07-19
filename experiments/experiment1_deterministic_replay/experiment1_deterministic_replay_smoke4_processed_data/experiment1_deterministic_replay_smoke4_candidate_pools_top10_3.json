@@ -1,0 +1,13 @@
+{
+  "selected_user_count": 3,
+  "actual_selected_subset_size": 3,
+  "candidate_pool_target_size": 100,
+  "ground_truth_in_candidate_pool_count": 3,
+  "duplicate_candidate_pool_count": 0,
+  "selected_customer_ids": [
+    "08e5a409b104a26b85ed957286de5bc3ff21aea5e12f6c6ea3f1af6f3e9c3f14",
+    "0d784dd0de0aeb1e23101e2bad64b54ce6411a5ceb6d280517aae2b8b45ca54b",
+    "1b0d82881e5dacce207e6dbc0fb31afb20bec9d6a9d5757556d3334d239e2359"
+  ],
+  "selection_method": "first_n_rows_from_frozen_input_preserving_customer_order, training_history, ground_truth, candidate_pool, and candidate_pool_order"
+}

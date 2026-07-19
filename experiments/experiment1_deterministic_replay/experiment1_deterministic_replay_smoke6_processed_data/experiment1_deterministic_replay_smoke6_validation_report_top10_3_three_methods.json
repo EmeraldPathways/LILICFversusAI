@@ -1,0 +1,14 @@
+{
+  "users_evaluated": 3,
+  "users_with_svd_metrics": 3,
+  "users_with_agentic_metrics": 3,
+  "users_with_hybrid_metrics": 3,
+  "svd_top_10_count_check": 3,
+  "agentic_top_10_count_check": 3,
+  "hybrid_top_10_count_check": 3,
+  "svd_recommendations_inside_candidate_pool_check": 3,
+  "agentic_recommendations_inside_candidate_pool_check": 3,
+  "hybrid_recommendations_inside_candidate_pool_check": 3,
+  "missing_metadata_for_diversity_count": 0,
+  "metric_calculation_errors": []
+}

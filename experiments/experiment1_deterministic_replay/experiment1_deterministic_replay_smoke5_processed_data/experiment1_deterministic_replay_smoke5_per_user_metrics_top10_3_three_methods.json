@@ -1,0 +1,50 @@
+[
+  {
+    "customer_id": "08e5a409b104a26b85ed957286de5bc3ff21aea5e12f6c6ea3f1af6f3e9c3f14",
+    "ground_truth_article_id": "0918292004",
+    "svd_hit_rate_at_10": 1,
+    "svd_ground_truth_rank": 1,
+    "svd_ndcg_at_10": 1.0,
+    "svd_ild_at_10": 0.762963,
+    "agentic_hit_rate_at_10": 0,
+    "agentic_ground_truth_rank": null,
+    "agentic_ndcg_at_10": 0.0,
+    "agentic_ild_at_10": 0.577778,
+    "hybrid_hit_rate_at_10": 1,
+    "hybrid_ground_truth_rank": 1,
+    "hybrid_ndcg_at_10": 1.0,
+    "hybrid_ild_at_10": 0.718519
+  },
+  {
+    "customer_id": "0d784dd0de0aeb1e23101e2bad64b54ce6411a5ceb6d280517aae2b8b45ca54b",
+    "ground_truth_article_id": "0907188001",
+    "svd_hit_rate_at_10": 1,
+    "svd_ground_truth_rank": 8,
+    "svd_ndcg_at_10": 0.315465,
+    "svd_ild_at_10": 0.762963,
+    "agentic_hit_rate_at_10": 0,
+    "agentic_ground_truth_rank": null,
+    "agentic_ndcg_at_10": 0.0,
+    "agentic_ild_at_10": 0.6,
+    "hybrid_hit_rate_at_10": 0,
+    "hybrid_ground_truth_rank": null,
+    "hybrid_ndcg_at_10": 0.0,
+    "hybrid_ild_at_10": 0.622222
+  },
+  {
+    "customer_id": "1b0d82881e5dacce207e6dbc0fb31afb20bec9d6a9d5757556d3334d239e2359",
+    "ground_truth_article_id": "0851370002",
+    "svd_hit_rate_at_10": 1,
+    "svd_ground_truth_rank": 5,
+    "svd_ndcg_at_10": 0.386853,
+    "svd_ild_at_10": 0.644444,
+    "agentic_hit_rate_at_10": 1,
+    "agentic_ground_truth_rank": 8,
+    "agentic_ndcg_at_10": 0.315465,
+    "agentic_ild_at_10": 0.303704,
+    "hybrid_hit_rate_at_10": 1,
+    "hybrid_ground_truth_rank": 7,
+    "hybrid_ndcg_at_10": 0.333333,
+    "hybrid_ild_at_10": 0.585185
+  }
+]

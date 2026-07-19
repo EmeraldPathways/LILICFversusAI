@@ -1,0 +1,3010 @@
+{
+  "project_root": "D:\\GOOGLE DRIVE\\EMERALD PATHWAYS\\WEB WORK\\AI CODING\\VS CODE\\personal\\LILI FINAL PAPER DEMO",
+  "runner_path": "experiments/experiment1_deterministic_replay/run_experiment1_frozen_replay.py",
+  "platform": "Windows-10-10.0.19045-SP0",
+  "python_executable": "D:\\GOOGLE DRIVE\\EMERALD PATHWAYS\\WEB WORK\\AI CODING\\VS CODE\\personal\\LILI FINAL PAPER DEMO\\backend\\.venv\\Scripts\\python.exe",
+  "python_version": "3.13.2 (tags/v3.13.2:4f8bb39, Feb  4 2025, 15:23:48) [MSC v.1942 64 bit (AMD64)]",
+  "dependency_versions": {
+    "httpx": "0.28.1",
+    "numpy": "2.2.5",
+    "pandas": "2.2.3",
+    "pydantic": "2.11.4",
+    "pydantic-settings": "2.9.1",
+    "scikit-learn": "1.9.0",
+    "scipy": "1.17.1"
+  },
+  "runner_sha256": "95c1b93d14495535f84da5497931319d08d5877518f4cc87a649c11361263605",
+  "source_code_hashes": {
+    "experiments/experiment1_deterministic_replay/run_experiment1_frozen_replay.py": "95c1b93d14495535f84da5497931319d08d5877518f4cc87a649c11361263605",
+    "backend/app/config.py": "05c5788df72d32884dc91660699774ea5e285087539f5c54bd95f423f9145bae",
+    "backend/app/services/cf_service.py": "532eb73b7f58931c2d0b675a064c4da735f3971abc38428f3a58b374f5ae3808",
+    "backend/app/services/agentic_service.py": "97d82279724b05f8403b2ec5803bda484ced0e5f3aaf75d1683d2296a58fe15a",
+    "backend/app/services/hybrid_service.py": "46207e079d0a32c935e98b7ad7174a6737d5fedd997ced38eafde71290e67e90",
+    "backend/app/services/evaluation_service.py": "a471f86f7ea3a8edb7236f41f395a85fc8bdf1b675b3fdc72266bf9703055596"
+  },
+  "frozen_input": {
+    "frozen_source_path": "experiments/experiment1_deterministic_replay/input/experiment1_original_frozen_input_1000.json",
+    "frozen_source_size_bytes": 5621254,
+    "frozen_source_sha256": "427da0d55124107551602b12dad82ee05b0eae1e296ee9f612aea8326080d08e",
+    "ordered_customer_id_hash": "6c5f3e60c23ce9ed3cde1e5e8a9f791447be24f4e7f91cbd640df80a9f271262",
+    "training_history_mapping_hash": "5d0f1a50c9727f6ee69f256150f3e11168e1095144bd9b6ceacba4879579ecf7",
+    "ground_truth_mapping_hash": "e7fbd162160dc4c2aaf3dd26d2fd3c1be64ee9291c5f7508b6cce754f0d377c0",
+    "candidate_pool_mapping_hash": "cfb7d1d4be98ab3bf7625d7d626b59be15006d42fe641f841446d362b308e811"
+  },
+  "selected_user_ids": [
+    "08e5a409b104a26b85ed957286de5bc3ff21aea5e12f6c6ea3f1af6f3e9c3f14",
+    "0d784dd0de0aeb1e23101e2bad64b54ce6411a5ceb6d280517aae2b8b45ca54b",
+    "1b0d82881e5dacce207e6dbc0fb31afb20bec9d6a9d5757556d3334d239e2359"
+  ],
+  "selected_ordered_customer_id_hash": "ebb35cfa7bcbd1115418bf53efc753d265c7dda57a2288ece91d5e39675ea712",
+  "selected_training_history_mapping_hash": "5e9039c9ee48d8e32866e8c6036ceaec1dd24a0e90c2e4cf0794ffb8411716d4",
+  "selected_ground_truth_mapping_hash": "badf2910f01fd2fb9f6866589fb4ad959fabe75d8620640f2be142c4cbb70097",
+  "selected_candidate_pool_mapping_hash": "7c9c8d3e879ca04ccfc8a75e1ae6665dc82dee0ad0282d9dc02b214f90facb0b",
+  "run_configuration": {
+    "mode": "smoke",
+    "prefix": "experiment1_deterministic_replay_smoke6",
+    "sample_size": 3,
+    "candidate_pool_size": 100,
+    "top_k": 10,
+    "svd_random_state": 42,
+    "hybrid_random_state": 42,
+    "bootstrap_seed": 42,
+    "bootstrap_samples": 1000,
+    "allow_overwrite": false
+  },
+  "hybrid_weights": {
+    "svd": 0.7,
+    "agentic": 0.25,
+    "diversity": 0.05
+  },
+  "directory_inventory_before": {
+    "backend/app/data/processed/.gitkeep": {
+      "relative_path": "backend/app/data/processed/.gitkeep",
+      "exists": true,
+      "size_bytes": 1,
+      "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+    },
+    "backend/app/data/processed/agentic_recommendations.json": {
+      "relative_path": "backend/app/data/processed/agentic_recommendations.json",
+      "exists": true,
+      "size_bytes": 150056,
+      "sha256": "e09958cfcda7e559c2f488a29c516c11be8c9688b7f7bb93f1c21024f44e09f9"
+    },
+    "backend/app/data/processed/agentic_recommendations_top10_100.csv": {
+      "relative_path": "backend/app/data/processed/agentic_recommendations_top10_100.csv",
+      "exists": true,
+      "size_bytes": 661502,
+      "sha256": "fa95c4174f0244028e5d6bca033acd1de1c18c4592932dae10821bf1ef149b04"
+    },
+    "backend/app/data/processed/agentic_recommendations_top10_100.json": {
+      "relative_path": "backend/app/data/processed/agentic_recommendations_top10_100.json",
+      "exists": true,
+      "size_bytes": 822371,
+      "sha256": "3fb643d01e8d01e2e99ea2890162db60480bec60ceb3bb8d46180f4b403c6709"
+    },
+    "backend/app/data/processed/agentic_recommendations_top10_1000.csv": {
+      "relative_path": "backend/app/data/processed/agentic_recommendations_top10_1000.csv",
+      "exists": true,
+      "size_bytes": 6619486,
+      "sha256": "9f4bd6e4d5c3c45d08dfc0f0739c68d469f2f1e0f4525c92027b8b78a2b2712b"
+    },
+    "backend/app/data/processed/agentic_recommendations_top10_1000.json": {
+      "relative_path": "backend/app/data/processed/agentic_recommendations_top10_1000.json",
+      "exists": true,
+      "size_bytes": 8231967,
+      "sha256": "426f71f0c98af9c256bab4b8c9610971aef20621deb93c1a1f26db1fabbd15e0"
+    },
+    "backend/app/data/processed/agentic_top10_validation_report_100.json": {
+      "relative_path": "backend/app/data/processed/agentic_top10_validation_report_100.json",
+      "exists": true,
+      "size_bytes": 818,
+      "sha256": "98585e8033b81099c4f1247f91b87774ba303dbfe660c3852982c73ad9dcba48"
+    },
+    "backend/app/data/processed/agentic_top10_validation_report_1000.json": {
+      "relative_path": "backend/app/data/processed/agentic_top10_validation_report_1000.json",
+      "exists": true,
+      "size_bytes": 823,
+      "sha256": "94a618075cc36ac67296f33d700f6cabdeb1f9716ce37bec0d290425218234ad"
+    },
+    "backend/app/data/processed/agentic_trace.json": {
+      "relative_path": "backend/app/data/processed/agentic_trace.json",
+      "exists": true,
+      "size_bytes": 149614,
+      "sha256": "356bce1b0fe7607749793b515b460a3c2846615d56f5d2b298508fe4534d403b"
+    },
+    "backend/app/data/processed/bootstrap_ci_report_top10_1000.json": {
+      "relative_path": "backend/app/data/processed/bootstrap_ci_report_top10_1000.json",
+      "exists": true,
+      "size_bytes": 1216,
+      "sha256": "60a363ce3693c2c2893796b4622dfdf77c67d4d616d15178134d1ff85c4979eb"
+    },
+    "backend/app/data/processed/bootstrap_ci_report_top10_1000_three_methods.json": {
+      "relative_path": "backend/app/data/processed/bootstrap_ci_report_top10_1000_three_methods.json",
+      "exists": true,
+      "size_bytes": 2081,
+      "sha256": "05149529c8c5f5324dfd31ecb448025cc8534215257e2a67fbb6dc459f614639"
+    },
+    "backend/app/data/processed/candidate_pool_validation_report_svd_top10_100.json": {
+      "relative_path": "backend/app/data/processed/candidate_pool_validation_report_svd_top10_100.json",
+      "exists": true,
+      "size_bytes": 1149,
+      "sha256": "a40c47e682caf92c83884e38e229cf3a47b8725364e4a564ad6a0d733ae900c9"
+    },
+    "backend/app/data/processed/candidate_pool_validation_report_svd_top10_1000.json": {
+      "relative_path": "backend/app/data/processed/candidate_pool_validation_report_svd_top10_1000.json",
+      "exists": true,
+      "size_bytes": 1155,
+      "sha256": "cccd17fac2f6b8eb69b7260c2b413016311ac9f96b3c034df4f769c289e57310"
+    },
+    "backend/app/data/processed/cf_recommendations.json": {
+      "relative_path": "backend/app/data/processed/cf_recommendations.json",
+      "exists": true,
+      "size_bytes": 57704,
+      "sha256": "69922f46d8aac5d1c33faac3c32fe177ce33c6f599b8c1fb4c7e8cbfafcc6e4d"
+    },
+    "backend/app/data/processed/diagnostic_report_svd_vs_agentic_1000.md": {
+      "relative_path": "backend/app/data/processed/diagnostic_report_svd_vs_agentic_1000.md",
+      "exists": true,
+      "size_bytes": 11997,
+      "sha256": "926f485ab3a261f449b14654a45e9e74f8d39c28fc27a1ebe41518fa4dc1db0c"
+    },
+    "backend/app/data/processed/evaluation_base_table_svd_top10_100.csv": {
+      "relative_path": "backend/app/data/processed/evaluation_base_table_svd_top10_100.csv",
+      "exists": true,
+      "size_bytes": 294336,
+      "sha256": "487b309fcc6b8033a063a74eb1c7225733eb580b831741718fbe7a402bd082cb"
+    },
+    "backend/app/data/processed/evaluation_base_table_svd_top10_100.json": {
+      "relative_path": "backend/app/data/processed/evaluation_base_table_svd_top10_100.json",
+      "exists": true,
+      "size_bytes": 547556,
+      "sha256": "9215fb1ed8d73744861988468d0c7053a9ff87a8d5385b80d0f0cedf7b96ebff"
+    },
+    "backend/app/data/processed/evaluation_base_table_svd_top10_1000.csv": {
+      "relative_path": "backend/app/data/processed/evaluation_base_table_svd_top10_1000.csv",
+      "exists": true,
+      "size_bytes": 3032767,
+      "sha256": "9a15e1b2305cbae1dd91275d49faf5955f39fd9ce9f3d793e870c96f9c0f7805"
+    },
+    "backend/app/data/processed/evaluation_base_table_svd_top10_1000.json": {
+      "relative_path": "backend/app/data/processed/evaluation_base_table_svd_top10_1000.json",
+      "exists": true,
+      "size_bytes": 5621254,
+      "sha256": "427da0d55124107551602b12dad82ee05b0eae1e296ee9f612aea8326080d08e"
+    },
+    "backend/app/data/processed/evaluation_base_table_svd_top10_all_valid.csv": {
+      "relative_path": "backend/app/data/processed/evaluation_base_table_svd_top10_all_valid.csv",
+      "exists": true,
+      "size_bytes": 1556270188,
+      "sha256": "ab6672ab1e24390ffc5f067fac5013941de08113b6d8e07558818e8b38b1ffcd"
+    },
+    "backend/app/data/processed/evaluation_base_table_svd_top10_all_valid.json": {
+      "relative_path": "backend/app/data/processed/evaluation_base_table_svd_top10_all_valid.json",
+      "exists": true,
+      "size_bytes": 2545417444,
+      "sha256": "7fec0e9e572b01ae45a0bbcf340ea92bedbfcaffbe7ee81333320f5df3bca44f"
+    },
+    "backend/app/data/processed/evaluation_base_validation_report_svd_top10_all_valid.json": {
+      "relative_path": "backend/app/data/processed/evaluation_base_validation_report_svd_top10_all_valid.json",
+      "exists": true,
+      "size_bytes": 1828,
+      "sha256": "c2728137466a7231060b30e58088e4ecf5578f5e827d3aaffaab9b41c23855b9"
+    },
+    "backend/app/data/processed/experiment_state.json": {
+      "relative_path": "backend/app/data/processed/experiment_state.json",
+      "exists": true,
+      "size_bytes": 1430,
+      "sha256": "c8d870c9a9506ad808557d2f80e79bac6df82ab13f564a1e8b38125fb80d82ba"
+    },
+    "backend/app/data/processed/experiment_summary.json": {
+      "relative_path": "backend/app/data/processed/experiment_summary.json",
+      "exists": true,
+      "size_bytes": 4746,
+      "sha256": "20f059e57000a115918e2fb6069f37437bb409cae11b89e6a161bdc8d3a3bb27"
+    },
+    "backend/app/data/processed/explainability/seed99_case_studies.md": {
+      "relative_path": "backend/app/data/processed/explainability/seed99_case_studies.md",
+      "exists": true,
+      "size_bytes": 63100,
+      "sha256": "a1af8fe23fb28be37e6960057aa211e3ae917827a98e2585469dedf1ec1305e6"
+    },
+    "backend/app/data/processed/explainability/seed99_explainability_audit.json": {
+      "relative_path": "backend/app/data/processed/explainability/seed99_explainability_audit.json",
+      "exists": true,
+      "size_bytes": 14480,
+      "sha256": "95ae447a6ff4e5adb52827c05bd8b65f0f50a0d2bc3aa389fb4515159cd14c87"
+    },
+    "backend/app/data/processed/explainability/seed99_explainability_examples.csv": {
+      "relative_path": "backend/app/data/processed/explainability/seed99_explainability_examples.csv",
+      "exists": true,
+      "size_bytes": 1537142,
+      "sha256": "3a48d68ab3dba430820706cd3946a63e50c7da5c920f8824b8358657837687cc"
+    },
+    "backend/app/data/processed/explainability/seed99_explainability_summary.json": {
+      "relative_path": "backend/app/data/processed/explainability/seed99_explainability_summary.json",
+      "exists": true,
+      "size_bytes": 1302,
+      "sha256": "83cafeadea974b113fad00b658deaf2d59be28977338a736d565c0d305dc75ea"
+    },
+    "backend/app/data/processed/explainability/seed99_full_retry_case_studies.md": {
+      "relative_path": "backend/app/data/processed/explainability/seed99_full_retry_case_studies.md",
+      "exists": true,
+      "size_bytes": 61799,
+      "sha256": "c63052a1fc99246de29de9f6e53d2a3d104011e323a07cabefaa1d9d7151aed8"
+    },
+    "backend/app/data/processed/explainability/seed99_full_retry_explainability_audit.json": {
+      "relative_path": "backend/app/data/processed/explainability/seed99_full_retry_explainability_audit.json",
+      "exists": true,
+      "size_bytes": 18165,
+      "sha256": "2e64b3f68f469d297a13d868812e10ef60adae7c160bcabb928df9c301c6f92d"
+    },
+    "backend/app/data/processed/explainability/seed99_full_retry_explainability_examples.csv": {
+      "relative_path": "backend/app/data/processed/explainability/seed99_full_retry_explainability_examples.csv",
+      "exists": true,
+      "size_bytes": 15153318,
+      "sha256": "529db7d42e94f09f0a904f1b125a584fd3003d02e148e3cd48ccf7d8b23fc9f3"
+    },
+    "backend/app/data/processed/explainability/seed99_full_retry_explainability_summary.json": {
+      "relative_path": "backend/app/data/processed/explainability/seed99_full_retry_explainability_summary.json",
+      "exists": true,
+      "size_bytes": 1320,
+      "sha256": "d44d25a607ef7eda40cb5aff611c686fc9bcc5cee765c71c4361714ab33de2d0"
+    },
+    "backend/app/data/processed/explainability/seed99_full_retry_rank_shift_analysis.csv": {
+      "relative_path": "backend/app/data/processed/explainability/seed99_full_retry_rank_shift_analysis.csv",
+      "exists": true,
+      "size_bytes": 6971655,
+      "sha256": "856ed17b449792f861ee62f43685f4aaab4d31dc48a3d8c2c412672beb448094"
+    },
+    "backend/app/data/processed/explainability/seed99_perf_check_case_studies.md": {
+      "relative_path": "backend/app/data/processed/explainability/seed99_perf_check_case_studies.md",
+      "exists": true,
+      "size_bytes": 63100,
+      "sha256": "a1af8fe23fb28be37e6960057aa211e3ae917827a98e2585469dedf1ec1305e6"
+    },
+    "backend/app/data/processed/explainability/seed99_perf_check_explainability_audit.json": {
+      "relative_path": "backend/app/data/processed/explainability/seed99_perf_check_explainability_audit.json",
+      "exists": true,
+      "size_bytes": 14491,
+      "sha256": "e8a864bc77a8c684a01c0fa7623e3c641ba50c1e468423947908b0772e5acf8f"
+    },
+    "backend/app/data/processed/explainability/seed99_perf_check_explainability_examples.csv": {
+      "relative_path": "backend/app/data/processed/explainability/seed99_perf_check_explainability_examples.csv",
+      "exists": true,
+      "size_bytes": 1537142,
+      "sha256": "3a48d68ab3dba430820706cd3946a63e50c7da5c920f8824b8358657837687cc"
+    },
+    "backend/app/data/processed/explainability/seed99_perf_check_explainability_summary.json": {
+      "relative_path": "backend/app/data/processed/explainability/seed99_perf_check_explainability_summary.json",
+      "exists": true,
+      "size_bytes": 1313,
+      "sha256": "9bb1a5cb059546bf74a758345982914c6cf13006dd6532302cb4fde7ca1ec076"
+    },
+    "backend/app/data/processed/explainability/seed99_perf_check_rank_shift_analysis.csv": {
+      "relative_path": "backend/app/data/processed/explainability/seed99_perf_check_rank_shift_analysis.csv",
+      "exists": true,
+      "size_bytes": 709861,
+      "sha256": "5376a7e051c2eccbcd4156e086b37d7fcfdb1f65cdae62dcae3a119591e09244"
+    },
+    "backend/app/data/processed/explainability/seed99_rank_shift_analysis.csv": {
+      "relative_path": "backend/app/data/processed/explainability/seed99_rank_shift_analysis.csv",
+      "exists": true,
+      "size_bytes": 709861,
+      "sha256": "5376a7e051c2eccbcd4156e086b37d7fcfdb1f65cdae62dcae3a119591e09244"
+    },
+    "backend/app/data/processed/feedback_state.json": {
+      "relative_path": "backend/app/data/processed/feedback_state.json",
+      "exists": true,
+      "size_bytes": 302,
+      "sha256": "12ba96bbc7342701ed27fef112a2cec8f9402a2df9c45d5f0473df4c999de7c1"
+    },
+    "backend/app/data/processed/final_experiment_report_svd_agentic_hybrid.md": {
+      "relative_path": "backend/app/data/processed/final_experiment_report_svd_agentic_hybrid.md",
+      "exists": true,
+      "size_bytes": 9234,
+      "sha256": "ae932fad1afec5a6c768cfe078530b30ce0006b285e59f77f0b1063307ba6210"
+    },
+    "backend/app/data/processed/final_two_run_comparison_report.md": {
+      "relative_path": "backend/app/data/processed/final_two_run_comparison_report.md",
+      "exists": true,
+      "size_bytes": 3551,
+      "sha256": "6b513c810e8c73727eb12a8df36706fea12317d5c7c28e2840f2d34c2bb9822f"
+    },
+    "backend/app/data/processed/hybrid_result_interpretation_check.md": {
+      "relative_path": "backend/app/data/processed/hybrid_result_interpretation_check.md",
+      "exists": true,
+      "size_bytes": 5108,
+      "sha256": "a758b8ec6dd38e4e0e3103912999f2ebf379549c485e8d762704bddaeee4d0fd"
+    },
+    "backend/app/data/processed/hybrid_svd_agentic_audit_report_top10_1000.md": {
+      "relative_path": "backend/app/data/processed/hybrid_svd_agentic_audit_report_top10_1000.md",
+      "exists": true,
+      "size_bytes": 3349,
+      "sha256": "4c83364f73882676bc48e1f77f9b100d1c03de92f60f9fbecfcf11ee3315268d"
+    },
+    "backend/app/data/processed/hybrid_svd_agentic_recommendations_top10_1000.csv": {
+      "relative_path": "backend/app/data/processed/hybrid_svd_agentic_recommendations_top10_1000.csv",
+      "exists": true,
+      "size_bytes": 5510052,
+      "sha256": "0feef112c5bbaf2801f52dce7d04da4378be844839775d41e97602855472e3f1"
+    },
+    "backend/app/data/processed/hybrid_svd_agentic_recommendations_top10_1000.json": {
+      "relative_path": "backend/app/data/processed/hybrid_svd_agentic_recommendations_top10_1000.json",
+      "exists": true,
+      "size_bytes": 6733807,
+      "sha256": "253c1984e6b06e61b8e5de4a18fdee7999d07eb93ea089dec659d74c66619a05"
+    },
+    "backend/app/data/processed/hybrid_svd_agentic_validation_report_top10_1000.json": {
+      "relative_path": "backend/app/data/processed/hybrid_svd_agentic_validation_report_top10_1000.json",
+      "exists": true,
+      "size_bytes": 832,
+      "sha256": "a474f114e7097923b340b2b5efd10862263d4bdb1d52327dbcd088ea93143714"
+    },
+    "backend/app/data/processed/interactions_sample.csv": {
+      "relative_path": "backend/app/data/processed/interactions_sample.csv",
+      "exists": true,
+      "size_bytes": 722580,
+      "sha256": "4e941a0c0ed33e14492014dd492ca531ea66e388b44c6efc73b4d80085298148"
+    },
+    "backend/app/data/processed/metric_audit_report_top10_100.md": {
+      "relative_path": "backend/app/data/processed/metric_audit_report_top10_100.md",
+      "exists": true,
+      "size_bytes": 6508,
+      "sha256": "69e2dc5e36ef708c0e54f85782a04cba4736618ffe4959a973e6b79543d17de6"
+    },
+    "backend/app/data/processed/metric_summary_top10_100.csv": {
+      "relative_path": "backend/app/data/processed/metric_summary_top10_100.csv",
+      "exists": true,
+      "size_bytes": 427,
+      "sha256": "5ff0eebc0cc6b89cd44d281b58c6d61cb1822b6fc413c8d5d5f45ca66d6dd086"
+    },
+    "backend/app/data/processed/metric_summary_top10_100.json": {
+      "relative_path": "backend/app/data/processed/metric_summary_top10_100.json",
+      "exists": true,
+      "size_bytes": 584,
+      "sha256": "e3e8621fa63c58319563da3975a672f4848263ab7630c92e81f5f95c16442db2"
+    },
+    "backend/app/data/processed/metric_summary_top10_1000.csv": {
+      "relative_path": "backend/app/data/processed/metric_summary_top10_1000.csv",
+      "exists": true,
+      "size_bytes": 462,
+      "sha256": "cc48072ff6441642706b5f694d6725130353ac2984c19b60ec1336b68176a8ad"
+    },
+    "backend/app/data/processed/metric_summary_top10_1000.json": {
+      "relative_path": "backend/app/data/processed/metric_summary_top10_1000.json",
+      "exists": true,
+      "size_bytes": 628,
+      "sha256": "b266c40fa23f45d053f491f5eecfc1c2560e90da5ef3fa4e12b14dd0b1b4892e"
+    },
+    "backend/app/data/processed/metric_summary_top10_1000_three_methods.csv": {
+      "relative_path": "backend/app/data/processed/metric_summary_top10_1000_three_methods.csv",
+      "exists": true,
+      "size_bytes": 533,
+      "sha256": "658f9c3492e606e92b07b4c445c7280f4212d2a7e542e08a28d1f6497c972005"
+    },
+    "backend/app/data/processed/metric_summary_top10_1000_three_methods.json": {
+      "relative_path": "backend/app/data/processed/metric_summary_top10_1000_three_methods.json",
+      "exists": true,
+      "size_bytes": 835,
+      "sha256": "8e0a2a05dfa0622832414e001f0051d554760ae7327d6f766ea2e543f502eba5"
+    },
+    "backend/app/data/processed/metric_summary_top10_1000_with_ci.json": {
+      "relative_path": "backend/app/data/processed/metric_summary_top10_1000_with_ci.json",
+      "exists": true,
+      "size_bytes": 1789,
+      "sha256": "f95e8939ed0e76d13beaadb87dc6fd8ad4a279d096e4caeed069eca982f1dd23"
+    },
+    "backend/app/data/processed/metric_validation_report_top10_100.json": {
+      "relative_path": "backend/app/data/processed/metric_validation_report_top10_100.json",
+      "exists": true,
+      "size_bytes": 1988,
+      "sha256": "1fc34fc9a972643ad4ad392f49708cdda11ab549fd3964a24093e26afabd1ec7"
+    },
+    "backend/app/data/processed/metric_validation_report_top10_1000.json": {
+      "relative_path": "backend/app/data/processed/metric_validation_report_top10_1000.json",
+      "exists": true,
+      "size_bytes": 1995,
+      "sha256": "d63dcbf3e4b01bbe2d4a97a560ff39f69f7fdd98a2a0e3a157699cd7075aa057"
+    },
+    "backend/app/data/processed/metrics.json": {
+      "relative_path": "backend/app/data/processed/metrics.json",
+      "exists": true,
+      "size_bytes": 676,
+      "sha256": "d6267368bb5e43d45d599b93c568ede9775f9fc833020e42ad5dd89e401b5fbe"
+    },
+    "backend/app/data/processed/per_user_metrics_top10_100.csv": {
+      "relative_path": "backend/app/data/processed/per_user_metrics_top10_100.csv",
+      "exists": true,
+      "size_bytes": 11590,
+      "sha256": "e95c0c3cde4ce86bf770d13f91c7133f8a62a59a9e9b786f389539f94d6806ed"
+    },
+    "backend/app/data/processed/per_user_metrics_top10_100.json": {
+      "relative_path": "backend/app/data/processed/per_user_metrics_top10_100.json",
+      "exists": true,
+      "size_bytes": 41161,
+      "sha256": "2a37bf854098b18488591b17217e160abf1ac8e7c92e5e39a3277adaea16a914"
+    },
+    "backend/app/data/processed/per_user_metrics_top10_1000.csv": {
+      "relative_path": "backend/app/data/processed/per_user_metrics_top10_1000.csv",
+      "exists": true,
+      "size_bytes": 114247,
+      "sha256": "3acbcd84fef646cbba5c96813e2778854c6dc153f0471e239aa038ae84414138"
+    },
+    "backend/app/data/processed/per_user_metrics_top10_1000.json": {
+      "relative_path": "backend/app/data/processed/per_user_metrics_top10_1000.json",
+      "exists": true,
+      "size_bytes": 411412,
+      "sha256": "91c155d9a9ad27870ea47b156cd18d3ac9010dcc68a56839b4aff9a0e19f1c4e"
+    },
+    "backend/app/data/processed/per_user_metrics_top10_1000_three_methods.csv": {
+      "relative_path": "backend/app/data/processed/per_user_metrics_top10_1000_three_methods.csv",
+      "exists": true,
+      "size_bytes": 132935,
+      "sha256": "7f5055ae3b61bc3443092d57b65b624e5b941a0384f7993cfbd32013f769b466"
+    },
+    "backend/app/data/processed/per_user_metrics_top10_1000_three_methods.json": {
+      "relative_path": "backend/app/data/processed/per_user_metrics_top10_1000_three_methods.json",
+      "exists": true,
+      "size_bytes": 549030,
+      "sha256": "06447ba3b21bd2dc01f302a3673f7806742dc9fdc26d34bbeb1568801b267b61"
+    },
+    "backend/app/data/processed/processed_data_validation_report.json": {
+      "relative_path": "backend/app/data/processed/processed_data_validation_report.json",
+      "exists": true,
+      "size_bytes": 609,
+      "sha256": "34bd5481f4cabbbb5ba16b387c08bce24e300d76d1ae26307609cd0b1b80a552"
+    },
+    "backend/app/data/processed/processed_interactions_with_articles.csv": {
+      "relative_path": "backend/app/data/processed/processed_interactions_with_articles.csv",
+      "exists": true,
+      "size_bytes": 10919171417,
+      "sha256": "20f2432c171020766ff7ae101c7bba770091d2d79ccb32286b7b33fd262194c9"
+    },
+    "backend/app/data/processed/processed_interactions_with_articles.json": {
+      "relative_path": "backend/app/data/processed/processed_interactions_with_articles.json",
+      "exists": true,
+      "size_bytes": 22404862722,
+      "sha256": "9362a72bee1ef64fca450d3645c0a4d7e015d9abe2a382b6126ce6320269b931"
+    },
+    "backend/app/data/processed/seed99_robustness_agentic_recommendations_top10_1000.csv": {
+      "relative_path": "backend/app/data/processed/seed99_robustness_agentic_recommendations_top10_1000.csv",
+      "exists": true,
+      "size_bytes": 6614631,
+      "sha256": "88b5bbad548effd41c78784d1d81d3ebf153780ffd20fd5997cbd28658b98cf7"
+    },
+    "backend/app/data/processed/seed99_robustness_agentic_recommendations_top10_1000.json": {
+      "relative_path": "backend/app/data/processed/seed99_robustness_agentic_recommendations_top10_1000.json",
+      "exists": true,
+      "size_bytes": 8225637,
+      "sha256": "a55413f0ee136c9e25119d964bf47e71f94e4bdcda510bb75cfb859a002c523f"
+    },
+    "backend/app/data/processed/seed99_robustness_agentic_top10_validation_report_1000.json": {
+      "relative_path": "backend/app/data/processed/seed99_robustness_agentic_top10_validation_report_1000.json",
+      "exists": true,
+      "size_bytes": 823,
+      "sha256": "b5beeff2087bcc3a4d27ff16aceafe119a6d436a749825e065fd36d0cd67b3ce"
+    },
+    "backend/app/data/processed/seed99_robustness_bootstrap_ci_report_top10_1000_three_methods.json": {
+      "relative_path": "backend/app/data/processed/seed99_robustness_bootstrap_ci_report_top10_1000_three_methods.json",
+      "exists": true,
+      "size_bytes": 2068,
+      "sha256": "45790b0f209c8b9a3ff984ce38a40fd730297c0fdc589c1d21e2d71a98b3a8a2"
+    },
+    "backend/app/data/processed/seed99_robustness_candidate_pools_top10_1000.json": {
+      "relative_path": "backend/app/data/processed/seed99_robustness_candidate_pools_top10_1000.json",
+      "exists": true,
+      "size_bytes": 5660807,
+      "sha256": "569228a7001865470df34c3c5fed39025a4cd10ed0b7d532c34eafe453c02be7"
+    },
+    "backend/app/data/processed/seed99_robustness_evaluation_base_table_top10_1000.csv": {
+      "relative_path": "backend/app/data/processed/seed99_robustness_evaluation_base_table_top10_1000.csv",
+      "exists": true,
+      "size_bytes": 3061306,
+      "sha256": "5c3f77fe5bc79b46b3d8f7d50e5a95526b5816653c8551a6987ede9ac2ffaf99"
+    },
+    "backend/app/data/processed/seed99_robustness_evaluation_base_table_top10_1000.json": {
+      "relative_path": "backend/app/data/processed/seed99_robustness_evaluation_base_table_top10_1000.json",
+      "exists": true,
+      "size_bytes": 5660807,
+      "sha256": "569228a7001865470df34c3c5fed39025a4cd10ed0b7d532c34eafe453c02be7"
+    },
+    "backend/app/data/processed/seed99_robustness_experiment_report_top10_1000.md": {
+      "relative_path": "backend/app/data/processed/seed99_robustness_experiment_report_top10_1000.md",
+      "exists": true,
+      "size_bytes": 5365,
+      "sha256": "c524adfead324ef04e6c7f0742380b4ea95ca50c7734ea7306f2b96ae0f268dd"
+    },
+    "backend/app/data/processed/seed99_robustness_hybrid_svd_agentic_recommendations_top10_1000.csv": {
+      "relative_path": "backend/app/data/processed/seed99_robustness_hybrid_svd_agentic_recommendations_top10_1000.csv",
+      "exists": true,
+      "size_bytes": 5509015,
+      "sha256": "b7bbfb949fc069b80ce2d17ea24f9168d738724055087c9c0e770f19e338dbbb"
+    },
+    "backend/app/data/processed/seed99_robustness_hybrid_svd_agentic_recommendations_top10_1000.json": {
+      "relative_path": "backend/app/data/processed/seed99_robustness_hybrid_svd_agentic_recommendations_top10_1000.json",
+      "exists": true,
+      "size_bytes": 6732770,
+      "sha256": "f4401e91e3f24bc6420e5073c19d02c6b060ee30a12b86491b93e7e2cfe1381c"
+    },
+    "backend/app/data/processed/seed99_robustness_hybrid_svd_agentic_validation_report_top10_1000.json": {
+      "relative_path": "backend/app/data/processed/seed99_robustness_hybrid_svd_agentic_validation_report_top10_1000.json",
+      "exists": true,
+      "size_bytes": 832,
+      "sha256": "cc36fb210f59e5badbab3e43742e1411cdd8ce1663771f89ddc42afb5706d249"
+    },
+    "backend/app/data/processed/seed99_robustness_metric_summary_top10_1000_three_methods.csv": {
+      "relative_path": "backend/app/data/processed/seed99_robustness_metric_summary_top10_1000_three_methods.csv",
+      "exists": true,
+      "size_bytes": 537,
+      "sha256": "a30bfce082b80ab7282ee4bbe4656a9c01881d83abecc1aac227540ca208177d"
+    },
+    "backend/app/data/processed/seed99_robustness_metric_summary_top10_1000_three_methods.json": {
+      "relative_path": "backend/app/data/processed/seed99_robustness_metric_summary_top10_1000_three_methods.json",
+      "exists": true,
+      "size_bytes": 839,
+      "sha256": "8525f046bb2ea6498c69b71e55a6079e72d55910639c8fb2bb7a9b91dbd0baa6"
+    },
+    "backend/app/data/processed/seed99_robustness_per_user_metrics_top10_1000_three_methods.csv": {
+      "relative_path": "backend/app/data/processed/seed99_robustness_per_user_metrics_top10_1000_three_methods.csv",
+      "exists": true,
+      "size_bytes": 133130,
+      "sha256": "ccb512be87340f7d03fba2bce4850c9b0e29c51307696943b4bed836d34db636"
+    },
+    "backend/app/data/processed/seed99_robustness_per_user_metrics_top10_1000_three_methods.json": {
+      "relative_path": "backend/app/data/processed/seed99_robustness_per_user_metrics_top10_1000_three_methods.json",
+      "exists": true,
+      "size_bytes": 549057,
+      "sha256": "1a6ad07e3185c9bd196e57ba76150cafff2257fa727b2392198336459fe69f1b"
+    },
+    "backend/app/data/processed/seed99_robustness_svd_baseline_validation_report_top10_1000.json": {
+      "relative_path": "backend/app/data/processed/seed99_robustness_svd_baseline_validation_report_top10_1000.json",
+      "exists": true,
+      "size_bytes": 1034,
+      "sha256": "8cb9d9c3e25b219fb44bae363d1580185a1d66603245d1a0e7379f6882cb5294"
+    },
+    "backend/app/data/processed/seed99_robustness_svd_recommendations_top10_1000.csv": {
+      "relative_path": "backend/app/data/processed/seed99_robustness_svd_recommendations_top10_1000.csv",
+      "exists": true,
+      "size_bytes": 2837348,
+      "sha256": "83428bc1230abc267fadcc890cb4ddb20271145d06ec6e0fd397b8e6b00cd4ed"
+    },
+    "backend/app/data/processed/seed99_robustness_svd_recommendations_top10_1000.json": {
+      "relative_path": "backend/app/data/processed/seed99_robustness_svd_recommendations_top10_1000.json",
+      "exists": true,
+      "size_bytes": 3779116,
+      "sha256": "c77a3d196b0112498ab6770f10dd680a54cce59985bf0bacebd9954c56bfe80b"
+    },
+    "backend/app/data/processed/seed99_robustness_validation_report_top10_1000_three_methods.json": {
+      "relative_path": "backend/app/data/processed/seed99_robustness_validation_report_top10_1000_three_methods.json",
+      "exists": true,
+      "size_bytes": 524,
+      "sha256": "631bc55c558eb4046e667d4749927d2c726ea3867c3e1bb45e60305d62d41ca4"
+    },
+    "backend/app/data/processed/svd_baseline_validation_report_top10_100.json": {
+      "relative_path": "backend/app/data/processed/svd_baseline_validation_report_top10_100.json",
+      "exists": true,
+      "size_bytes": 1030,
+      "sha256": "9ee2579159e480d2eaef53c6d44bbf70cfe9d699cfd09e31a4caf280a0e2f79a"
+    },
+    "backend/app/data/processed/svd_baseline_validation_report_top10_1000.json": {
+      "relative_path": "backend/app/data/processed/svd_baseline_validation_report_top10_1000.json",
+      "exists": true,
+      "size_bytes": 1034,
+      "sha256": "3f7c0e8d02f2964ad5a7e862621311c0d5a7587c7610c285c5efd826aba72a98"
+    },
+    "backend/app/data/processed/svd_recommendations_top10_100.csv": {
+      "relative_path": "backend/app/data/processed/svd_recommendations_top10_100.csv",
+      "exists": true,
+      "size_bytes": 283795,
+      "sha256": "ef114444ef643af35a01d710f7c3ada811bbf18b640ee44c11f52629cc063466"
+    },
+    "backend/app/data/processed/svd_recommendations_top10_100.json": {
+      "relative_path": "backend/app/data/processed/svd_recommendations_top10_100.json",
+      "exists": true,
+      "size_bytes": 377763,
+      "sha256": "e3e6159fa7fd7e6ef0aa7f3036549427ab86667a378295f21f0da10de0bb28fd"
+    },
+    "backend/app/data/processed/svd_recommendations_top10_1000.csv": {
+      "relative_path": "backend/app/data/processed/svd_recommendations_top10_1000.csv",
+      "exists": true,
+      "size_bytes": 2837911,
+      "sha256": "f21a61e6d5389c5d003fad2bcf4a0883cba70f90db8f833abce47193582fc667"
+    },
+    "backend/app/data/processed/svd_recommendations_top10_1000.json": {
+      "relative_path": "backend/app/data/processed/svd_recommendations_top10_1000.json",
+      "exists": true,
+      "size_bytes": 3779679,
+      "sha256": "d6634d92313fd60be17ada476f8f7875c9ae6517c3bbfca3ff9f6cea2f35c30a"
+    },
+    "backend/app/data/processed/svd_top10_experiment_interactions.json": {
+      "relative_path": "backend/app/data/processed/svd_top10_experiment_interactions.json",
+      "exists": true,
+      "size_bytes": 722580,
+      "sha256": "4e941a0c0ed33e14492014dd492ca531ea66e388b44c6efc73b4d80085298148"
+    },
+    "backend/app/data/processed/svd_top10_experiment_summary.json": {
+      "relative_path": "backend/app/data/processed/svd_top10_experiment_summary.json",
+      "exists": true,
+      "size_bytes": 4757,
+      "sha256": "5325076693124a2f99cc185fbda2c60fb92e9208b585ed463cf29312e314c268"
+    },
+    "backend/app/data/processed/svd_top10_experiment_test.json": {
+      "relative_path": "backend/app/data/processed/svd_top10_experiment_test.json",
+      "exists": true,
+      "size_bytes": 14551,
+      "sha256": "806e5798358353142366cf4e9ab576957523656f842c7a6705aa341716004d1f"
+    },
+    "backend/app/data/processed/svd_top10_experiment_train.json": {
+      "relative_path": "backend/app/data/processed/svd_top10_experiment_train.json",
+      "exists": true,
+      "size_bytes": 708128,
+      "sha256": "88a8f39869ed7aa20a69e9c908239da7f7db6ce7481ec325b45a42aa47016f48"
+    },
+    "backend/app/data/processed/test.csv": {
+      "relative_path": "backend/app/data/processed/test.csv",
+      "exists": true,
+      "size_bytes": 144552,
+      "sha256": "da48eeecf41c3080a9409ee0c33e61bb83df86f13fe02a45cb8048ff0a81218e"
+    },
+    "backend/app/data/processed/train.csv": {
+      "relative_path": "backend/app/data/processed/train.csv",
+      "exists": true,
+      "size_bytes": 578127,
+      "sha256": "2906fa7625a6a6b4a3ab3b6b8c87b63d4e6e58d043a536bc996cb5742239703a"
+    },
+    "experiments/experiment1_deterministic_replay/__pycache__/run_experiment1_frozen_replay.cpython-313.pyc": {
+      "relative_path": "experiments/experiment1_deterministic_replay/__pycache__/run_experiment1_frozen_replay.cpython-313.pyc",
+      "exists": true,
+      "size_bytes": 68083,
+      "sha256": "31ed87232d5d2f0ea81325fddf4444af162108b896560e1b99f3e35af4c0e087"
+    },
+    "experiments/experiment1_deterministic_replay/diagnose_replay_preflight.py": {
+      "relative_path": "experiments/experiment1_deterministic_replay/diagnose_replay_preflight.py",
+      "exists": true,
+      "size_bytes": 5676,
+      "sha256": "dce07c8d889e0c25846153b68f92d12638387c0d91e2d1f4a221e32856a4a3d6"
+    },
+    "experiments/experiment1_deterministic_replay/diagnostics/preflight_diagnostic_1.log": {
+      "relative_path": "experiments/experiment1_deterministic_replay/diagnostics/preflight_diagnostic_1.log",
+      "exists": true,
+      "size_bytes": 17254,
+      "sha256": "f7dc07f73a013e9e2488ed7b58a4dab38c46fdf757e5371d7a7705130a182cce"
+    },
+    "experiments/experiment1_deterministic_replay/diagnostics/smoke5_execution.log": {
+      "relative_path": "experiments/experiment1_deterministic_replay/diagnostics/smoke5_execution.log",
+      "exists": true,
+      "size_bytes": 17112,
+      "sha256": "5774f5a175df51aac9cf51eba4ef1caa06b8360de6c32a7d5b846e99353991da"
+    },
+    "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke1_run_configuration.json": {
+      "relative_path": "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke1_run_configuration.json",
+      "exists": true,
+      "size_bytes": 4992,
+      "sha256": "275f65dcfe8ba3ce0c1af22940bc99d62e648a2bce20c65aad14a6675efecb53"
+    },
+    "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke4_created_files.json": {
+      "relative_path": "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke4_created_files.json",
+      "exists": true,
+      "size_bytes": 8509,
+      "sha256": "6e6dba45d80063179e2dbf85e37410fcd05dbf6d7b27931b1231e4ecf2f6c70d"
+    },
+    "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke4_openai_call_provenance.json": {
+      "relative_path": "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke4_openai_call_provenance.json",
+      "exists": true,
+      "size_bytes": 483,
+      "sha256": "6e972a922f05c1552754444690326f621e181861f5cb127240ad079009887d80"
+    },
+    "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke4_pairwise_ci_report_top10_3_three_methods.json": {
+      "relative_path": "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke4_pairwise_ci_report_top10_3_three_methods.json",
+      "exists": true,
+      "size_bytes": 955,
+      "sha256": "1d93d5f6b2c5aec624ffe338e64e887e32ece3ace910b0023aeb36955941f12b"
+    },
+    "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke4_processed_data/experiment1_deterministic_replay_smoke4_agentic_recommendations_top10_3.csv": {
+      "relative_path": "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke4_processed_data/experiment1_deterministic_replay_smoke4_agentic_recommendations_top10_3.csv",
+      "exists": true,
+      "size_bytes": 20418,
+      "sha256": "573fe03cd74754dca141d8668de6ffc380aab9b779870c25c04451c47d101b72"
+    },
+    "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke4_processed_data/experiment1_deterministic_replay_smoke4_agentic_recommendations_top10_3.json": {
+      "relative_path": "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke4_processed_data/experiment1_deterministic_replay_smoke4_agentic_recommendations_top10_3.json",
+      "exists": true,
+      "size_bytes": 25096,
+      "sha256": "2a751dd7769e30c20e2e7c397fc7ccd5fcdece329f624759a427776a466cbdfd"
+    },
+    "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke4_processed_data/experiment1_deterministic_replay_smoke4_agentic_top10_validation_report_3.json": {
+      "relative_path": "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke4_processed_data/experiment1_deterministic_replay_smoke4_agentic_top10_validation_report_3.json",
+      "exists": true,
+      "size_bytes": 663,
+      "sha256": "30b8968b41632cc3685c550e85982e7a9964cb35226a64b1ca56c69d939f0cd5"
+    },
+    "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke4_processed_data/experiment1_deterministic_replay_smoke4_bootstrap_ci_report_top10_3_three_methods.json": {
+      "relative_path": "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke4_processed_data/experiment1_deterministic_replay_smoke4_bootstrap_ci_report_top10_3_three_methods.json",
+      "exists": true,
+      "size_bytes": 2002,
+      "sha256": "d6cd1b657258242e58b037f09b2ecae26392ebb390566c88809b843def1c3fef"
+    },
+    "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke4_processed_data/experiment1_deterministic_replay_smoke4_candidate_pools_top10_3.json": {
+      "relative_path": "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke4_processed_data/experiment1_deterministic_replay_smoke4_candidate_pools_top10_3.json",
+      "exists": true,
+      "size_bytes": 604,
+      "sha256": "5acc82245b2776a764bcb289153c40755283a396b0098139bc206c6b3bdaadd8"
+    },
+    "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke4_processed_data/experiment1_deterministic_replay_smoke4_evaluation_base_table_top10_3.csv": {
+      "relative_path": "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke4_processed_data/experiment1_deterministic_replay_smoke4_evaluation_base_table_top10_3.csv",
+      "exists": true,
+      "size_bytes": 16891,
+      "sha256": "c3c4e7985fbd29b3338d837eafd2c8afa76219157ee6ccea38b97013b6584fb2"
+    },
+    "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke4_processed_data/experiment1_deterministic_replay_smoke4_evaluation_base_table_top10_3.json": {
+      "relative_path": "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke4_processed_data/experiment1_deterministic_replay_smoke4_evaluation_base_table_top10_3.json",
+      "exists": true,
+      "size_bytes": 24363,
+      "sha256": "34ace5fddd9951bb7b0c94ca9eccc472c4629d6447fbacb00fafaac96e84d864"
+    },
+    "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke4_processed_data/experiment1_deterministic_replay_smoke4_experiment_report_top10_3.md": {
+      "relative_path": "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke4_processed_data/experiment1_deterministic_replay_smoke4_experiment_report_top10_3.md",
+      "exists": true,
+      "size_bytes": 3320,
+      "sha256": "7172e5f16707c63231606ef6e5a3e5a1e3f6f06bcb108d405e61fa36558762e9"
+    },
+    "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke4_processed_data/experiment1_deterministic_replay_smoke4_hybrid_svd_agentic_recommendations_top10_3.csv": {
+      "relative_path": "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke4_processed_data/experiment1_deterministic_replay_smoke4_hybrid_svd_agentic_recommendations_top10_3.csv",
+      "exists": true,
+      "size_bytes": 16765,
+      "sha256": "eae1ac6275dca3393dbdc8a6ce2cfcf734f4957fd67304333c21415315242b85"
+    },
+    "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke4_processed_data/experiment1_deterministic_replay_smoke4_hybrid_svd_agentic_recommendations_top10_3.json": {
+      "relative_path": "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke4_processed_data/experiment1_deterministic_replay_smoke4_hybrid_svd_agentic_recommendations_top10_3.json",
+      "exists": true,
+      "size_bytes": 20192,
+      "sha256": "d0970080c8992a2057d809236e6ae846507544b8e767aab7a685dee6d1db7e00"
+    },
+    "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke4_processed_data/experiment1_deterministic_replay_smoke4_hybrid_svd_agentic_validation_report_top10_3.json": {
+      "relative_path": "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke4_processed_data/experiment1_deterministic_replay_smoke4_hybrid_svd_agentic_validation_report_top10_3.json",
+      "exists": true,
+      "size_bytes": 674,
+      "sha256": "1e1c8d5649b0368c01b0a0586da72becb20e533982fbf471843773fb786b3ad8"
+    },
+    "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke4_processed_data/experiment1_deterministic_replay_smoke4_metric_summary_top10_3_three_methods.csv": {
+      "relative_path": "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke4_processed_data/experiment1_deterministic_replay_smoke4_metric_summary_top10_3_three_methods.csv",
+      "exists": true,
+      "size_bytes": 523,
+      "sha256": "98eb487f8f073b24bd47d2faddff14229388c94999c71f45025727e9309a96c8"
+    },
+    "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke4_processed_data/experiment1_deterministic_replay_smoke4_metric_summary_top10_3_three_methods.json": {
+      "relative_path": "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke4_processed_data/experiment1_deterministic_replay_smoke4_metric_summary_top10_3_three_methods.json",
+      "exists": true,
+      "size_bytes": 825,
+      "sha256": "07778c6a8ad636122f617e741ed9f5abbc2f0a115bc5eefe8578f62d92448f0b"
+    },
+    "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke4_processed_data/experiment1_deterministic_replay_smoke4_per_user_metrics_top10_3_three_methods.csv": {
+      "relative_path": "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke4_processed_data/experiment1_deterministic_replay_smoke4_per_user_metrics_top10_3_three_methods.csv",
+      "exists": true,
+      "size_bytes": 681,
+      "sha256": "dc08bd81e5601ca009c6cdfddf101be4450eabb50b7efe63245f8df554d8acc2"
+    },
+    "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke4_processed_data/experiment1_deterministic_replay_smoke4_per_user_metrics_top10_3_three_methods.json": {
+      "relative_path": "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke4_processed_data/experiment1_deterministic_replay_smoke4_per_user_metrics_top10_3_three_methods.json",
+      "exists": true,
+      "size_bytes": 1650,
+      "sha256": "b0856a648d3e078179e704abcc275fc2b76c713f03c1956020d776d20b0ce19b"
+    },
+    "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke4_processed_data/experiment1_deterministic_replay_smoke4_svd_baseline_validation_report_top10_3.json": {
+      "relative_path": "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke4_processed_data/experiment1_deterministic_replay_smoke4_svd_baseline_validation_report_top10_3.json",
+      "exists": true,
+      "size_bytes": 874,
+      "sha256": "6cee5e4dd7623c7013e4960f5150e54ba78aec4748c155454ab890aa3c6924f8"
+    },
+    "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke4_processed_data/experiment1_deterministic_replay_smoke4_svd_recommendations_top10_3.csv": {
+      "relative_path": "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke4_processed_data/experiment1_deterministic_replay_smoke4_svd_recommendations_top10_3.csv",
+      "exists": true,
+      "size_bytes": 8760,
+      "sha256": "af677bb75d800b2029574af67c8486d7f9f96b5ecc9013454febdcb5e8f6e881"
+    },
+    "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke4_processed_data/experiment1_deterministic_replay_smoke4_svd_recommendations_top10_3.json": {
+      "relative_path": "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke4_processed_data/experiment1_deterministic_replay_smoke4_svd_recommendations_top10_3.json",
+      "exists": true,
+      "size_bytes": 11354,
+      "sha256": "99063be007d4dd319a8ac8e81eefc2d371a382db54513b709bdf63be07a7561a"
+    },
+    "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke4_processed_data/experiment1_deterministic_replay_smoke4_validation_report_top10_3_three_methods.json": {
+      "relative_path": "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke4_processed_data/experiment1_deterministic_replay_smoke4_validation_report_top10_3_three_methods.json",
+      "exists": true,
+      "size_bytes": 494,
+      "sha256": "2db1cea45418bf1b194d45076816109e4caf066c8ebbd53d9fcb7200c23082d0"
+    },
+    "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke4_provenance.json": {
+      "relative_path": "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke4_provenance.json",
+      "exists": true,
+      "size_bytes": 136352,
+      "sha256": "6812542c93bc3d0943cdd0029649ab93f6de3ca29359eea6c2706a12ee48ea6a"
+    },
+    "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke4_run_configuration.json": {
+      "relative_path": "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke4_run_configuration.json",
+      "exists": true,
+      "size_bytes": 6379,
+      "sha256": "d9c0345a78e9d00458fb2839528d5c1af6da145ef66872592c3b04209f0a136f"
+    },
+    "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke5_created_files.json": {
+      "relative_path": "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke5_created_files.json",
+      "exists": true,
+      "size_bytes": 8509,
+      "sha256": "20d0e3b539baa40ae3d21ddd82a65924ac1de7c379b79d517d2e398f425877a6"
+    },
+    "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke5_openai_call_provenance.json": {
+      "relative_path": "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke5_openai_call_provenance.json",
+      "exists": true,
+      "size_bytes": 483,
+      "sha256": "6e972a922f05c1552754444690326f621e181861f5cb127240ad079009887d80"
+    },
+    "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke5_pairwise_ci_report_top10_3_three_methods.json": {
+      "relative_path": "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke5_pairwise_ci_report_top10_3_three_methods.json",
+      "exists": true,
+      "size_bytes": 955,
+      "sha256": "1d93d5f6b2c5aec624ffe338e64e887e32ece3ace910b0023aeb36955941f12b"
+    },
+    "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke5_processed_data/experiment1_deterministic_replay_smoke5_agentic_recommendations_top10_3.csv": {
+      "relative_path": "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke5_processed_data/experiment1_deterministic_replay_smoke5_agentic_recommendations_top10_3.csv",
+      "exists": true,
+      "size_bytes": 20418,
+      "sha256": "573fe03cd74754dca141d8668de6ffc380aab9b779870c25c04451c47d101b72"
+    },
+    "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke5_processed_data/experiment1_deterministic_replay_smoke5_agentic_recommendations_top10_3.json": {
+      "relative_path": "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke5_processed_data/experiment1_deterministic_replay_smoke5_agentic_recommendations_top10_3.json",
+      "exists": true,
+      "size_bytes": 25096,
+      "sha256": "2a751dd7769e30c20e2e7c397fc7ccd5fcdece329f624759a427776a466cbdfd"
+    },
+    "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke5_processed_data/experiment1_deterministic_replay_smoke5_agentic_top10_validation_report_3.json": {
+      "relative_path": "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke5_processed_data/experiment1_deterministic_replay_smoke5_agentic_top10_validation_report_3.json",
+      "exists": true,
+      "size_bytes": 663,
+      "sha256": "30b8968b41632cc3685c550e85982e7a9964cb35226a64b1ca56c69d939f0cd5"
+    },
+    "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke5_processed_data/experiment1_deterministic_replay_smoke5_bootstrap_ci_report_top10_3_three_methods.json": {
+      "relative_path": "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke5_processed_data/experiment1_deterministic_replay_smoke5_bootstrap_ci_report_top10_3_three_methods.json",
+      "exists": true,
+      "size_bytes": 2002,
+      "sha256": "d6cd1b657258242e58b037f09b2ecae26392ebb390566c88809b843def1c3fef"
+    },
+    "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke5_processed_data/experiment1_deterministic_replay_smoke5_candidate_pools_top10_3.json": {
+      "relative_path": "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke5_processed_data/experiment1_deterministic_replay_smoke5_candidate_pools_top10_3.json",
+      "exists": true,
+      "size_bytes": 604,
+      "sha256": "5acc82245b2776a764bcb289153c40755283a396b0098139bc206c6b3bdaadd8"
+    },
+    "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke5_processed_data/experiment1_deterministic_replay_smoke5_evaluation_base_table_top10_3.csv": {
+      "relative_path": "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke5_processed_data/experiment1_deterministic_replay_smoke5_evaluation_base_table_top10_3.csv",
+      "exists": true,
+      "size_bytes": 16891,
+      "sha256": "c3c4e7985fbd29b3338d837eafd2c8afa76219157ee6ccea38b97013b6584fb2"
+    },
+    "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke5_processed_data/experiment1_deterministic_replay_smoke5_evaluation_base_table_top10_3.json": {
+      "relative_path": "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke5_processed_data/experiment1_deterministic_replay_smoke5_evaluation_base_table_top10_3.json",
+      "exists": true,
+      "size_bytes": 24363,
+      "sha256": "34ace5fddd9951bb7b0c94ca9eccc472c4629d6447fbacb00fafaac96e84d864"
+    },
+    "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke5_processed_data/experiment1_deterministic_replay_smoke5_experiment_report_top10_3.md": {
+      "relative_path": "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke5_processed_data/experiment1_deterministic_replay_smoke5_experiment_report_top10_3.md",
+      "exists": true,
+      "size_bytes": 3320,
+      "sha256": "7172e5f16707c63231606ef6e5a3e5a1e3f6f06bcb108d405e61fa36558762e9"
+    },
+    "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke5_processed_data/experiment1_deterministic_replay_smoke5_hybrid_svd_agentic_recommendations_top10_3.csv": {
+      "relative_path": "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke5_processed_data/experiment1_deterministic_replay_smoke5_hybrid_svd_agentic_recommendations_top10_3.csv",
+      "exists": true,
+      "size_bytes": 16765,
+      "sha256": "eae1ac6275dca3393dbdc8a6ce2cfcf734f4957fd67304333c21415315242b85"
+    },
+    "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke5_processed_data/experiment1_deterministic_replay_smoke5_hybrid_svd_agentic_recommendations_top10_3.json": {
+      "relative_path": "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke5_processed_data/experiment1_deterministic_replay_smoke5_hybrid_svd_agentic_recommendations_top10_3.json",
+      "exists": true,
+      "size_bytes": 20192,
+      "sha256": "d0970080c8992a2057d809236e6ae846507544b8e767aab7a685dee6d1db7e00"
+    },
+    "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke5_processed_data/experiment1_deterministic_replay_smoke5_hybrid_svd_agentic_validation_report_top10_3.json": {
+      "relative_path": "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke5_processed_data/experiment1_deterministic_replay_smoke5_hybrid_svd_agentic_validation_report_top10_3.json",
+      "exists": true,
+      "size_bytes": 674,
+      "sha256": "1e1c8d5649b0368c01b0a0586da72becb20e533982fbf471843773fb786b3ad8"
+    },
+    "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke5_processed_data/experiment1_deterministic_replay_smoke5_metric_summary_top10_3_three_methods.csv": {
+      "relative_path": "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke5_processed_data/experiment1_deterministic_replay_smoke5_metric_summary_top10_3_three_methods.csv",
+      "exists": true,
+      "size_bytes": 523,
+      "sha256": "98eb487f8f073b24bd47d2faddff14229388c94999c71f45025727e9309a96c8"
+    },
+    "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke5_processed_data/experiment1_deterministic_replay_smoke5_metric_summary_top10_3_three_methods.json": {
+      "relative_path": "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke5_processed_data/experiment1_deterministic_replay_smoke5_metric_summary_top10_3_three_methods.json",
+      "exists": true,
+      "size_bytes": 825,
+      "sha256": "07778c6a8ad636122f617e741ed9f5abbc2f0a115bc5eefe8578f62d92448f0b"
+    },
+    "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke5_processed_data/experiment1_deterministic_replay_smoke5_per_user_metrics_top10_3_three_methods.csv": {
+      "relative_path": "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke5_processed_data/experiment1_deterministic_replay_smoke5_per_user_metrics_top10_3_three_methods.csv",
+      "exists": true,
+      "size_bytes": 681,
+      "sha256": "dc08bd81e5601ca009c6cdfddf101be4450eabb50b7efe63245f8df554d8acc2"
+    },
+    "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke5_processed_data/experiment1_deterministic_replay_smoke5_per_user_metrics_top10_3_three_methods.json": {
+      "relative_path": "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke5_processed_data/experiment1_deterministic_replay_smoke5_per_user_metrics_top10_3_three_methods.json",
+      "exists": true,
+      "size_bytes": 1650,
+      "sha256": "b0856a648d3e078179e704abcc275fc2b76c713f03c1956020d776d20b0ce19b"
+    },
+    "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke5_processed_data/experiment1_deterministic_replay_smoke5_svd_baseline_validation_report_top10_3.json": {
+      "relative_path": "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke5_processed_data/experiment1_deterministic_replay_smoke5_svd_baseline_validation_report_top10_3.json",
+      "exists": true,
+      "size_bytes": 874,
+      "sha256": "6cee5e4dd7623c7013e4960f5150e54ba78aec4748c155454ab890aa3c6924f8"
+    },
+    "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke5_processed_data/experiment1_deterministic_replay_smoke5_svd_recommendations_top10_3.csv": {
+      "relative_path": "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke5_processed_data/experiment1_deterministic_replay_smoke5_svd_recommendations_top10_3.csv",
+      "exists": true,
+      "size_bytes": 8760,
+      "sha256": "af677bb75d800b2029574af67c8486d7f9f96b5ecc9013454febdcb5e8f6e881"
+    },
+    "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke5_processed_data/experiment1_deterministic_replay_smoke5_svd_recommendations_top10_3.json": {
+      "relative_path": "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke5_processed_data/experiment1_deterministic_replay_smoke5_svd_recommendations_top10_3.json",
+      "exists": true,
+      "size_bytes": 11354,
+      "sha256": "99063be007d4dd319a8ac8e81eefc2d371a382db54513b709bdf63be07a7561a"
+    },
+    "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke5_processed_data/experiment1_deterministic_replay_smoke5_validation_report_top10_3_three_methods.json": {
+      "relative_path": "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke5_processed_data/experiment1_deterministic_replay_smoke5_validation_report_top10_3_three_methods.json",
+      "exists": true,
+      "size_bytes": 494,
+      "sha256": "2db1cea45418bf1b194d45076816109e4caf066c8ebbd53d9fcb7200c23082d0"
+    },
+    "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke5_provenance.json": {
+      "relative_path": "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke5_provenance.json",
+      "exists": true,
+      "size_bytes": 162849,
+      "sha256": "cf992a7fb581e57d7c0b2bfcb551ca2df27f84ab80fbb54c22f7250411a732fe"
+    },
+    "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke5_run_configuration.json": {
+      "relative_path": "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke5_run_configuration.json",
+      "exists": true,
+      "size_bytes": 6379,
+      "sha256": "c8d2212700d734634e01bc3c685903639ce6689949e5749971e2c65ea768db2a"
+    },
+    "experiments/experiment1_deterministic_replay/input/experiment1_original_frozen_input_1000.json": {
+      "relative_path": "experiments/experiment1_deterministic_replay/input/experiment1_original_frozen_input_1000.json",
+      "exists": true,
+      "size_bytes": 5621254,
+      "sha256": "427da0d55124107551602b12dad82ee05b0eae1e296ee9f612aea8326080d08e"
+    },
+    "experiments/experiment1_deterministic_replay/run_experiment1_frozen_replay.py": {
+      "relative_path": "experiments/experiment1_deterministic_replay/run_experiment1_frozen_replay.py",
+      "exists": true,
+      "size_bytes": 62132,
+      "sha256": "95c1b93d14495535f84da5497931319d08d5877518f4cc87a649c11361263605"
+    },
+    "experiments/experiment1_deterministic_replay/tests/__pycache__/test_frozen_replay_runner.cpython-313-pytest-8.3.5.pyc": {
+      "relative_path": "experiments/experiment1_deterministic_replay/tests/__pycache__/test_frozen_replay_runner.cpython-313-pytest-8.3.5.pyc",
+      "exists": true,
+      "size_bytes": 8785,
+      "sha256": "2b57072f37af1ce3f99c8c78fbfb6185d08059c3c1e19e51930bf9fa8f566d7d"
+    },
+    "experiments/experiment1_deterministic_replay/tests/test_frozen_replay_runner.py": {
+      "relative_path": "experiments/experiment1_deterministic_replay/tests/test_frozen_replay_runner.py",
+      "exists": true,
+      "size_bytes": 6017,
+      "sha256": "55e0ed4c9aba8e74983f9a223bdd94c2913f81c6a59dce286b9fb13f7a4da982"
+    }
+  },
+  "directory_inventory_pre_provenance": {
+    "backend/app/data/processed/.gitkeep": {
+      "relative_path": "backend/app/data/processed/.gitkeep",
+      "exists": true,
+      "size_bytes": 1,
+      "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+    },
+    "backend/app/data/processed/agentic_recommendations.json": {
+      "relative_path": "backend/app/data/processed/agentic_recommendations.json",
+      "exists": true,
+      "size_bytes": 150056,
+      "sha256": "e09958cfcda7e559c2f488a29c516c11be8c9688b7f7bb93f1c21024f44e09f9"
+    },
+    "backend/app/data/processed/agentic_recommendations_top10_100.csv": {
+      "relative_path": "backend/app/data/processed/agentic_recommendations_top10_100.csv",
+      "exists": true,
+      "size_bytes": 661502,
+      "sha256": "fa95c4174f0244028e5d6bca033acd1de1c18c4592932dae10821bf1ef149b04"
+    },
+    "backend/app/data/processed/agentic_recommendations_top10_100.json": {
+      "relative_path": "backend/app/data/processed/agentic_recommendations_top10_100.json",
+      "exists": true,
+      "size_bytes": 822371,
+      "sha256": "3fb643d01e8d01e2e99ea2890162db60480bec60ceb3bb8d46180f4b403c6709"
+    },
+    "backend/app/data/processed/agentic_recommendations_top10_1000.csv": {
+      "relative_path": "backend/app/data/processed/agentic_recommendations_top10_1000.csv",
+      "exists": true,
+      "size_bytes": 6619486,
+      "sha256": "9f4bd6e4d5c3c45d08dfc0f0739c68d469f2f1e0f4525c92027b8b78a2b2712b"
+    },
+    "backend/app/data/processed/agentic_recommendations_top10_1000.json": {
+      "relative_path": "backend/app/data/processed/agentic_recommendations_top10_1000.json",
+      "exists": true,
+      "size_bytes": 8231967,
+      "sha256": "426f71f0c98af9c256bab4b8c9610971aef20621deb93c1a1f26db1fabbd15e0"
+    },
+    "backend/app/data/processed/agentic_top10_validation_report_100.json": {
+      "relative_path": "backend/app/data/processed/agentic_top10_validation_report_100.json",
+      "exists": true,
+      "size_bytes": 818,
+      "sha256": "98585e8033b81099c4f1247f91b87774ba303dbfe660c3852982c73ad9dcba48"
+    },
+    "backend/app/data/processed/agentic_top10_validation_report_1000.json": {
+      "relative_path": "backend/app/data/processed/agentic_top10_validation_report_1000.json",
+      "exists": true,
+      "size_bytes": 823,
+      "sha256": "94a618075cc36ac67296f33d700f6cabdeb1f9716ce37bec0d290425218234ad"
+    },
+    "backend/app/data/processed/agentic_trace.json": {
+      "relative_path": "backend/app/data/processed/agentic_trace.json",
+      "exists": true,
+      "size_bytes": 149614,
+      "sha256": "356bce1b0fe7607749793b515b460a3c2846615d56f5d2b298508fe4534d403b"
+    },
+    "backend/app/data/processed/bootstrap_ci_report_top10_1000.json": {
+      "relative_path": "backend/app/data/processed/bootstrap_ci_report_top10_1000.json",
+      "exists": true,
+      "size_bytes": 1216,
+      "sha256": "60a363ce3693c2c2893796b4622dfdf77c67d4d616d15178134d1ff85c4979eb"
+    },
+    "backend/app/data/processed/bootstrap_ci_report_top10_1000_three_methods.json": {
+      "relative_path": "backend/app/data/processed/bootstrap_ci_report_top10_1000_three_methods.json",
+      "exists": true,
+      "size_bytes": 2081,
+      "sha256": "05149529c8c5f5324dfd31ecb448025cc8534215257e2a67fbb6dc459f614639"
+    },
+    "backend/app/data/processed/candidate_pool_validation_report_svd_top10_100.json": {
+      "relative_path": "backend/app/data/processed/candidate_pool_validation_report_svd_top10_100.json",
+      "exists": true,
+      "size_bytes": 1149,
+      "sha256": "a40c47e682caf92c83884e38e229cf3a47b8725364e4a564ad6a0d733ae900c9"
+    },
+    "backend/app/data/processed/candidate_pool_validation_report_svd_top10_1000.json": {
+      "relative_path": "backend/app/data/processed/candidate_pool_validation_report_svd_top10_1000.json",
+      "exists": true,
+      "size_bytes": 1155,
+      "sha256": "cccd17fac2f6b8eb69b7260c2b413016311ac9f96b3c034df4f769c289e57310"
+    },
+    "backend/app/data/processed/cf_recommendations.json": {
+      "relative_path": "backend/app/data/processed/cf_recommendations.json",
+      "exists": true,
+      "size_bytes": 57704,
+      "sha256": "69922f46d8aac5d1c33faac3c32fe177ce33c6f599b8c1fb4c7e8cbfafcc6e4d"
+    },
+    "backend/app/data/processed/diagnostic_report_svd_vs_agentic_1000.md": {
+      "relative_path": "backend/app/data/processed/diagnostic_report_svd_vs_agentic_1000.md",
+      "exists": true,
+      "size_bytes": 11997,
+      "sha256": "926f485ab3a261f449b14654a45e9e74f8d39c28fc27a1ebe41518fa4dc1db0c"
+    },
+    "backend/app/data/processed/evaluation_base_table_svd_top10_100.csv": {
+      "relative_path": "backend/app/data/processed/evaluation_base_table_svd_top10_100.csv",
+      "exists": true,
+      "size_bytes": 294336,
+      "sha256": "487b309fcc6b8033a063a74eb1c7225733eb580b831741718fbe7a402bd082cb"
+    },
+    "backend/app/data/processed/evaluation_base_table_svd_top10_100.json": {
+      "relative_path": "backend/app/data/processed/evaluation_base_table_svd_top10_100.json",
+      "exists": true,
+      "size_bytes": 547556,
+      "sha256": "9215fb1ed8d73744861988468d0c7053a9ff87a8d5385b80d0f0cedf7b96ebff"
+    },
+    "backend/app/data/processed/evaluation_base_table_svd_top10_1000.csv": {
+      "relative_path": "backend/app/data/processed/evaluation_base_table_svd_top10_1000.csv",
+      "exists": true,
+      "size_bytes": 3032767,
+      "sha256": "9a15e1b2305cbae1dd91275d49faf5955f39fd9ce9f3d793e870c96f9c0f7805"
+    },
+    "backend/app/data/processed/evaluation_base_table_svd_top10_1000.json": {
+      "relative_path": "backend/app/data/processed/evaluation_base_table_svd_top10_1000.json",
+      "exists": true,
+      "size_bytes": 5621254,
+      "sha256": "427da0d55124107551602b12dad82ee05b0eae1e296ee9f612aea8326080d08e"
+    },
+    "backend/app/data/processed/evaluation_base_table_svd_top10_all_valid.csv": {
+      "relative_path": "backend/app/data/processed/evaluation_base_table_svd_top10_all_valid.csv",
+      "exists": true,
+      "size_bytes": 1556270188,
+      "sha256": "ab6672ab1e24390ffc5f067fac5013941de08113b6d8e07558818e8b38b1ffcd"
+    },
+    "backend/app/data/processed/evaluation_base_table_svd_top10_all_valid.json": {
+      "relative_path": "backend/app/data/processed/evaluation_base_table_svd_top10_all_valid.json",
+      "exists": true,
+      "size_bytes": 2545417444,
+      "sha256": "7fec0e9e572b01ae45a0bbcf340ea92bedbfcaffbe7ee81333320f5df3bca44f"
+    },
+    "backend/app/data/processed/evaluation_base_validation_report_svd_top10_all_valid.json": {
+      "relative_path": "backend/app/data/processed/evaluation_base_validation_report_svd_top10_all_valid.json",
+      "exists": true,
+      "size_bytes": 1828,
+      "sha256": "c2728137466a7231060b30e58088e4ecf5578f5e827d3aaffaab9b41c23855b9"
+    },
+    "backend/app/data/processed/experiment_state.json": {
+      "relative_path": "backend/app/data/processed/experiment_state.json",
+      "exists": true,
+      "size_bytes": 1430,
+      "sha256": "c8d870c9a9506ad808557d2f80e79bac6df82ab13f564a1e8b38125fb80d82ba"
+    },
+    "backend/app/data/processed/experiment_summary.json": {
+      "relative_path": "backend/app/data/processed/experiment_summary.json",
+      "exists": true,
+      "size_bytes": 4746,
+      "sha256": "20f059e57000a115918e2fb6069f37437bb409cae11b89e6a161bdc8d3a3bb27"
+    },
+    "backend/app/data/processed/explainability/seed99_case_studies.md": {
+      "relative_path": "backend/app/data/processed/explainability/seed99_case_studies.md",
+      "exists": true,
+      "size_bytes": 63100,
+      "sha256": "a1af8fe23fb28be37e6960057aa211e3ae917827a98e2585469dedf1ec1305e6"
+    },
+    "backend/app/data/processed/explainability/seed99_explainability_audit.json": {
+      "relative_path": "backend/app/data/processed/explainability/seed99_explainability_audit.json",
+      "exists": true,
+      "size_bytes": 14480,
+      "sha256": "95ae447a6ff4e5adb52827c05bd8b65f0f50a0d2bc3aa389fb4515159cd14c87"
+    },
+    "backend/app/data/processed/explainability/seed99_explainability_examples.csv": {
+      "relative_path": "backend/app/data/processed/explainability/seed99_explainability_examples.csv",
+      "exists": true,
+      "size_bytes": 1537142,
+      "sha256": "3a48d68ab3dba430820706cd3946a63e50c7da5c920f8824b8358657837687cc"
+    },
+    "backend/app/data/processed/explainability/seed99_explainability_summary.json": {
+      "relative_path": "backend/app/data/processed/explainability/seed99_explainability_summary.json",
+      "exists": true,
+      "size_bytes": 1302,
+      "sha256": "83cafeadea974b113fad00b658deaf2d59be28977338a736d565c0d305dc75ea"
+    },
+    "backend/app/data/processed/explainability/seed99_full_retry_case_studies.md": {
+      "relative_path": "backend/app/data/processed/explainability/seed99_full_retry_case_studies.md",
+      "exists": true,
+      "size_bytes": 61799,
+      "sha256": "c63052a1fc99246de29de9f6e53d2a3d104011e323a07cabefaa1d9d7151aed8"
+    },
+    "backend/app/data/processed/explainability/seed99_full_retry_explainability_audit.json": {
+      "relative_path": "backend/app/data/processed/explainability/seed99_full_retry_explainability_audit.json",
+      "exists": true,
+      "size_bytes": 18165,
+      "sha256": "2e64b3f68f469d297a13d868812e10ef60adae7c160bcabb928df9c301c6f92d"
+    },
+    "backend/app/data/processed/explainability/seed99_full_retry_explainability_examples.csv": {
+      "relative_path": "backend/app/data/processed/explainability/seed99_full_retry_explainability_examples.csv",
+      "exists": true,
+      "size_bytes": 15153318,
+      "sha256": "529db7d42e94f09f0a904f1b125a584fd3003d02e148e3cd48ccf7d8b23fc9f3"
+    },
+    "backend/app/data/processed/explainability/seed99_full_retry_explainability_summary.json": {
+      "relative_path": "backend/app/data/processed/explainability/seed99_full_retry_explainability_summary.json",
+      "exists": true,
+      "size_bytes": 1320,
+      "sha256": "d44d25a607ef7eda40cb5aff611c686fc9bcc5cee765c71c4361714ab33de2d0"
+    },
+    "backend/app/data/processed/explainability/seed99_full_retry_rank_shift_analysis.csv": {
+      "relative_path": "backend/app/data/processed/explainability/seed99_full_retry_rank_shift_analysis.csv",
+      "exists": true,
+      "size_bytes": 6971655,
+      "sha256": "856ed17b449792f861ee62f43685f4aaab4d31dc48a3d8c2c412672beb448094"
+    },
+    "backend/app/data/processed/explainability/seed99_perf_check_case_studies.md": {
+      "relative_path": "backend/app/data/processed/explainability/seed99_perf_check_case_studies.md",
+      "exists": true,
+      "size_bytes": 63100,
+      "sha256": "a1af8fe23fb28be37e6960057aa211e3ae917827a98e2585469dedf1ec1305e6"
+    },
+    "backend/app/data/processed/explainability/seed99_perf_check_explainability_audit.json": {
+      "relative_path": "backend/app/data/processed/explainability/seed99_perf_check_explainability_audit.json",
+      "exists": true,
+      "size_bytes": 14491,
+      "sha256": "e8a864bc77a8c684a01c0fa7623e3c641ba50c1e468423947908b0772e5acf8f"
+    },
+    "backend/app/data/processed/explainability/seed99_perf_check_explainability_examples.csv": {
+      "relative_path": "backend/app/data/processed/explainability/seed99_perf_check_explainability_examples.csv",
+      "exists": true,
+      "size_bytes": 1537142,
+      "sha256": "3a48d68ab3dba430820706cd3946a63e50c7da5c920f8824b8358657837687cc"
+    },
+    "backend/app/data/processed/explainability/seed99_perf_check_explainability_summary.json": {
+      "relative_path": "backend/app/data/processed/explainability/seed99_perf_check_explainability_summary.json",
+      "exists": true,
+      "size_bytes": 1313,
+      "sha256": "9bb1a5cb059546bf74a758345982914c6cf13006dd6532302cb4fde7ca1ec076"
+    },
+    "backend/app/data/processed/explainability/seed99_perf_check_rank_shift_analysis.csv": {
+      "relative_path": "backend/app/data/processed/explainability/seed99_perf_check_rank_shift_analysis.csv",
+      "exists": true,
+      "size_bytes": 709861,
+      "sha256": "5376a7e051c2eccbcd4156e086b37d7fcfdb1f65cdae62dcae3a119591e09244"
+    },
+    "backend/app/data/processed/explainability/seed99_rank_shift_analysis.csv": {
+      "relative_path": "backend/app/data/processed/explainability/seed99_rank_shift_analysis.csv",
+      "exists": true,
+      "size_bytes": 709861,
+      "sha256": "5376a7e051c2eccbcd4156e086b37d7fcfdb1f65cdae62dcae3a119591e09244"
+    },
+    "backend/app/data/processed/feedback_state.json": {
+      "relative_path": "backend/app/data/processed/feedback_state.json",
+      "exists": true,
+      "size_bytes": 302,
+      "sha256": "12ba96bbc7342701ed27fef112a2cec8f9402a2df9c45d5f0473df4c999de7c1"
+    },
+    "backend/app/data/processed/final_experiment_report_svd_agentic_hybrid.md": {
+      "relative_path": "backend/app/data/processed/final_experiment_report_svd_agentic_hybrid.md",
+      "exists": true,
+      "size_bytes": 9234,
+      "sha256": "ae932fad1afec5a6c768cfe078530b30ce0006b285e59f77f0b1063307ba6210"
+    },
+    "backend/app/data/processed/final_two_run_comparison_report.md": {
+      "relative_path": "backend/app/data/processed/final_two_run_comparison_report.md",
+      "exists": true,
+      "size_bytes": 3551,
+      "sha256": "6b513c810e8c73727eb12a8df36706fea12317d5c7c28e2840f2d34c2bb9822f"
+    },
+    "backend/app/data/processed/hybrid_result_interpretation_check.md": {
+      "relative_path": "backend/app/data/processed/hybrid_result_interpretation_check.md",
+      "exists": true,
+      "size_bytes": 5108,
+      "sha256": "a758b8ec6dd38e4e0e3103912999f2ebf379549c485e8d762704bddaeee4d0fd"
+    },
+    "backend/app/data/processed/hybrid_svd_agentic_audit_report_top10_1000.md": {
+      "relative_path": "backend/app/data/processed/hybrid_svd_agentic_audit_report_top10_1000.md",
+      "exists": true,
+      "size_bytes": 3349,
+      "sha256": "4c83364f73882676bc48e1f77f9b100d1c03de92f60f9fbecfcf11ee3315268d"
+    },
+    "backend/app/data/processed/hybrid_svd_agentic_recommendations_top10_1000.csv": {
+      "relative_path": "backend/app/data/processed/hybrid_svd_agentic_recommendations_top10_1000.csv",
+      "exists": true,
+      "size_bytes": 5510052,
+      "sha256": "0feef112c5bbaf2801f52dce7d04da4378be844839775d41e97602855472e3f1"
+    },
+    "backend/app/data/processed/hybrid_svd_agentic_recommendations_top10_1000.json": {
+      "relative_path": "backend/app/data/processed/hybrid_svd_agentic_recommendations_top10_1000.json",
+      "exists": true,
+      "size_bytes": 6733807,
+      "sha256": "253c1984e6b06e61b8e5de4a18fdee7999d07eb93ea089dec659d74c66619a05"
+    },
+    "backend/app/data/processed/hybrid_svd_agentic_validation_report_top10_1000.json": {
+      "relative_path": "backend/app/data/processed/hybrid_svd_agentic_validation_report_top10_1000.json",
+      "exists": true,
+      "size_bytes": 832,
+      "sha256": "a474f114e7097923b340b2b5efd10862263d4bdb1d52327dbcd088ea93143714"
+    },
+    "backend/app/data/processed/interactions_sample.csv": {
+      "relative_path": "backend/app/data/processed/interactions_sample.csv",
+      "exists": true,
+      "size_bytes": 722580,
+      "sha256": "4e941a0c0ed33e14492014dd492ca531ea66e388b44c6efc73b4d80085298148"
+    },
+    "backend/app/data/processed/metric_audit_report_top10_100.md": {
+      "relative_path": "backend/app/data/processed/metric_audit_report_top10_100.md",
+      "exists": true,
+      "size_bytes": 6508,
+      "sha256": "69e2dc5e36ef708c0e54f85782a04cba4736618ffe4959a973e6b79543d17de6"
+    },
+    "backend/app/data/processed/metric_summary_top10_100.csv": {
+      "relative_path": "backend/app/data/processed/metric_summary_top10_100.csv",
+      "exists": true,
+      "size_bytes": 427,
+      "sha256": "5ff0eebc0cc6b89cd44d281b58c6d61cb1822b6fc413c8d5d5f45ca66d6dd086"
+    },
+    "backend/app/data/processed/metric_summary_top10_100.json": {
+      "relative_path": "backend/app/data/processed/metric_summary_top10_100.json",
+      "exists": true,
+      "size_bytes": 584,
+      "sha256": "e3e8621fa63c58319563da3975a672f4848263ab7630c92e81f5f95c16442db2"
+    },
+    "backend/app/data/processed/metric_summary_top10_1000.csv": {
+      "relative_path": "backend/app/data/processed/metric_summary_top10_1000.csv",
+      "exists": true,
+      "size_bytes": 462,
+      "sha256": "cc48072ff6441642706b5f694d6725130353ac2984c19b60ec1336b68176a8ad"
+    },
+    "backend/app/data/processed/metric_summary_top10_1000.json": {
+      "relative_path": "backend/app/data/processed/metric_summary_top10_1000.json",
+      "exists": true,
+      "size_bytes": 628,
+      "sha256": "b266c40fa23f45d053f491f5eecfc1c2560e90da5ef3fa4e12b14dd0b1b4892e"
+    },
+    "backend/app/data/processed/metric_summary_top10_1000_three_methods.csv": {
+      "relative_path": "backend/app/data/processed/metric_summary_top10_1000_three_methods.csv",
+      "exists": true,
+      "size_bytes": 533,
+      "sha256": "658f9c3492e606e92b07b4c445c7280f4212d2a7e542e08a28d1f6497c972005"
+    },
+    "backend/app/data/processed/metric_summary_top10_1000_three_methods.json": {
+      "relative_path": "backend/app/data/processed/metric_summary_top10_1000_three_methods.json",
+      "exists": true,
+      "size_bytes": 835,
+      "sha256": "8e0a2a05dfa0622832414e001f0051d554760ae7327d6f766ea2e543f502eba5"
+    },
+    "backend/app/data/processed/metric_summary_top10_1000_with_ci.json": {
+      "relative_path": "backend/app/data/processed/metric_summary_top10_1000_with_ci.json",
+      "exists": true,
+      "size_bytes": 1789,
+      "sha256": "f95e8939ed0e76d13beaadb87dc6fd8ad4a279d096e4caeed069eca982f1dd23"
+    },
+    "backend/app/data/processed/metric_validation_report_top10_100.json": {
+      "relative_path": "backend/app/data/processed/metric_validation_report_top10_100.json",
+      "exists": true,
+      "size_bytes": 1988,
+      "sha256": "1fc34fc9a972643ad4ad392f49708cdda11ab549fd3964a24093e26afabd1ec7"
+    },
+    "backend/app/data/processed/metric_validation_report_top10_1000.json": {
+      "relative_path": "backend/app/data/processed/metric_validation_report_top10_1000.json",
+      "exists": true,
+      "size_bytes": 1995,
+      "sha256": "d63dcbf3e4b01bbe2d4a97a560ff39f69f7fdd98a2a0e3a157699cd7075aa057"
+    },
+    "backend/app/data/processed/metrics.json": {
+      "relative_path": "backend/app/data/processed/metrics.json",
+      "exists": true,
+      "size_bytes": 676,
+      "sha256": "d6267368bb5e43d45d599b93c568ede9775f9fc833020e42ad5dd89e401b5fbe"
+    },
+    "backend/app/data/processed/per_user_metrics_top10_100.csv": {
+      "relative_path": "backend/app/data/processed/per_user_metrics_top10_100.csv",
+      "exists": true,
+      "size_bytes": 11590,
+      "sha256": "e95c0c3cde4ce86bf770d13f91c7133f8a62a59a9e9b786f389539f94d6806ed"
+    },
+    "backend/app/data/processed/per_user_metrics_top10_100.json": {
+      "relative_path": "backend/app/data/processed/per_user_metrics_top10_100.json",
+      "exists": true,
+      "size_bytes": 41161,
+      "sha256": "2a37bf854098b18488591b17217e160abf1ac8e7c92e5e39a3277adaea16a914"
+    },
+    "backend/app/data/processed/per_user_metrics_top10_1000.csv": {
+      "relative_path": "backend/app/data/processed/per_user_metrics_top10_1000.csv",
+      "exists": true,
+      "size_bytes": 114247,
+      "sha256": "3acbcd84fef646cbba5c96813e2778854c6dc153f0471e239aa038ae84414138"
+    },
+    "backend/app/data/processed/per_user_metrics_top10_1000.json": {
+      "relative_path": "backend/app/data/processed/per_user_metrics_top10_1000.json",
+      "exists": true,
+      "size_bytes": 411412,
+      "sha256": "91c155d9a9ad27870ea47b156cd18d3ac9010dcc68a56839b4aff9a0e19f1c4e"
+    },
+    "backend/app/data/processed/per_user_metrics_top10_1000_three_methods.csv": {
+      "relative_path": "backend/app/data/processed/per_user_metrics_top10_1000_three_methods.csv",
+      "exists": true,
+      "size_bytes": 132935,
+      "sha256": "7f5055ae3b61bc3443092d57b65b624e5b941a0384f7993cfbd32013f769b466"
+    },
+    "backend/app/data/processed/per_user_metrics_top10_1000_three_methods.json": {
+      "relative_path": "backend/app/data/processed/per_user_metrics_top10_1000_three_methods.json",
+      "exists": true,
+      "size_bytes": 549030,
+      "sha256": "06447ba3b21bd2dc01f302a3673f7806742dc9fdc26d34bbeb1568801b267b61"
+    },
+    "backend/app/data/processed/processed_data_validation_report.json": {
+      "relative_path": "backend/app/data/processed/processed_data_validation_report.json",
+      "exists": true,
+      "size_bytes": 609,
+      "sha256": "34bd5481f4cabbbb5ba16b387c08bce24e300d76d1ae26307609cd0b1b80a552"
+    },
+    "backend/app/data/processed/processed_interactions_with_articles.csv": {
+      "relative_path": "backend/app/data/processed/processed_interactions_with_articles.csv",
+      "exists": true,
+      "size_bytes": 10919171417,
+      "sha256": "20f2432c171020766ff7ae101c7bba770091d2d79ccb32286b7b33fd262194c9"
+    },
+    "backend/app/data/processed/processed_interactions_with_articles.json": {
+      "relative_path": "backend/app/data/processed/processed_interactions_with_articles.json",
+      "exists": true,
+      "size_bytes": 22404862722,
+      "sha256": "9362a72bee1ef64fca450d3645c0a4d7e015d9abe2a382b6126ce6320269b931"
+    },
+    "backend/app/data/processed/seed99_robustness_agentic_recommendations_top10_1000.csv": {
+      "relative_path": "backend/app/data/processed/seed99_robustness_agentic_recommendations_top10_1000.csv",
+      "exists": true,
+      "size_bytes": 6614631,
+      "sha256": "88b5bbad548effd41c78784d1d81d3ebf153780ffd20fd5997cbd28658b98cf7"
+    },
+    "backend/app/data/processed/seed99_robustness_agentic_recommendations_top10_1000.json": {
+      "relative_path": "backend/app/data/processed/seed99_robustness_agentic_recommendations_top10_1000.json",
+      "exists": true,
+      "size_bytes": 8225637,
+      "sha256": "a55413f0ee136c9e25119d964bf47e71f94e4bdcda510bb75cfb859a002c523f"
+    },
+    "backend/app/data/processed/seed99_robustness_agentic_top10_validation_report_1000.json": {
+      "relative_path": "backend/app/data/processed/seed99_robustness_agentic_top10_validation_report_1000.json",
+      "exists": true,
+      "size_bytes": 823,
+      "sha256": "b5beeff2087bcc3a4d27ff16aceafe119a6d436a749825e065fd36d0cd67b3ce"
+    },
+    "backend/app/data/processed/seed99_robustness_bootstrap_ci_report_top10_1000_three_methods.json": {
+      "relative_path": "backend/app/data/processed/seed99_robustness_bootstrap_ci_report_top10_1000_three_methods.json",
+      "exists": true,
+      "size_bytes": 2068,
+      "sha256": "45790b0f209c8b9a3ff984ce38a40fd730297c0fdc589c1d21e2d71a98b3a8a2"
+    },
+    "backend/app/data/processed/seed99_robustness_candidate_pools_top10_1000.json": {
+      "relative_path": "backend/app/data/processed/seed99_robustness_candidate_pools_top10_1000.json",
+      "exists": true,
+      "size_bytes": 5660807,
+      "sha256": "569228a7001865470df34c3c5fed39025a4cd10ed0b7d532c34eafe453c02be7"
+    },
+    "backend/app/data/processed/seed99_robustness_evaluation_base_table_top10_1000.csv": {
+      "relative_path": "backend/app/data/processed/seed99_robustness_evaluation_base_table_top10_1000.csv",
+      "exists": true,
+      "size_bytes": 3061306,
+      "sha256": "5c3f77fe5bc79b46b3d8f7d50e5a95526b5816653c8551a6987ede9ac2ffaf99"
+    },
+    "backend/app/data/processed/seed99_robustness_evaluation_base_table_top10_1000.json": {
+      "relative_path": "backend/app/data/processed/seed99_robustness_evaluation_base_table_top10_1000.json",
+      "exists": true,
+      "size_bytes": 5660807,
+      "sha256": "569228a7001865470df34c3c5fed39025a4cd10ed0b7d532c34eafe453c02be7"
+    },
+    "backend/app/data/processed/seed99_robustness_experiment_report_top10_1000.md": {
+      "relative_path": "backend/app/data/processed/seed99_robustness_experiment_report_top10_1000.md",
+      "exists": true,
+      "size_bytes": 5365,
+      "sha256": "c524adfead324ef04e6c7f0742380b4ea95ca50c7734ea7306f2b96ae0f268dd"
+    },
+    "backend/app/data/processed/seed99_robustness_hybrid_svd_agentic_recommendations_top10_1000.csv": {
+      "relative_path": "backend/app/data/processed/seed99_robustness_hybrid_svd_agentic_recommendations_top10_1000.csv",
+      "exists": true,
+      "size_bytes": 5509015,
+      "sha256": "b7bbfb949fc069b80ce2d17ea24f9168d738724055087c9c0e770f19e338dbbb"
+    },
+    "backend/app/data/processed/seed99_robustness_hybrid_svd_agentic_recommendations_top10_1000.json": {
+      "relative_path": "backend/app/data/processed/seed99_robustness_hybrid_svd_agentic_recommendations_top10_1000.json",
+      "exists": true,
+      "size_bytes": 6732770,
+      "sha256": "f4401e91e3f24bc6420e5073c19d02c6b060ee30a12b86491b93e7e2cfe1381c"
+    },
+    "backend/app/data/processed/seed99_robustness_hybrid_svd_agentic_validation_report_top10_1000.json": {
+      "relative_path": "backend/app/data/processed/seed99_robustness_hybrid_svd_agentic_validation_report_top10_1000.json",
+      "exists": true,
+      "size_bytes": 832,
+      "sha256": "cc36fb210f59e5badbab3e43742e1411cdd8ce1663771f89ddc42afb5706d249"
+    },
+    "backend/app/data/processed/seed99_robustness_metric_summary_top10_1000_three_methods.csv": {
+      "relative_path": "backend/app/data/processed/seed99_robustness_metric_summary_top10_1000_three_methods.csv",
+      "exists": true,
+      "size_bytes": 537,
+      "sha256": "a30bfce082b80ab7282ee4bbe4656a9c01881d83abecc1aac227540ca208177d"
+    },
+    "backend/app/data/processed/seed99_robustness_metric_summary_top10_1000_three_methods.json": {
+      "relative_path": "backend/app/data/processed/seed99_robustness_metric_summary_top10_1000_three_methods.json",
+      "exists": true,
+      "size_bytes": 839,
+      "sha256": "8525f046bb2ea6498c69b71e55a6079e72d55910639c8fb2bb7a9b91dbd0baa6"
+    },
+    "backend/app/data/processed/seed99_robustness_per_user_metrics_top10_1000_three_methods.csv": {
+      "relative_path": "backend/app/data/processed/seed99_robustness_per_user_metrics_top10_1000_three_methods.csv",
+      "exists": true,
+      "size_bytes": 133130,
+      "sha256": "ccb512be87340f7d03fba2bce4850c9b0e29c51307696943b4bed836d34db636"
+    },
+    "backend/app/data/processed/seed99_robustness_per_user_metrics_top10_1000_three_methods.json": {
+      "relative_path": "backend/app/data/processed/seed99_robustness_per_user_metrics_top10_1000_three_methods.json",
+      "exists": true,
+      "size_bytes": 549057,
+      "sha256": "1a6ad07e3185c9bd196e57ba76150cafff2257fa727b2392198336459fe69f1b"
+    },
+    "backend/app/data/processed/seed99_robustness_svd_baseline_validation_report_top10_1000.json": {
+      "relative_path": "backend/app/data/processed/seed99_robustness_svd_baseline_validation_report_top10_1000.json",
+      "exists": true,
+      "size_bytes": 1034,
+      "sha256": "8cb9d9c3e25b219fb44bae363d1580185a1d66603245d1a0e7379f6882cb5294"
+    },
+    "backend/app/data/processed/seed99_robustness_svd_recommendations_top10_1000.csv": {
+      "relative_path": "backend/app/data/processed/seed99_robustness_svd_recommendations_top10_1000.csv",
+      "exists": true,
+      "size_bytes": 2837348,
+      "sha256": "83428bc1230abc267fadcc890cb4ddb20271145d06ec6e0fd397b8e6b00cd4ed"
+    },
+    "backend/app/data/processed/seed99_robustness_svd_recommendations_top10_1000.json": {
+      "relative_path": "backend/app/data/processed/seed99_robustness_svd_recommendations_top10_1000.json",
+      "exists": true,
+      "size_bytes": 3779116,
+      "sha256": "c77a3d196b0112498ab6770f10dd680a54cce59985bf0bacebd9954c56bfe80b"
+    },
+    "backend/app/data/processed/seed99_robustness_validation_report_top10_1000_three_methods.json": {
+      "relative_path": "backend/app/data/processed/seed99_robustness_validation_report_top10_1000_three_methods.json",
+      "exists": true,
+      "size_bytes": 524,
+      "sha256": "631bc55c558eb4046e667d4749927d2c726ea3867c3e1bb45e60305d62d41ca4"
+    },
+    "backend/app/data/processed/svd_baseline_validation_report_top10_100.json": {
+      "relative_path": "backend/app/data/processed/svd_baseline_validation_report_top10_100.json",
+      "exists": true,
+      "size_bytes": 1030,
+      "sha256": "9ee2579159e480d2eaef53c6d44bbf70cfe9d699cfd09e31a4caf280a0e2f79a"
+    },
+    "backend/app/data/processed/svd_baseline_validation_report_top10_1000.json": {
+      "relative_path": "backend/app/data/processed/svd_baseline_validation_report_top10_1000.json",
+      "exists": true,
+      "size_bytes": 1034,
+      "sha256": "3f7c0e8d02f2964ad5a7e862621311c0d5a7587c7610c285c5efd826aba72a98"
+    },
+    "backend/app/data/processed/svd_recommendations_top10_100.csv": {
+      "relative_path": "backend/app/data/processed/svd_recommendations_top10_100.csv",
+      "exists": true,
+      "size_bytes": 283795,
+      "sha256": "ef114444ef643af35a01d710f7c3ada811bbf18b640ee44c11f52629cc063466"
+    },
+    "backend/app/data/processed/svd_recommendations_top10_100.json": {
+      "relative_path": "backend/app/data/processed/svd_recommendations_top10_100.json",
+      "exists": true,
+      "size_bytes": 377763,
+      "sha256": "e3e6159fa7fd7e6ef0aa7f3036549427ab86667a378295f21f0da10de0bb28fd"
+    },
+    "backend/app/data/processed/svd_recommendations_top10_1000.csv": {
+      "relative_path": "backend/app/data/processed/svd_recommendations_top10_1000.csv",
+      "exists": true,
+      "size_bytes": 2837911,
+      "sha256": "f21a61e6d5389c5d003fad2bcf4a0883cba70f90db8f833abce47193582fc667"
+    },
+    "backend/app/data/processed/svd_recommendations_top10_1000.json": {
+      "relative_path": "backend/app/data/processed/svd_recommendations_top10_1000.json",
+      "exists": true,
+      "size_bytes": 3779679,
+      "sha256": "d6634d92313fd60be17ada476f8f7875c9ae6517c3bbfca3ff9f6cea2f35c30a"
+    },
+    "backend/app/data/processed/svd_top10_experiment_interactions.json": {
+      "relative_path": "backend/app/data/processed/svd_top10_experiment_interactions.json",
+      "exists": true,
+      "size_bytes": 722580,
+      "sha256": "4e941a0c0ed33e14492014dd492ca531ea66e388b44c6efc73b4d80085298148"
+    },
+    "backend/app/data/processed/svd_top10_experiment_summary.json": {
+      "relative_path": "backend/app/data/processed/svd_top10_experiment_summary.json",
+      "exists": true,
+      "size_bytes": 4757,
+      "sha256": "5325076693124a2f99cc185fbda2c60fb92e9208b585ed463cf29312e314c268"
+    },
+    "backend/app/data/processed/svd_top10_experiment_test.json": {
+      "relative_path": "backend/app/data/processed/svd_top10_experiment_test.json",
+      "exists": true,
+      "size_bytes": 14551,
+      "sha256": "806e5798358353142366cf4e9ab576957523656f842c7a6705aa341716004d1f"
+    },
+    "backend/app/data/processed/svd_top10_experiment_train.json": {
+      "relative_path": "backend/app/data/processed/svd_top10_experiment_train.json",
+      "exists": true,
+      "size_bytes": 708128,
+      "sha256": "88a8f39869ed7aa20a69e9c908239da7f7db6ce7481ec325b45a42aa47016f48"
+    },
+    "backend/app/data/processed/test.csv": {
+      "relative_path": "backend/app/data/processed/test.csv",
+      "exists": true,
+      "size_bytes": 144552,
+      "sha256": "da48eeecf41c3080a9409ee0c33e61bb83df86f13fe02a45cb8048ff0a81218e"
+    },
+    "backend/app/data/processed/train.csv": {
+      "relative_path": "backend/app/data/processed/train.csv",
+      "exists": true,
+      "size_bytes": 578127,
+      "sha256": "2906fa7625a6a6b4a3ab3b6b8c87b63d4e6e58d043a536bc996cb5742239703a"
+    },
+    "experiments/experiment1_deterministic_replay/__pycache__/run_experiment1_frozen_replay.cpython-313.pyc": {
+      "relative_path": "experiments/experiment1_deterministic_replay/__pycache__/run_experiment1_frozen_replay.cpython-313.pyc",
+      "exists": true,
+      "size_bytes": 68083,
+      "sha256": "31ed87232d5d2f0ea81325fddf4444af162108b896560e1b99f3e35af4c0e087"
+    },
+    "experiments/experiment1_deterministic_replay/diagnose_replay_preflight.py": {
+      "relative_path": "experiments/experiment1_deterministic_replay/diagnose_replay_preflight.py",
+      "exists": true,
+      "size_bytes": 5676,
+      "sha256": "dce07c8d889e0c25846153b68f92d12638387c0d91e2d1f4a221e32856a4a3d6"
+    },
+    "experiments/experiment1_deterministic_replay/diagnostics/preflight_diagnostic_1.log": {
+      "relative_path": "experiments/experiment1_deterministic_replay/diagnostics/preflight_diagnostic_1.log",
+      "exists": true,
+      "size_bytes": 17254,
+      "sha256": "f7dc07f73a013e9e2488ed7b58a4dab38c46fdf757e5371d7a7705130a182cce"
+    },
+    "experiments/experiment1_deterministic_replay/diagnostics/smoke5_execution.log": {
+      "relative_path": "experiments/experiment1_deterministic_replay/diagnostics/smoke5_execution.log",
+      "exists": true,
+      "size_bytes": 17112,
+      "sha256": "5774f5a175df51aac9cf51eba4ef1caa06b8360de6c32a7d5b846e99353991da"
+    },
+    "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke1_run_configuration.json": {
+      "relative_path": "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke1_run_configuration.json",
+      "exists": true,
+      "size_bytes": 4992,
+      "sha256": "275f65dcfe8ba3ce0c1af22940bc99d62e648a2bce20c65aad14a6675efecb53"
+    },
+    "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke4_created_files.json": {
+      "relative_path": "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke4_created_files.json",
+      "exists": true,
+      "size_bytes": 8509,
+      "sha256": "6e6dba45d80063179e2dbf85e37410fcd05dbf6d7b27931b1231e4ecf2f6c70d"
+    },
+    "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke4_openai_call_provenance.json": {
+      "relative_path": "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke4_openai_call_provenance.json",
+      "exists": true,
+      "size_bytes": 483,
+      "sha256": "6e972a922f05c1552754444690326f621e181861f5cb127240ad079009887d80"
+    },
+    "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke4_pairwise_ci_report_top10_3_three_methods.json": {
+      "relative_path": "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke4_pairwise_ci_report_top10_3_three_methods.json",
+      "exists": true,
+      "size_bytes": 955,
+      "sha256": "1d93d5f6b2c5aec624ffe338e64e887e32ece3ace910b0023aeb36955941f12b"
+    },
+    "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke4_processed_data/experiment1_deterministic_replay_smoke4_agentic_recommendations_top10_3.csv": {
+      "relative_path": "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke4_processed_data/experiment1_deterministic_replay_smoke4_agentic_recommendations_top10_3.csv",
+      "exists": true,
+      "size_bytes": 20418,
+      "sha256": "573fe03cd74754dca141d8668de6ffc380aab9b779870c25c04451c47d101b72"
+    },
+    "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke4_processed_data/experiment1_deterministic_replay_smoke4_agentic_recommendations_top10_3.json": {
+      "relative_path": "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke4_processed_data/experiment1_deterministic_replay_smoke4_agentic_recommendations_top10_3.json",
+      "exists": true,
+      "size_bytes": 25096,
+      "sha256": "2a751dd7769e30c20e2e7c397fc7ccd5fcdece329f624759a427776a466cbdfd"
+    },
+    "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke4_processed_data/experiment1_deterministic_replay_smoke4_agentic_top10_validation_report_3.json": {
+      "relative_path": "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke4_processed_data/experiment1_deterministic_replay_smoke4_agentic_top10_validation_report_3.json",
+      "exists": true,
+      "size_bytes": 663,
+      "sha256": "30b8968b41632cc3685c550e85982e7a9964cb35226a64b1ca56c69d939f0cd5"
+    },
+    "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke4_processed_data/experiment1_deterministic_replay_smoke4_bootstrap_ci_report_top10_3_three_methods.json": {
+      "relative_path": "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke4_processed_data/experiment1_deterministic_replay_smoke4_bootstrap_ci_report_top10_3_three_methods.json",
+      "exists": true,
+      "size_bytes": 2002,
+      "sha256": "d6cd1b657258242e58b037f09b2ecae26392ebb390566c88809b843def1c3fef"
+    },
+    "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke4_processed_data/experiment1_deterministic_replay_smoke4_candidate_pools_top10_3.json": {
+      "relative_path": "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke4_processed_data/experiment1_deterministic_replay_smoke4_candidate_pools_top10_3.json",
+      "exists": true,
+      "size_bytes": 604,
+      "sha256": "5acc82245b2776a764bcb289153c40755283a396b0098139bc206c6b3bdaadd8"
+    },
+    "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke4_processed_data/experiment1_deterministic_replay_smoke4_evaluation_base_table_top10_3.csv": {
+      "relative_path": "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke4_processed_data/experiment1_deterministic_replay_smoke4_evaluation_base_table_top10_3.csv",
+      "exists": true,
+      "size_bytes": 16891,
+      "sha256": "c3c4e7985fbd29b3338d837eafd2c8afa76219157ee6ccea38b97013b6584fb2"
+    },
+    "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke4_processed_data/experiment1_deterministic_replay_smoke4_evaluation_base_table_top10_3.json": {
+      "relative_path": "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke4_processed_data/experiment1_deterministic_replay_smoke4_evaluation_base_table_top10_3.json",
+      "exists": true,
+      "size_bytes": 24363,
+      "sha256": "34ace5fddd9951bb7b0c94ca9eccc472c4629d6447fbacb00fafaac96e84d864"
+    },
+    "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke4_processed_data/experiment1_deterministic_replay_smoke4_experiment_report_top10_3.md": {
+      "relative_path": "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke4_processed_data/experiment1_deterministic_replay_smoke4_experiment_report_top10_3.md",
+      "exists": true,
+      "size_bytes": 3320,
+      "sha256": "7172e5f16707c63231606ef6e5a3e5a1e3f6f06bcb108d405e61fa36558762e9"
+    },
+    "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke4_processed_data/experiment1_deterministic_replay_smoke4_hybrid_svd_agentic_recommendations_top10_3.csv": {
+      "relative_path": "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke4_processed_data/experiment1_deterministic_replay_smoke4_hybrid_svd_agentic_recommendations_top10_3.csv",
+      "exists": true,
+      "size_bytes": 16765,
+      "sha256": "eae1ac6275dca3393dbdc8a6ce2cfcf734f4957fd67304333c21415315242b85"
+    },
+    "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke4_processed_data/experiment1_deterministic_replay_smoke4_hybrid_svd_agentic_recommendations_top10_3.json": {
+      "relative_path": "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke4_processed_data/experiment1_deterministic_replay_smoke4_hybrid_svd_agentic_recommendations_top10_3.json",
+      "exists": true,
+      "size_bytes": 20192,
+      "sha256": "d0970080c8992a2057d809236e6ae846507544b8e767aab7a685dee6d1db7e00"
+    },
+    "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke4_processed_data/experiment1_deterministic_replay_smoke4_hybrid_svd_agentic_validation_report_top10_3.json": {
+      "relative_path": "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke4_processed_data/experiment1_deterministic_replay_smoke4_hybrid_svd_agentic_validation_report_top10_3.json",
+      "exists": true,
+      "size_bytes": 674,
+      "sha256": "1e1c8d5649b0368c01b0a0586da72becb20e533982fbf471843773fb786b3ad8"
+    },
+    "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke4_processed_data/experiment1_deterministic_replay_smoke4_metric_summary_top10_3_three_methods.csv": {
+      "relative_path": "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke4_processed_data/experiment1_deterministic_replay_smoke4_metric_summary_top10_3_three_methods.csv",
+      "exists": true,
+      "size_bytes": 523,
+      "sha256": "98eb487f8f073b24bd47d2faddff14229388c94999c71f45025727e9309a96c8"
+    },
+    "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke4_processed_data/experiment1_deterministic_replay_smoke4_metric_summary_top10_3_three_methods.json": {
+      "relative_path": "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke4_processed_data/experiment1_deterministic_replay_smoke4_metric_summary_top10_3_three_methods.json",
+      "exists": true,
+      "size_bytes": 825,
+      "sha256": "07778c6a8ad636122f617e741ed9f5abbc2f0a115bc5eefe8578f62d92448f0b"
+    },
+    "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke4_processed_data/experiment1_deterministic_replay_smoke4_per_user_metrics_top10_3_three_methods.csv": {
+      "relative_path": "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke4_processed_data/experiment1_deterministic_replay_smoke4_per_user_metrics_top10_3_three_methods.csv",
+      "exists": true,
+      "size_bytes": 681,
+      "sha256": "dc08bd81e5601ca009c6cdfddf101be4450eabb50b7efe63245f8df554d8acc2"
+    },
+    "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke4_processed_data/experiment1_deterministic_replay_smoke4_per_user_metrics_top10_3_three_methods.json": {
+      "relative_path": "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke4_processed_data/experiment1_deterministic_replay_smoke4_per_user_metrics_top10_3_three_methods.json",
+      "exists": true,
+      "size_bytes": 1650,
+      "sha256": "b0856a648d3e078179e704abcc275fc2b76c713f03c1956020d776d20b0ce19b"
+    },
+    "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke4_processed_data/experiment1_deterministic_replay_smoke4_svd_baseline_validation_report_top10_3.json": {
+      "relative_path": "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke4_processed_data/experiment1_deterministic_replay_smoke4_svd_baseline_validation_report_top10_3.json",
+      "exists": true,
+      "size_bytes": 874,
+      "sha256": "6cee5e4dd7623c7013e4960f5150e54ba78aec4748c155454ab890aa3c6924f8"
+    },
+    "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke4_processed_data/experiment1_deterministic_replay_smoke4_svd_recommendations_top10_3.csv": {
+      "relative_path": "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke4_processed_data/experiment1_deterministic_replay_smoke4_svd_recommendations_top10_3.csv",
+      "exists": true,
+      "size_bytes": 8760,
+      "sha256": "af677bb75d800b2029574af67c8486d7f9f96b5ecc9013454febdcb5e8f6e881"
+    },
+    "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke4_processed_data/experiment1_deterministic_replay_smoke4_svd_recommendations_top10_3.json": {
+      "relative_path": "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke4_processed_data/experiment1_deterministic_replay_smoke4_svd_recommendations_top10_3.json",
+      "exists": true,
+      "size_bytes": 11354,
+      "sha256": "99063be007d4dd319a8ac8e81eefc2d371a382db54513b709bdf63be07a7561a"
+    },
+    "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke4_processed_data/experiment1_deterministic_replay_smoke4_validation_report_top10_3_three_methods.json": {
+      "relative_path": "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke4_processed_data/experiment1_deterministic_replay_smoke4_validation_report_top10_3_three_methods.json",
+      "exists": true,
+      "size_bytes": 494,
+      "sha256": "2db1cea45418bf1b194d45076816109e4caf066c8ebbd53d9fcb7200c23082d0"
+    },
+    "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke4_provenance.json": {
+      "relative_path": "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke4_provenance.json",
+      "exists": true,
+      "size_bytes": 136352,
+      "sha256": "6812542c93bc3d0943cdd0029649ab93f6de3ca29359eea6c2706a12ee48ea6a"
+    },
+    "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke4_run_configuration.json": {
+      "relative_path": "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke4_run_configuration.json",
+      "exists": true,
+      "size_bytes": 6379,
+      "sha256": "d9c0345a78e9d00458fb2839528d5c1af6da145ef66872592c3b04209f0a136f"
+    },
+    "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke5_created_files.json": {
+      "relative_path": "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke5_created_files.json",
+      "exists": true,
+      "size_bytes": 8509,
+      "sha256": "20d0e3b539baa40ae3d21ddd82a65924ac1de7c379b79d517d2e398f425877a6"
+    },
+    "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke5_openai_call_provenance.json": {
+      "relative_path": "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke5_openai_call_provenance.json",
+      "exists": true,
+      "size_bytes": 483,
+      "sha256": "6e972a922f05c1552754444690326f621e181861f5cb127240ad079009887d80"
+    },
+    "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke5_pairwise_ci_report_top10_3_three_methods.json": {
+      "relative_path": "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke5_pairwise_ci_report_top10_3_three_methods.json",
+      "exists": true,
+      "size_bytes": 955,
+      "sha256": "1d93d5f6b2c5aec624ffe338e64e887e32ece3ace910b0023aeb36955941f12b"
+    },
+    "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke5_processed_data/experiment1_deterministic_replay_smoke5_agentic_recommendations_top10_3.csv": {
+      "relative_path": "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke5_processed_data/experiment1_deterministic_replay_smoke5_agentic_recommendations_top10_3.csv",
+      "exists": true,
+      "size_bytes": 20418,
+      "sha256": "573fe03cd74754dca141d8668de6ffc380aab9b779870c25c04451c47d101b72"
+    },
+    "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke5_processed_data/experiment1_deterministic_replay_smoke5_agentic_recommendations_top10_3.json": {
+      "relative_path": "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke5_processed_data/experiment1_deterministic_replay_smoke5_agentic_recommendations_top10_3.json",
+      "exists": true,
+      "size_bytes": 25096,
+      "sha256": "2a751dd7769e30c20e2e7c397fc7ccd5fcdece329f624759a427776a466cbdfd"
+    },
+    "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke5_processed_data/experiment1_deterministic_replay_smoke5_agentic_top10_validation_report_3.json": {
+      "relative_path": "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke5_processed_data/experiment1_deterministic_replay_smoke5_agentic_top10_validation_report_3.json",
+      "exists": true,
+      "size_bytes": 663,
+      "sha256": "30b8968b41632cc3685c550e85982e7a9964cb35226a64b1ca56c69d939f0cd5"
+    },
+    "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke5_processed_data/experiment1_deterministic_replay_smoke5_bootstrap_ci_report_top10_3_three_methods.json": {
+      "relative_path": "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke5_processed_data/experiment1_deterministic_replay_smoke5_bootstrap_ci_report_top10_3_three_methods.json",
+      "exists": true,
+      "size_bytes": 2002,
+      "sha256": "d6cd1b657258242e58b037f09b2ecae26392ebb390566c88809b843def1c3fef"
+    },
+    "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke5_processed_data/experiment1_deterministic_replay_smoke5_candidate_pools_top10_3.json": {
+      "relative_path": "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke5_processed_data/experiment1_deterministic_replay_smoke5_candidate_pools_top10_3.json",
+      "exists": true,
+      "size_bytes": 604,
+      "sha256": "5acc82245b2776a764bcb289153c40755283a396b0098139bc206c6b3bdaadd8"
+    },
+    "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke5_processed_data/experiment1_deterministic_replay_smoke5_evaluation_base_table_top10_3.csv": {
+      "relative_path": "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke5_processed_data/experiment1_deterministic_replay_smoke5_evaluation_base_table_top10_3.csv",
+      "exists": true,
+      "size_bytes": 16891,
+      "sha256": "c3c4e7985fbd29b3338d837eafd2c8afa76219157ee6ccea38b97013b6584fb2"
+    },
+    "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke5_processed_data/experiment1_deterministic_replay_smoke5_evaluation_base_table_top10_3.json": {
+      "relative_path": "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke5_processed_data/experiment1_deterministic_replay_smoke5_evaluation_base_table_top10_3.json",
+      "exists": true,
+      "size_bytes": 24363,
+      "sha256": "34ace5fddd9951bb7b0c94ca9eccc472c4629d6447fbacb00fafaac96e84d864"
+    },
+    "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke5_processed_data/experiment1_deterministic_replay_smoke5_experiment_report_top10_3.md": {
+      "relative_path": "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke5_processed_data/experiment1_deterministic_replay_smoke5_experiment_report_top10_3.md",
+      "exists": true,
+      "size_bytes": 3320,
+      "sha256": "7172e5f16707c63231606ef6e5a3e5a1e3f6f06bcb108d405e61fa36558762e9"
+    },
+    "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke5_processed_data/experiment1_deterministic_replay_smoke5_hybrid_svd_agentic_recommendations_top10_3.csv": {
+      "relative_path": "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke5_processed_data/experiment1_deterministic_replay_smoke5_hybrid_svd_agentic_recommendations_top10_3.csv",
+      "exists": true,
+      "size_bytes": 16765,
+      "sha256": "eae1ac6275dca3393dbdc8a6ce2cfcf734f4957fd67304333c21415315242b85"
+    },
+    "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke5_processed_data/experiment1_deterministic_replay_smoke5_hybrid_svd_agentic_recommendations_top10_3.json": {
+      "relative_path": "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke5_processed_data/experiment1_deterministic_replay_smoke5_hybrid_svd_agentic_recommendations_top10_3.json",
+      "exists": true,
+      "size_bytes": 20192,
+      "sha256": "d0970080c8992a2057d809236e6ae846507544b8e767aab7a685dee6d1db7e00"
+    },
+    "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke5_processed_data/experiment1_deterministic_replay_smoke5_hybrid_svd_agentic_validation_report_top10_3.json": {
+      "relative_path": "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke5_processed_data/experiment1_deterministic_replay_smoke5_hybrid_svd_agentic_validation_report_top10_3.json",
+      "exists": true,
+      "size_bytes": 674,
+      "sha256": "1e1c8d5649b0368c01b0a0586da72becb20e533982fbf471843773fb786b3ad8"
+    },
+    "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke5_processed_data/experiment1_deterministic_replay_smoke5_metric_summary_top10_3_three_methods.csv": {
+      "relative_path": "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke5_processed_data/experiment1_deterministic_replay_smoke5_metric_summary_top10_3_three_methods.csv",
+      "exists": true,
+      "size_bytes": 523,
+      "sha256": "98eb487f8f073b24bd47d2faddff14229388c94999c71f45025727e9309a96c8"
+    },
+    "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke5_processed_data/experiment1_deterministic_replay_smoke5_metric_summary_top10_3_three_methods.json": {
+      "relative_path": "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke5_processed_data/experiment1_deterministic_replay_smoke5_metric_summary_top10_3_three_methods.json",
+      "exists": true,
+      "size_bytes": 825,
+      "sha256": "07778c6a8ad636122f617e741ed9f5abbc2f0a115bc5eefe8578f62d92448f0b"
+    },
+    "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke5_processed_data/experiment1_deterministic_replay_smoke5_per_user_metrics_top10_3_three_methods.csv": {
+      "relative_path": "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke5_processed_data/experiment1_deterministic_replay_smoke5_per_user_metrics_top10_3_three_methods.csv",
+      "exists": true,
+      "size_bytes": 681,
+      "sha256": "dc08bd81e5601ca009c6cdfddf101be4450eabb50b7efe63245f8df554d8acc2"
+    },
+    "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke5_processed_data/experiment1_deterministic_replay_smoke5_per_user_metrics_top10_3_three_methods.json": {
+      "relative_path": "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke5_processed_data/experiment1_deterministic_replay_smoke5_per_user_metrics_top10_3_three_methods.json",
+      "exists": true,
+      "size_bytes": 1650,
+      "sha256": "b0856a648d3e078179e704abcc275fc2b76c713f03c1956020d776d20b0ce19b"
+    },
+    "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke5_processed_data/experiment1_deterministic_replay_smoke5_svd_baseline_validation_report_top10_3.json": {
+      "relative_path": "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke5_processed_data/experiment1_deterministic_replay_smoke5_svd_baseline_validation_report_top10_3.json",
+      "exists": true,
+      "size_bytes": 874,
+      "sha256": "6cee5e4dd7623c7013e4960f5150e54ba78aec4748c155454ab890aa3c6924f8"
+    },
+    "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke5_processed_data/experiment1_deterministic_replay_smoke5_svd_recommendations_top10_3.csv": {
+      "relative_path": "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke5_processed_data/experiment1_deterministic_replay_smoke5_svd_recommendations_top10_3.csv",
+      "exists": true,
+      "size_bytes": 8760,
+      "sha256": "af677bb75d800b2029574af67c8486d7f9f96b5ecc9013454febdcb5e8f6e881"
+    },
+    "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke5_processed_data/experiment1_deterministic_replay_smoke5_svd_recommendations_top10_3.json": {
+      "relative_path": "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke5_processed_data/experiment1_deterministic_replay_smoke5_svd_recommendations_top10_3.json",
+      "exists": true,
+      "size_bytes": 11354,
+      "sha256": "99063be007d4dd319a8ac8e81eefc2d371a382db54513b709bdf63be07a7561a"
+    },
+    "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke5_processed_data/experiment1_deterministic_replay_smoke5_validation_report_top10_3_three_methods.json": {
+      "relative_path": "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke5_processed_data/experiment1_deterministic_replay_smoke5_validation_report_top10_3_three_methods.json",
+      "exists": true,
+      "size_bytes": 494,
+      "sha256": "2db1cea45418bf1b194d45076816109e4caf066c8ebbd53d9fcb7200c23082d0"
+    },
+    "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke5_provenance.json": {
+      "relative_path": "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke5_provenance.json",
+      "exists": true,
+      "size_bytes": 162849,
+      "sha256": "cf992a7fb581e57d7c0b2bfcb551ca2df27f84ab80fbb54c22f7250411a732fe"
+    },
+    "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke5_run_configuration.json": {
+      "relative_path": "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke5_run_configuration.json",
+      "exists": true,
+      "size_bytes": 6379,
+      "sha256": "c8d2212700d734634e01bc3c685903639ce6689949e5749971e2c65ea768db2a"
+    },
+    "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke6_openai_call_provenance.json": {
+      "relative_path": "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke6_openai_call_provenance.json",
+      "exists": true,
+      "size_bytes": 483,
+      "sha256": "6e972a922f05c1552754444690326f621e181861f5cb127240ad079009887d80"
+    },
+    "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke6_pairwise_ci_report_top10_3_three_methods.json": {
+      "relative_path": "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke6_pairwise_ci_report_top10_3_three_methods.json",
+      "exists": true,
+      "size_bytes": 955,
+      "sha256": "1d93d5f6b2c5aec624ffe338e64e887e32ece3ace910b0023aeb36955941f12b"
+    },
+    "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke6_processed_data/experiment1_deterministic_replay_smoke6_agentic_recommendations_top10_3.csv": {
+      "relative_path": "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke6_processed_data/experiment1_deterministic_replay_smoke6_agentic_recommendations_top10_3.csv",
+      "exists": true,
+      "size_bytes": 20418,
+      "sha256": "573fe03cd74754dca141d8668de6ffc380aab9b779870c25c04451c47d101b72"
+    },
+    "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke6_processed_data/experiment1_deterministic_replay_smoke6_agentic_recommendations_top10_3.json": {
+      "relative_path": "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke6_processed_data/experiment1_deterministic_replay_smoke6_agentic_recommendations_top10_3.json",
+      "exists": true,
+      "size_bytes": 25096,
+      "sha256": "2a751dd7769e30c20e2e7c397fc7ccd5fcdece329f624759a427776a466cbdfd"
+    },
+    "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke6_processed_data/experiment1_deterministic_replay_smoke6_agentic_top10_validation_report_3.json": {
+      "relative_path": "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke6_processed_data/experiment1_deterministic_replay_smoke6_agentic_top10_validation_report_3.json",
+      "exists": true,
+      "size_bytes": 663,
+      "sha256": "30b8968b41632cc3685c550e85982e7a9964cb35226a64b1ca56c69d939f0cd5"
+    },
+    "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke6_processed_data/experiment1_deterministic_replay_smoke6_bootstrap_ci_report_top10_3_three_methods.json": {
+      "relative_path": "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke6_processed_data/experiment1_deterministic_replay_smoke6_bootstrap_ci_report_top10_3_three_methods.json",
+      "exists": true,
+      "size_bytes": 2002,
+      "sha256": "d6cd1b657258242e58b037f09b2ecae26392ebb390566c88809b843def1c3fef"
+    },
+    "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke6_processed_data/experiment1_deterministic_replay_smoke6_candidate_pools_top10_3.json": {
+      "relative_path": "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke6_processed_data/experiment1_deterministic_replay_smoke6_candidate_pools_top10_3.json",
+      "exists": true,
+      "size_bytes": 604,
+      "sha256": "5acc82245b2776a764bcb289153c40755283a396b0098139bc206c6b3bdaadd8"
+    },
+    "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke6_processed_data/experiment1_deterministic_replay_smoke6_evaluation_base_table_top10_3.csv": {
+      "relative_path": "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke6_processed_data/experiment1_deterministic_replay_smoke6_evaluation_base_table_top10_3.csv",
+      "exists": true,
+      "size_bytes": 16891,
+      "sha256": "c3c4e7985fbd29b3338d837eafd2c8afa76219157ee6ccea38b97013b6584fb2"
+    },
+    "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke6_processed_data/experiment1_deterministic_replay_smoke6_evaluation_base_table_top10_3.json": {
+      "relative_path": "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke6_processed_data/experiment1_deterministic_replay_smoke6_evaluation_base_table_top10_3.json",
+      "exists": true,
+      "size_bytes": 24363,
+      "sha256": "34ace5fddd9951bb7b0c94ca9eccc472c4629d6447fbacb00fafaac96e84d864"
+    },
+    "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke6_processed_data/experiment1_deterministic_replay_smoke6_experiment_report_top10_3.md": {
+      "relative_path": "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke6_processed_data/experiment1_deterministic_replay_smoke6_experiment_report_top10_3.md",
+      "exists": true,
+      "size_bytes": 3320,
+      "sha256": "7172e5f16707c63231606ef6e5a3e5a1e3f6f06bcb108d405e61fa36558762e9"
+    },
+    "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke6_processed_data/experiment1_deterministic_replay_smoke6_hybrid_svd_agentic_recommendations_top10_3.csv": {
+      "relative_path": "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke6_processed_data/experiment1_deterministic_replay_smoke6_hybrid_svd_agentic_recommendations_top10_3.csv",
+      "exists": true,
+      "size_bytes": 16765,
+      "sha256": "eae1ac6275dca3393dbdc8a6ce2cfcf734f4957fd67304333c21415315242b85"
+    },
+    "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke6_processed_data/experiment1_deterministic_replay_smoke6_hybrid_svd_agentic_recommendations_top10_3.json": {
+      "relative_path": "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke6_processed_data/experiment1_deterministic_replay_smoke6_hybrid_svd_agentic_recommendations_top10_3.json",
+      "exists": true,
+      "size_bytes": 20192,
+      "sha256": "d0970080c8992a2057d809236e6ae846507544b8e767aab7a685dee6d1db7e00"
+    },
+    "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke6_processed_data/experiment1_deterministic_replay_smoke6_hybrid_svd_agentic_validation_report_top10_3.json": {
+      "relative_path": "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke6_processed_data/experiment1_deterministic_replay_smoke6_hybrid_svd_agentic_validation_report_top10_3.json",
+      "exists": true,
+      "size_bytes": 674,
+      "sha256": "1e1c8d5649b0368c01b0a0586da72becb20e533982fbf471843773fb786b3ad8"
+    },
+    "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke6_processed_data/experiment1_deterministic_replay_smoke6_metric_summary_top10_3_three_methods.csv": {
+      "relative_path": "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke6_processed_data/experiment1_deterministic_replay_smoke6_metric_summary_top10_3_three_methods.csv",
+      "exists": true,
+      "size_bytes": 523,
+      "sha256": "98eb487f8f073b24bd47d2faddff14229388c94999c71f45025727e9309a96c8"
+    },
+    "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke6_processed_data/experiment1_deterministic_replay_smoke6_metric_summary_top10_3_three_methods.json": {
+      "relative_path": "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke6_processed_data/experiment1_deterministic_replay_smoke6_metric_summary_top10_3_three_methods.json",
+      "exists": true,
+      "size_bytes": 825,
+      "sha256": "07778c6a8ad636122f617e741ed9f5abbc2f0a115bc5eefe8578f62d92448f0b"
+    },
+    "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke6_processed_data/experiment1_deterministic_replay_smoke6_per_user_metrics_top10_3_three_methods.csv": {
+      "relative_path": "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke6_processed_data/experiment1_deterministic_replay_smoke6_per_user_metrics_top10_3_three_methods.csv",
+      "exists": true,
+      "size_bytes": 681,
+      "sha256": "dc08bd81e5601ca009c6cdfddf101be4450eabb50b7efe63245f8df554d8acc2"
+    },
+    "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke6_processed_data/experiment1_deterministic_replay_smoke6_per_user_metrics_top10_3_three_methods.json": {
+      "relative_path": "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke6_processed_data/experiment1_deterministic_replay_smoke6_per_user_metrics_top10_3_three_methods.json",
+      "exists": true,
+      "size_bytes": 1650,
+      "sha256": "b0856a648d3e078179e704abcc275fc2b76c713f03c1956020d776d20b0ce19b"
+    },
+    "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke6_processed_data/experiment1_deterministic_replay_smoke6_svd_baseline_validation_report_top10_3.json": {
+      "relative_path": "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke6_processed_data/experiment1_deterministic_replay_smoke6_svd_baseline_validation_report_top10_3.json",
+      "exists": true,
+      "size_bytes": 874,
+      "sha256": "6cee5e4dd7623c7013e4960f5150e54ba78aec4748c155454ab890aa3c6924f8"
+    },
+    "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke6_processed_data/experiment1_deterministic_replay_smoke6_svd_recommendations_top10_3.csv": {
+      "relative_path": "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke6_processed_data/experiment1_deterministic_replay_smoke6_svd_recommendations_top10_3.csv",
+      "exists": true,
+      "size_bytes": 8760,
+      "sha256": "af677bb75d800b2029574af67c8486d7f9f96b5ecc9013454febdcb5e8f6e881"
+    },
+    "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke6_processed_data/experiment1_deterministic_replay_smoke6_svd_recommendations_top10_3.json": {
+      "relative_path": "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke6_processed_data/experiment1_deterministic_replay_smoke6_svd_recommendations_top10_3.json",
+      "exists": true,
+      "size_bytes": 11354,
+      "sha256": "99063be007d4dd319a8ac8e81eefc2d371a382db54513b709bdf63be07a7561a"
+    },
+    "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke6_processed_data/experiment1_deterministic_replay_smoke6_validation_report_top10_3_three_methods.json": {
+      "relative_path": "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke6_processed_data/experiment1_deterministic_replay_smoke6_validation_report_top10_3_three_methods.json",
+      "exists": true,
+      "size_bytes": 494,
+      "sha256": "2db1cea45418bf1b194d45076816109e4caf066c8ebbd53d9fcb7200c23082d0"
+    },
+    "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke6_run_configuration.json": {
+      "relative_path": "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke6_run_configuration.json",
+      "exists": true,
+      "size_bytes": 6379,
+      "sha256": "ee25e02ba3fd15cf320c083d721894a7f131c0f37e16ca574400fa593afa4620"
+    },
+    "experiments/experiment1_deterministic_replay/input/experiment1_original_frozen_input_1000.json": {
+      "relative_path": "experiments/experiment1_deterministic_replay/input/experiment1_original_frozen_input_1000.json",
+      "exists": true,
+      "size_bytes": 5621254,
+      "sha256": "427da0d55124107551602b12dad82ee05b0eae1e296ee9f612aea8326080d08e"
+    },
+    "experiments/experiment1_deterministic_replay/run_experiment1_frozen_replay.py": {
+      "relative_path": "experiments/experiment1_deterministic_replay/run_experiment1_frozen_replay.py",
+      "exists": true,
+      "size_bytes": 62132,
+      "sha256": "95c1b93d14495535f84da5497931319d08d5877518f4cc87a649c11361263605"
+    },
+    "experiments/experiment1_deterministic_replay/tests/__pycache__/test_frozen_replay_runner.cpython-313-pytest-8.3.5.pyc": {
+      "relative_path": "experiments/experiment1_deterministic_replay/tests/__pycache__/test_frozen_replay_runner.cpython-313-pytest-8.3.5.pyc",
+      "exists": true,
+      "size_bytes": 8785,
+      "sha256": "2b57072f37af1ce3f99c8c78fbfb6185d08059c3c1e19e51930bf9fa8f566d7d"
+    },
+    "experiments/experiment1_deterministic_replay/tests/test_frozen_replay_runner.py": {
+      "relative_path": "experiments/experiment1_deterministic_replay/tests/test_frozen_replay_runner.py",
+      "exists": true,
+      "size_bytes": 6017,
+      "sha256": "55e0ed4c9aba8e74983f9a223bdd94c2913f81c6a59dce286b9fb13f7a4da982"
+    }
+  },
+  "protected_files_before": {
+    "backend/app/data/processed/agentic_recommendations_top10_1000.csv": {
+      "relative_path": "backend/app/data/processed/agentic_recommendations_top10_1000.csv",
+      "exists": true,
+      "size_bytes": 6619486,
+      "sha256": "9f4bd6e4d5c3c45d08dfc0f0739c68d469f2f1e0f4525c92027b8b78a2b2712b"
+    },
+    "backend/app/data/processed/agentic_recommendations_top10_1000.json": {
+      "relative_path": "backend/app/data/processed/agentic_recommendations_top10_1000.json",
+      "exists": true,
+      "size_bytes": 8231967,
+      "sha256": "426f71f0c98af9c256bab4b8c9610971aef20621deb93c1a1f26db1fabbd15e0"
+    },
+    "backend/app/data/processed/agentic_top10_validation_report_1000.json": {
+      "relative_path": "backend/app/data/processed/agentic_top10_validation_report_1000.json",
+      "exists": true,
+      "size_bytes": 823,
+      "sha256": "94a618075cc36ac67296f33d700f6cabdeb1f9716ce37bec0d290425218234ad"
+    },
+    "backend/app/data/processed/bootstrap_ci_report_top10_1000_three_methods.json": {
+      "relative_path": "backend/app/data/processed/bootstrap_ci_report_top10_1000_three_methods.json",
+      "exists": true,
+      "size_bytes": 2081,
+      "sha256": "05149529c8c5f5324dfd31ecb448025cc8534215257e2a67fbb6dc459f614639"
+    },
+    "backend/app/data/processed/candidate_pool_validation_report_svd_top10_1000.json": {
+      "relative_path": "backend/app/data/processed/candidate_pool_validation_report_svd_top10_1000.json",
+      "exists": true,
+      "size_bytes": 1155,
+      "sha256": "cccd17fac2f6b8eb69b7260c2b413016311ac9f96b3c034df4f769c289e57310"
+    },
+    "backend/app/data/processed/diagnostic_report_svd_vs_agentic_1000.md": {
+      "relative_path": "backend/app/data/processed/diagnostic_report_svd_vs_agentic_1000.md",
+      "exists": true,
+      "size_bytes": 11997,
+      "sha256": "926f485ab3a261f449b14654a45e9e74f8d39c28fc27a1ebe41518fa4dc1db0c"
+    },
+    "backend/app/data/processed/evaluation_base_table_svd_top10_1000.csv": {
+      "relative_path": "backend/app/data/processed/evaluation_base_table_svd_top10_1000.csv",
+      "exists": true,
+      "size_bytes": 3032767,
+      "sha256": "9a15e1b2305cbae1dd91275d49faf5955f39fd9ce9f3d793e870c96f9c0f7805"
+    },
+    "backend/app/data/processed/evaluation_base_table_svd_top10_1000.json": {
+      "relative_path": "backend/app/data/processed/evaluation_base_table_svd_top10_1000.json",
+      "exists": true,
+      "size_bytes": 5621254,
+      "sha256": "427da0d55124107551602b12dad82ee05b0eae1e296ee9f612aea8326080d08e"
+    },
+    "backend/app/data/processed/explainability/seed99_case_studies.md": {
+      "relative_path": "backend/app/data/processed/explainability/seed99_case_studies.md",
+      "exists": true,
+      "size_bytes": 63100,
+      "sha256": "a1af8fe23fb28be37e6960057aa211e3ae917827a98e2585469dedf1ec1305e6"
+    },
+    "backend/app/data/processed/explainability/seed99_explainability_audit.json": {
+      "relative_path": "backend/app/data/processed/explainability/seed99_explainability_audit.json",
+      "exists": true,
+      "size_bytes": 14480,
+      "sha256": "95ae447a6ff4e5adb52827c05bd8b65f0f50a0d2bc3aa389fb4515159cd14c87"
+    },
+    "backend/app/data/processed/explainability/seed99_explainability_examples.csv": {
+      "relative_path": "backend/app/data/processed/explainability/seed99_explainability_examples.csv",
+      "exists": true,
+      "size_bytes": 1537142,
+      "sha256": "3a48d68ab3dba430820706cd3946a63e50c7da5c920f8824b8358657837687cc"
+    },
+    "backend/app/data/processed/explainability/seed99_explainability_summary.json": {
+      "relative_path": "backend/app/data/processed/explainability/seed99_explainability_summary.json",
+      "exists": true,
+      "size_bytes": 1302,
+      "sha256": "83cafeadea974b113fad00b658deaf2d59be28977338a736d565c0d305dc75ea"
+    },
+    "backend/app/data/processed/explainability/seed99_full_retry_case_studies.md": {
+      "relative_path": "backend/app/data/processed/explainability/seed99_full_retry_case_studies.md",
+      "exists": true,
+      "size_bytes": 61799,
+      "sha256": "c63052a1fc99246de29de9f6e53d2a3d104011e323a07cabefaa1d9d7151aed8"
+    },
+    "backend/app/data/processed/explainability/seed99_full_retry_explainability_audit.json": {
+      "relative_path": "backend/app/data/processed/explainability/seed99_full_retry_explainability_audit.json",
+      "exists": true,
+      "size_bytes": 18165,
+      "sha256": "2e64b3f68f469d297a13d868812e10ef60adae7c160bcabb928df9c301c6f92d"
+    },
+    "backend/app/data/processed/explainability/seed99_full_retry_explainability_examples.csv": {
+      "relative_path": "backend/app/data/processed/explainability/seed99_full_retry_explainability_examples.csv",
+      "exists": true,
+      "size_bytes": 15153318,
+      "sha256": "529db7d42e94f09f0a904f1b125a584fd3003d02e148e3cd48ccf7d8b23fc9f3"
+    },
+    "backend/app/data/processed/explainability/seed99_full_retry_explainability_summary.json": {
+      "relative_path": "backend/app/data/processed/explainability/seed99_full_retry_explainability_summary.json",
+      "exists": true,
+      "size_bytes": 1320,
+      "sha256": "d44d25a607ef7eda40cb5aff611c686fc9bcc5cee765c71c4361714ab33de2d0"
+    },
+    "backend/app/data/processed/explainability/seed99_full_retry_rank_shift_analysis.csv": {
+      "relative_path": "backend/app/data/processed/explainability/seed99_full_retry_rank_shift_analysis.csv",
+      "exists": true,
+      "size_bytes": 6971655,
+      "sha256": "856ed17b449792f861ee62f43685f4aaab4d31dc48a3d8c2c412672beb448094"
+    },
+    "backend/app/data/processed/explainability/seed99_perf_check_case_studies.md": {
+      "relative_path": "backend/app/data/processed/explainability/seed99_perf_check_case_studies.md",
+      "exists": true,
+      "size_bytes": 63100,
+      "sha256": "a1af8fe23fb28be37e6960057aa211e3ae917827a98e2585469dedf1ec1305e6"
+    },
+    "backend/app/data/processed/explainability/seed99_perf_check_explainability_audit.json": {
+      "relative_path": "backend/app/data/processed/explainability/seed99_perf_check_explainability_audit.json",
+      "exists": true,
+      "size_bytes": 14491,
+      "sha256": "e8a864bc77a8c684a01c0fa7623e3c641ba50c1e468423947908b0772e5acf8f"
+    },
+    "backend/app/data/processed/explainability/seed99_perf_check_explainability_examples.csv": {
+      "relative_path": "backend/app/data/processed/explainability/seed99_perf_check_explainability_examples.csv",
+      "exists": true,
+      "size_bytes": 1537142,
+      "sha256": "3a48d68ab3dba430820706cd3946a63e50c7da5c920f8824b8358657837687cc"
+    },
+    "backend/app/data/processed/explainability/seed99_perf_check_explainability_summary.json": {
+      "relative_path": "backend/app/data/processed/explainability/seed99_perf_check_explainability_summary.json",
+      "exists": true,
+      "size_bytes": 1313,
+      "sha256": "9bb1a5cb059546bf74a758345982914c6cf13006dd6532302cb4fde7ca1ec076"
+    },
+    "backend/app/data/processed/explainability/seed99_perf_check_rank_shift_analysis.csv": {
+      "relative_path": "backend/app/data/processed/explainability/seed99_perf_check_rank_shift_analysis.csv",
+      "exists": true,
+      "size_bytes": 709861,
+      "sha256": "5376a7e051c2eccbcd4156e086b37d7fcfdb1f65cdae62dcae3a119591e09244"
+    },
+    "backend/app/data/processed/explainability/seed99_rank_shift_analysis.csv": {
+      "relative_path": "backend/app/data/processed/explainability/seed99_rank_shift_analysis.csv",
+      "exists": true,
+      "size_bytes": 709861,
+      "sha256": "5376a7e051c2eccbcd4156e086b37d7fcfdb1f65cdae62dcae3a119591e09244"
+    },
+    "backend/app/data/processed/feedback_state.json": {
+      "relative_path": "backend/app/data/processed/feedback_state.json",
+      "exists": true,
+      "size_bytes": 302,
+      "sha256": "12ba96bbc7342701ed27fef112a2cec8f9402a2df9c45d5f0473df4c999de7c1"
+    },
+    "backend/app/data/processed/final_experiment_report_svd_agentic_hybrid.md": {
+      "relative_path": "backend/app/data/processed/final_experiment_report_svd_agentic_hybrid.md",
+      "exists": true,
+      "size_bytes": 9234,
+      "sha256": "ae932fad1afec5a6c768cfe078530b30ce0006b285e59f77f0b1063307ba6210"
+    },
+    "backend/app/data/processed/final_two_run_comparison_report.md": {
+      "relative_path": "backend/app/data/processed/final_two_run_comparison_report.md",
+      "exists": true,
+      "size_bytes": 3551,
+      "sha256": "6b513c810e8c73727eb12a8df36706fea12317d5c7c28e2840f2d34c2bb9822f"
+    },
+    "backend/app/data/processed/hybrid_svd_agentic_audit_report_top10_1000.md": {
+      "relative_path": "backend/app/data/processed/hybrid_svd_agentic_audit_report_top10_1000.md",
+      "exists": true,
+      "size_bytes": 3349,
+      "sha256": "4c83364f73882676bc48e1f77f9b100d1c03de92f60f9fbecfcf11ee3315268d"
+    },
+    "backend/app/data/processed/hybrid_svd_agentic_recommendations_top10_1000.csv": {
+      "relative_path": "backend/app/data/processed/hybrid_svd_agentic_recommendations_top10_1000.csv",
+      "exists": true,
+      "size_bytes": 5510052,
+      "sha256": "0feef112c5bbaf2801f52dce7d04da4378be844839775d41e97602855472e3f1"
+    },
+    "backend/app/data/processed/hybrid_svd_agentic_recommendations_top10_1000.json": {
+      "relative_path": "backend/app/data/processed/hybrid_svd_agentic_recommendations_top10_1000.json",
+      "exists": true,
+      "size_bytes": 6733807,
+      "sha256": "253c1984e6b06e61b8e5de4a18fdee7999d07eb93ea089dec659d74c66619a05"
+    },
+    "backend/app/data/processed/hybrid_svd_agentic_validation_report_top10_1000.json": {
+      "relative_path": "backend/app/data/processed/hybrid_svd_agentic_validation_report_top10_1000.json",
+      "exists": true,
+      "size_bytes": 832,
+      "sha256": "a474f114e7097923b340b2b5efd10862263d4bdb1d52327dbcd088ea93143714"
+    },
+    "backend/app/data/processed/metric_summary_top10_1000_three_methods.csv": {
+      "relative_path": "backend/app/data/processed/metric_summary_top10_1000_three_methods.csv",
+      "exists": true,
+      "size_bytes": 533,
+      "sha256": "658f9c3492e606e92b07b4c445c7280f4212d2a7e542e08a28d1f6497c972005"
+    },
+    "backend/app/data/processed/metric_summary_top10_1000_three_methods.json": {
+      "relative_path": "backend/app/data/processed/metric_summary_top10_1000_three_methods.json",
+      "exists": true,
+      "size_bytes": 835,
+      "sha256": "8e0a2a05dfa0622832414e001f0051d554760ae7327d6f766ea2e543f502eba5"
+    },
+    "backend/app/data/processed/per_user_metrics_top10_1000_three_methods.csv": {
+      "relative_path": "backend/app/data/processed/per_user_metrics_top10_1000_three_methods.csv",
+      "exists": true,
+      "size_bytes": 132935,
+      "sha256": "7f5055ae3b61bc3443092d57b65b624e5b941a0384f7993cfbd32013f769b466"
+    },
+    "backend/app/data/processed/per_user_metrics_top10_1000_three_methods.json": {
+      "relative_path": "backend/app/data/processed/per_user_metrics_top10_1000_three_methods.json",
+      "exists": true,
+      "size_bytes": 549030,
+      "sha256": "06447ba3b21bd2dc01f302a3673f7806742dc9fdc26d34bbeb1568801b267b61"
+    },
+    "backend/app/data/processed/processed_interactions_with_articles.csv": {
+      "relative_path": "backend/app/data/processed/processed_interactions_with_articles.csv",
+      "exists": true,
+      "size_bytes": 10919171417,
+      "sha256": "20f2432c171020766ff7ae101c7bba770091d2d79ccb32286b7b33fd262194c9"
+    },
+    "backend/app/data/processed/seed99_robustness_agentic_recommendations_top10_1000.csv": {
+      "relative_path": "backend/app/data/processed/seed99_robustness_agentic_recommendations_top10_1000.csv",
+      "exists": true,
+      "size_bytes": 6614631,
+      "sha256": "88b5bbad548effd41c78784d1d81d3ebf153780ffd20fd5997cbd28658b98cf7"
+    },
+    "backend/app/data/processed/seed99_robustness_agentic_recommendations_top10_1000.json": {
+      "relative_path": "backend/app/data/processed/seed99_robustness_agentic_recommendations_top10_1000.json",
+      "exists": true,
+      "size_bytes": 8225637,
+      "sha256": "a55413f0ee136c9e25119d964bf47e71f94e4bdcda510bb75cfb859a002c523f"
+    },
+    "backend/app/data/processed/seed99_robustness_agentic_top10_validation_report_1000.json": {
+      "relative_path": "backend/app/data/processed/seed99_robustness_agentic_top10_validation_report_1000.json",
+      "exists": true,
+      "size_bytes": 823,
+      "sha256": "b5beeff2087bcc3a4d27ff16aceafe119a6d436a749825e065fd36d0cd67b3ce"
+    },
+    "backend/app/data/processed/seed99_robustness_bootstrap_ci_report_top10_1000_three_methods.json": {
+      "relative_path": "backend/app/data/processed/seed99_robustness_bootstrap_ci_report_top10_1000_three_methods.json",
+      "exists": true,
+      "size_bytes": 2068,
+      "sha256": "45790b0f209c8b9a3ff984ce38a40fd730297c0fdc589c1d21e2d71a98b3a8a2"
+    },
+    "backend/app/data/processed/seed99_robustness_candidate_pools_top10_1000.json": {
+      "relative_path": "backend/app/data/processed/seed99_robustness_candidate_pools_top10_1000.json",
+      "exists": true,
+      "size_bytes": 5660807,
+      "sha256": "569228a7001865470df34c3c5fed39025a4cd10ed0b7d532c34eafe453c02be7"
+    },
+    "backend/app/data/processed/seed99_robustness_evaluation_base_table_top10_1000.csv": {
+      "relative_path": "backend/app/data/processed/seed99_robustness_evaluation_base_table_top10_1000.csv",
+      "exists": true,
+      "size_bytes": 3061306,
+      "sha256": "5c3f77fe5bc79b46b3d8f7d50e5a95526b5816653c8551a6987ede9ac2ffaf99"
+    },
+    "backend/app/data/processed/seed99_robustness_evaluation_base_table_top10_1000.json": {
+      "relative_path": "backend/app/data/processed/seed99_robustness_evaluation_base_table_top10_1000.json",
+      "exists": true,
+      "size_bytes": 5660807,
+      "sha256": "569228a7001865470df34c3c5fed39025a4cd10ed0b7d532c34eafe453c02be7"
+    },
+    "backend/app/data/processed/seed99_robustness_experiment_report_top10_1000.md": {
+      "relative_path": "backend/app/data/processed/seed99_robustness_experiment_report_top10_1000.md",
+      "exists": true,
+      "size_bytes": 5365,
+      "sha256": "c524adfead324ef04e6c7f0742380b4ea95ca50c7734ea7306f2b96ae0f268dd"
+    },
+    "backend/app/data/processed/seed99_robustness_hybrid_svd_agentic_recommendations_top10_1000.csv": {
+      "relative_path": "backend/app/data/processed/seed99_robustness_hybrid_svd_agentic_recommendations_top10_1000.csv",
+      "exists": true,
+      "size_bytes": 5509015,
+      "sha256": "b7bbfb949fc069b80ce2d17ea24f9168d738724055087c9c0e770f19e338dbbb"
+    },
+    "backend/app/data/processed/seed99_robustness_hybrid_svd_agentic_recommendations_top10_1000.json": {
+      "relative_path": "backend/app/data/processed/seed99_robustness_hybrid_svd_agentic_recommendations_top10_1000.json",
+      "exists": true,
+      "size_bytes": 6732770,
+      "sha256": "f4401e91e3f24bc6420e5073c19d02c6b060ee30a12b86491b93e7e2cfe1381c"
+    },
+    "backend/app/data/processed/seed99_robustness_hybrid_svd_agentic_validation_report_top10_1000.json": {
+      "relative_path": "backend/app/data/processed/seed99_robustness_hybrid_svd_agentic_validation_report_top10_1000.json",
+      "exists": true,
+      "size_bytes": 832,
+      "sha256": "cc36fb210f59e5badbab3e43742e1411cdd8ce1663771f89ddc42afb5706d249"
+    },
+    "backend/app/data/processed/seed99_robustness_metric_summary_top10_1000_three_methods.csv": {
+      "relative_path": "backend/app/data/processed/seed99_robustness_metric_summary_top10_1000_three_methods.csv",
+      "exists": true,
+      "size_bytes": 537,
+      "sha256": "a30bfce082b80ab7282ee4bbe4656a9c01881d83abecc1aac227540ca208177d"
+    },
+    "backend/app/data/processed/seed99_robustness_metric_summary_top10_1000_three_methods.json": {
+      "relative_path": "backend/app/data/processed/seed99_robustness_metric_summary_top10_1000_three_methods.json",
+      "exists": true,
+      "size_bytes": 839,
+      "sha256": "8525f046bb2ea6498c69b71e55a6079e72d55910639c8fb2bb7a9b91dbd0baa6"
+    },
+    "backend/app/data/processed/seed99_robustness_per_user_metrics_top10_1000_three_methods.csv": {
+      "relative_path": "backend/app/data/processed/seed99_robustness_per_user_metrics_top10_1000_three_methods.csv",
+      "exists": true,
+      "size_bytes": 133130,
+      "sha256": "ccb512be87340f7d03fba2bce4850c9b0e29c51307696943b4bed836d34db636"
+    },
+    "backend/app/data/processed/seed99_robustness_per_user_metrics_top10_1000_three_methods.json": {
+      "relative_path": "backend/app/data/processed/seed99_robustness_per_user_metrics_top10_1000_three_methods.json",
+      "exists": true,
+      "size_bytes": 549057,
+      "sha256": "1a6ad07e3185c9bd196e57ba76150cafff2257fa727b2392198336459fe69f1b"
+    },
+    "backend/app/data/processed/seed99_robustness_svd_baseline_validation_report_top10_1000.json": {
+      "relative_path": "backend/app/data/processed/seed99_robustness_svd_baseline_validation_report_top10_1000.json",
+      "exists": true,
+      "size_bytes": 1034,
+      "sha256": "8cb9d9c3e25b219fb44bae363d1580185a1d66603245d1a0e7379f6882cb5294"
+    },
+    "backend/app/data/processed/seed99_robustness_svd_recommendations_top10_1000.csv": {
+      "relative_path": "backend/app/data/processed/seed99_robustness_svd_recommendations_top10_1000.csv",
+      "exists": true,
+      "size_bytes": 2837348,
+      "sha256": "83428bc1230abc267fadcc890cb4ddb20271145d06ec6e0fd397b8e6b00cd4ed"
+    },
+    "backend/app/data/processed/seed99_robustness_svd_recommendations_top10_1000.json": {
+      "relative_path": "backend/app/data/processed/seed99_robustness_svd_recommendations_top10_1000.json",
+      "exists": true,
+      "size_bytes": 3779116,
+      "sha256": "c77a3d196b0112498ab6770f10dd680a54cce59985bf0bacebd9954c56bfe80b"
+    },
+    "backend/app/data/processed/seed99_robustness_validation_report_top10_1000_three_methods.json": {
+      "relative_path": "backend/app/data/processed/seed99_robustness_validation_report_top10_1000_three_methods.json",
+      "exists": true,
+      "size_bytes": 524,
+      "sha256": "631bc55c558eb4046e667d4749927d2c726ea3867c3e1bb45e60305d62d41ca4"
+    },
+    "backend/app/data/processed/svd_baseline_validation_report_top10_1000.json": {
+      "relative_path": "backend/app/data/processed/svd_baseline_validation_report_top10_1000.json",
+      "exists": true,
+      "size_bytes": 1034,
+      "sha256": "3f7c0e8d02f2964ad5a7e862621311c0d5a7587c7610c285c5efd826aba72a98"
+    },
+    "backend/app/data/processed/svd_recommendations_top10_1000.csv": {
+      "relative_path": "backend/app/data/processed/svd_recommendations_top10_1000.csv",
+      "exists": true,
+      "size_bytes": 2837911,
+      "sha256": "f21a61e6d5389c5d003fad2bcf4a0883cba70f90db8f833abce47193582fc667"
+    },
+    "backend/app/data/processed/svd_recommendations_top10_1000.json": {
+      "relative_path": "backend/app/data/processed/svd_recommendations_top10_1000.json",
+      "exists": true,
+      "size_bytes": 3779679,
+      "sha256": "d6634d92313fd60be17ada476f8f7875c9ae6517c3bbfca3ff9f6cea2f35c30a"
+    },
+    "experiments/experiment1_deterministic_replay/input/experiment1_original_frozen_input_1000.json": {
+      "relative_path": "experiments/experiment1_deterministic_replay/input/experiment1_original_frozen_input_1000.json",
+      "exists": true,
+      "size_bytes": 5621254,
+      "sha256": "427da0d55124107551602b12dad82ee05b0eae1e296ee9f612aea8326080d08e"
+    }
+  },
+  "protected_files_pre_provenance": {
+    "backend/app/data/processed/agentic_recommendations_top10_1000.csv": {
+      "relative_path": "backend/app/data/processed/agentic_recommendations_top10_1000.csv",
+      "exists": true,
+      "size_bytes": 6619486,
+      "sha256": "9f4bd6e4d5c3c45d08dfc0f0739c68d469f2f1e0f4525c92027b8b78a2b2712b"
+    },
+    "backend/app/data/processed/agentic_recommendations_top10_1000.json": {
+      "relative_path": "backend/app/data/processed/agentic_recommendations_top10_1000.json",
+      "exists": true,
+      "size_bytes": 8231967,
+      "sha256": "426f71f0c98af9c256bab4b8c9610971aef20621deb93c1a1f26db1fabbd15e0"
+    },
+    "backend/app/data/processed/agentic_top10_validation_report_1000.json": {
+      "relative_path": "backend/app/data/processed/agentic_top10_validation_report_1000.json",
+      "exists": true,
+      "size_bytes": 823,
+      "sha256": "94a618075cc36ac67296f33d700f6cabdeb1f9716ce37bec0d290425218234ad"
+    },
+    "backend/app/data/processed/bootstrap_ci_report_top10_1000_three_methods.json": {
+      "relative_path": "backend/app/data/processed/bootstrap_ci_report_top10_1000_three_methods.json",
+      "exists": true,
+      "size_bytes": 2081,
+      "sha256": "05149529c8c5f5324dfd31ecb448025cc8534215257e2a67fbb6dc459f614639"
+    },
+    "backend/app/data/processed/candidate_pool_validation_report_svd_top10_1000.json": {
+      "relative_path": "backend/app/data/processed/candidate_pool_validation_report_svd_top10_1000.json",
+      "exists": true,
+      "size_bytes": 1155,
+      "sha256": "cccd17fac2f6b8eb69b7260c2b413016311ac9f96b3c034df4f769c289e57310"
+    },
+    "backend/app/data/processed/diagnostic_report_svd_vs_agentic_1000.md": {
+      "relative_path": "backend/app/data/processed/diagnostic_report_svd_vs_agentic_1000.md",
+      "exists": true,
+      "size_bytes": 11997,
+      "sha256": "926f485ab3a261f449b14654a45e9e74f8d39c28fc27a1ebe41518fa4dc1db0c"
+    },
+    "backend/app/data/processed/evaluation_base_table_svd_top10_1000.csv": {
+      "relative_path": "backend/app/data/processed/evaluation_base_table_svd_top10_1000.csv",
+      "exists": true,
+      "size_bytes": 3032767,
+      "sha256": "9a15e1b2305cbae1dd91275d49faf5955f39fd9ce9f3d793e870c96f9c0f7805"
+    },
+    "backend/app/data/processed/evaluation_base_table_svd_top10_1000.json": {
+      "relative_path": "backend/app/data/processed/evaluation_base_table_svd_top10_1000.json",
+      "exists": true,
+      "size_bytes": 5621254,
+      "sha256": "427da0d55124107551602b12dad82ee05b0eae1e296ee9f612aea8326080d08e"
+    },
+    "backend/app/data/processed/explainability/seed99_case_studies.md": {
+      "relative_path": "backend/app/data/processed/explainability/seed99_case_studies.md",
+      "exists": true,
+      "size_bytes": 63100,
+      "sha256": "a1af8fe23fb28be37e6960057aa211e3ae917827a98e2585469dedf1ec1305e6"
+    },
+    "backend/app/data/processed/explainability/seed99_explainability_audit.json": {
+      "relative_path": "backend/app/data/processed/explainability/seed99_explainability_audit.json",
+      "exists": true,
+      "size_bytes": 14480,
+      "sha256": "95ae447a6ff4e5adb52827c05bd8b65f0f50a0d2bc3aa389fb4515159cd14c87"
+    },
+    "backend/app/data/processed/explainability/seed99_explainability_examples.csv": {
+      "relative_path": "backend/app/data/processed/explainability/seed99_explainability_examples.csv",
+      "exists": true,
+      "size_bytes": 1537142,
+      "sha256": "3a48d68ab3dba430820706cd3946a63e50c7da5c920f8824b8358657837687cc"
+    },
+    "backend/app/data/processed/explainability/seed99_explainability_summary.json": {
+      "relative_path": "backend/app/data/processed/explainability/seed99_explainability_summary.json",
+      "exists": true,
+      "size_bytes": 1302,
+      "sha256": "83cafeadea974b113fad00b658deaf2d59be28977338a736d565c0d305dc75ea"
+    },
+    "backend/app/data/processed/explainability/seed99_full_retry_case_studies.md": {
+      "relative_path": "backend/app/data/processed/explainability/seed99_full_retry_case_studies.md",
+      "exists": true,
+      "size_bytes": 61799,
+      "sha256": "c63052a1fc99246de29de9f6e53d2a3d104011e323a07cabefaa1d9d7151aed8"
+    },
+    "backend/app/data/processed/explainability/seed99_full_retry_explainability_audit.json": {
+      "relative_path": "backend/app/data/processed/explainability/seed99_full_retry_explainability_audit.json",
+      "exists": true,
+      "size_bytes": 18165,
+      "sha256": "2e64b3f68f469d297a13d868812e10ef60adae7c160bcabb928df9c301c6f92d"
+    },
+    "backend/app/data/processed/explainability/seed99_full_retry_explainability_examples.csv": {
+      "relative_path": "backend/app/data/processed/explainability/seed99_full_retry_explainability_examples.csv",
+      "exists": true,
+      "size_bytes": 15153318,
+      "sha256": "529db7d42e94f09f0a904f1b125a584fd3003d02e148e3cd48ccf7d8b23fc9f3"
+    },
+    "backend/app/data/processed/explainability/seed99_full_retry_explainability_summary.json": {
+      "relative_path": "backend/app/data/processed/explainability/seed99_full_retry_explainability_summary.json",
+      "exists": true,
+      "size_bytes": 1320,
+      "sha256": "d44d25a607ef7eda40cb5aff611c686fc9bcc5cee765c71c4361714ab33de2d0"
+    },
+    "backend/app/data/processed/explainability/seed99_full_retry_rank_shift_analysis.csv": {
+      "relative_path": "backend/app/data/processed/explainability/seed99_full_retry_rank_shift_analysis.csv",
+      "exists": true,
+      "size_bytes": 6971655,
+      "sha256": "856ed17b449792f861ee62f43685f4aaab4d31dc48a3d8c2c412672beb448094"
+    },
+    "backend/app/data/processed/explainability/seed99_perf_check_case_studies.md": {
+      "relative_path": "backend/app/data/processed/explainability/seed99_perf_check_case_studies.md",
+      "exists": true,
+      "size_bytes": 63100,
+      "sha256": "a1af8fe23fb28be37e6960057aa211e3ae917827a98e2585469dedf1ec1305e6"
+    },
+    "backend/app/data/processed/explainability/seed99_perf_check_explainability_audit.json": {
+      "relative_path": "backend/app/data/processed/explainability/seed99_perf_check_explainability_audit.json",
+      "exists": true,
+      "size_bytes": 14491,
+      "sha256": "e8a864bc77a8c684a01c0fa7623e3c641ba50c1e468423947908b0772e5acf8f"
+    },
+    "backend/app/data/processed/explainability/seed99_perf_check_explainability_examples.csv": {
+      "relative_path": "backend/app/data/processed/explainability/seed99_perf_check_explainability_examples.csv",
+      "exists": true,
+      "size_bytes": 1537142,
+      "sha256": "3a48d68ab3dba430820706cd3946a63e50c7da5c920f8824b8358657837687cc"
+    },
+    "backend/app/data/processed/explainability/seed99_perf_check_explainability_summary.json": {
+      "relative_path": "backend/app/data/processed/explainability/seed99_perf_check_explainability_summary.json",
+      "exists": true,
+      "size_bytes": 1313,
+      "sha256": "9bb1a5cb059546bf74a758345982914c6cf13006dd6532302cb4fde7ca1ec076"
+    },
+    "backend/app/data/processed/explainability/seed99_perf_check_rank_shift_analysis.csv": {
+      "relative_path": "backend/app/data/processed/explainability/seed99_perf_check_rank_shift_analysis.csv",
+      "exists": true,
+      "size_bytes": 709861,
+      "sha256": "5376a7e051c2eccbcd4156e086b37d7fcfdb1f65cdae62dcae3a119591e09244"
+    },
+    "backend/app/data/processed/explainability/seed99_rank_shift_analysis.csv": {
+      "relative_path": "backend/app/data/processed/explainability/seed99_rank_shift_analysis.csv",
+      "exists": true,
+      "size_bytes": 709861,
+      "sha256": "5376a7e051c2eccbcd4156e086b37d7fcfdb1f65cdae62dcae3a119591e09244"
+    },
+    "backend/app/data/processed/feedback_state.json": {
+      "relative_path": "backend/app/data/processed/feedback_state.json",
+      "exists": true,
+      "size_bytes": 302,
+      "sha256": "12ba96bbc7342701ed27fef112a2cec8f9402a2df9c45d5f0473df4c999de7c1"
+    },
+    "backend/app/data/processed/final_experiment_report_svd_agentic_hybrid.md": {
+      "relative_path": "backend/app/data/processed/final_experiment_report_svd_agentic_hybrid.md",
+      "exists": true,
+      "size_bytes": 9234,
+      "sha256": "ae932fad1afec5a6c768cfe078530b30ce0006b285e59f77f0b1063307ba6210"
+    },
+    "backend/app/data/processed/final_two_run_comparison_report.md": {
+      "relative_path": "backend/app/data/processed/final_two_run_comparison_report.md",
+      "exists": true,
+      "size_bytes": 3551,
+      "sha256": "6b513c810e8c73727eb12a8df36706fea12317d5c7c28e2840f2d34c2bb9822f"
+    },
+    "backend/app/data/processed/hybrid_svd_agentic_audit_report_top10_1000.md": {
+      "relative_path": "backend/app/data/processed/hybrid_svd_agentic_audit_report_top10_1000.md",
+      "exists": true,
+      "size_bytes": 3349,
+      "sha256": "4c83364f73882676bc48e1f77f9b100d1c03de92f60f9fbecfcf11ee3315268d"
+    },
+    "backend/app/data/processed/hybrid_svd_agentic_recommendations_top10_1000.csv": {
+      "relative_path": "backend/app/data/processed/hybrid_svd_agentic_recommendations_top10_1000.csv",
+      "exists": true,
+      "size_bytes": 5510052,
+      "sha256": "0feef112c5bbaf2801f52dce7d04da4378be844839775d41e97602855472e3f1"
+    },
+    "backend/app/data/processed/hybrid_svd_agentic_recommendations_top10_1000.json": {
+      "relative_path": "backend/app/data/processed/hybrid_svd_agentic_recommendations_top10_1000.json",
+      "exists": true,
+      "size_bytes": 6733807,
+      "sha256": "253c1984e6b06e61b8e5de4a18fdee7999d07eb93ea089dec659d74c66619a05"
+    },
+    "backend/app/data/processed/hybrid_svd_agentic_validation_report_top10_1000.json": {
+      "relative_path": "backend/app/data/processed/hybrid_svd_agentic_validation_report_top10_1000.json",
+      "exists": true,
+      "size_bytes": 832,
+      "sha256": "a474f114e7097923b340b2b5efd10862263d4bdb1d52327dbcd088ea93143714"
+    },
+    "backend/app/data/processed/metric_summary_top10_1000_three_methods.csv": {
+      "relative_path": "backend/app/data/processed/metric_summary_top10_1000_three_methods.csv",
+      "exists": true,
+      "size_bytes": 533,
+      "sha256": "658f9c3492e606e92b07b4c445c7280f4212d2a7e542e08a28d1f6497c972005"
+    },
+    "backend/app/data/processed/metric_summary_top10_1000_three_methods.json": {
+      "relative_path": "backend/app/data/processed/metric_summary_top10_1000_three_methods.json",
+      "exists": true,
+      "size_bytes": 835,
+      "sha256": "8e0a2a05dfa0622832414e001f0051d554760ae7327d6f766ea2e543f502eba5"
+    },
+    "backend/app/data/processed/per_user_metrics_top10_1000_three_methods.csv": {
+      "relative_path": "backend/app/data/processed/per_user_metrics_top10_1000_three_methods.csv",
+      "exists": true,
+      "size_bytes": 132935,
+      "sha256": "7f5055ae3b61bc3443092d57b65b624e5b941a0384f7993cfbd32013f769b466"
+    },
+    "backend/app/data/processed/per_user_metrics_top10_1000_three_methods.json": {
+      "relative_path": "backend/app/data/processed/per_user_metrics_top10_1000_three_methods.json",
+      "exists": true,
+      "size_bytes": 549030,
+      "sha256": "06447ba3b21bd2dc01f302a3673f7806742dc9fdc26d34bbeb1568801b267b61"
+    },
+    "backend/app/data/processed/processed_interactions_with_articles.csv": {
+      "relative_path": "backend/app/data/processed/processed_interactions_with_articles.csv",
+      "exists": true,
+      "size_bytes": 10919171417,
+      "sha256": "20f2432c171020766ff7ae101c7bba770091d2d79ccb32286b7b33fd262194c9"
+    },
+    "backend/app/data/processed/seed99_robustness_agentic_recommendations_top10_1000.csv": {
+      "relative_path": "backend/app/data/processed/seed99_robustness_agentic_recommendations_top10_1000.csv",
+      "exists": true,
+      "size_bytes": 6614631,
+      "sha256": "88b5bbad548effd41c78784d1d81d3ebf153780ffd20fd5997cbd28658b98cf7"
+    },
+    "backend/app/data/processed/seed99_robustness_agentic_recommendations_top10_1000.json": {
+      "relative_path": "backend/app/data/processed/seed99_robustness_agentic_recommendations_top10_1000.json",
+      "exists": true,
+      "size_bytes": 8225637,
+      "sha256": "a55413f0ee136c9e25119d964bf47e71f94e4bdcda510bb75cfb859a002c523f"
+    },
+    "backend/app/data/processed/seed99_robustness_agentic_top10_validation_report_1000.json": {
+      "relative_path": "backend/app/data/processed/seed99_robustness_agentic_top10_validation_report_1000.json",
+      "exists": true,
+      "size_bytes": 823,
+      "sha256": "b5beeff2087bcc3a4d27ff16aceafe119a6d436a749825e065fd36d0cd67b3ce"
+    },
+    "backend/app/data/processed/seed99_robustness_bootstrap_ci_report_top10_1000_three_methods.json": {
+      "relative_path": "backend/app/data/processed/seed99_robustness_bootstrap_ci_report_top10_1000_three_methods.json",
+      "exists": true,
+      "size_bytes": 2068,
+      "sha256": "45790b0f209c8b9a3ff984ce38a40fd730297c0fdc589c1d21e2d71a98b3a8a2"
+    },
+    "backend/app/data/processed/seed99_robustness_candidate_pools_top10_1000.json": {
+      "relative_path": "backend/app/data/processed/seed99_robustness_candidate_pools_top10_1000.json",
+      "exists": true,
+      "size_bytes": 5660807,
+      "sha256": "569228a7001865470df34c3c5fed39025a4cd10ed0b7d532c34eafe453c02be7"
+    },
+    "backend/app/data/processed/seed99_robustness_evaluation_base_table_top10_1000.csv": {
+      "relative_path": "backend/app/data/processed/seed99_robustness_evaluation_base_table_top10_1000.csv",
+      "exists": true,
+      "size_bytes": 3061306,
+      "sha256": "5c3f77fe5bc79b46b3d8f7d50e5a95526b5816653c8551a6987ede9ac2ffaf99"
+    },
+    "backend/app/data/processed/seed99_robustness_evaluation_base_table_top10_1000.json": {
+      "relative_path": "backend/app/data/processed/seed99_robustness_evaluation_base_table_top10_1000.json",
+      "exists": true,
+      "size_bytes": 5660807,
+      "sha256": "569228a7001865470df34c3c5fed39025a4cd10ed0b7d532c34eafe453c02be7"
+    },
+    "backend/app/data/processed/seed99_robustness_experiment_report_top10_1000.md": {
+      "relative_path": "backend/app/data/processed/seed99_robustness_experiment_report_top10_1000.md",
+      "exists": true,
+      "size_bytes": 5365,
+      "sha256": "c524adfead324ef04e6c7f0742380b4ea95ca50c7734ea7306f2b96ae0f268dd"
+    },
+    "backend/app/data/processed/seed99_robustness_hybrid_svd_agentic_recommendations_top10_1000.csv": {
+      "relative_path": "backend/app/data/processed/seed99_robustness_hybrid_svd_agentic_recommendations_top10_1000.csv",
+      "exists": true,
+      "size_bytes": 5509015,
+      "sha256": "b7bbfb949fc069b80ce2d17ea24f9168d738724055087c9c0e770f19e338dbbb"
+    },
+    "backend/app/data/processed/seed99_robustness_hybrid_svd_agentic_recommendations_top10_1000.json": {
+      "relative_path": "backend/app/data/processed/seed99_robustness_hybrid_svd_agentic_recommendations_top10_1000.json",
+      "exists": true,
+      "size_bytes": 6732770,
+      "sha256": "f4401e91e3f24bc6420e5073c19d02c6b060ee30a12b86491b93e7e2cfe1381c"
+    },
+    "backend/app/data/processed/seed99_robustness_hybrid_svd_agentic_validation_report_top10_1000.json": {
+      "relative_path": "backend/app/data/processed/seed99_robustness_hybrid_svd_agentic_validation_report_top10_1000.json",
+      "exists": true,
+      "size_bytes": 832,
+      "sha256": "cc36fb210f59e5badbab3e43742e1411cdd8ce1663771f89ddc42afb5706d249"
+    },
+    "backend/app/data/processed/seed99_robustness_metric_summary_top10_1000_three_methods.csv": {
+      "relative_path": "backend/app/data/processed/seed99_robustness_metric_summary_top10_1000_three_methods.csv",
+      "exists": true,
+      "size_bytes": 537,
+      "sha256": "a30bfce082b80ab7282ee4bbe4656a9c01881d83abecc1aac227540ca208177d"
+    },
+    "backend/app/data/processed/seed99_robustness_metric_summary_top10_1000_three_methods.json": {
+      "relative_path": "backend/app/data/processed/seed99_robustness_metric_summary_top10_1000_three_methods.json",
+      "exists": true,
+      "size_bytes": 839,
+      "sha256": "8525f046bb2ea6498c69b71e55a6079e72d55910639c8fb2bb7a9b91dbd0baa6"
+    },
+    "backend/app/data/processed/seed99_robustness_per_user_metrics_top10_1000_three_methods.csv": {
+      "relative_path": "backend/app/data/processed/seed99_robustness_per_user_metrics_top10_1000_three_methods.csv",
+      "exists": true,
+      "size_bytes": 133130,
+      "sha256": "ccb512be87340f7d03fba2bce4850c9b0e29c51307696943b4bed836d34db636"
+    },
+    "backend/app/data/processed/seed99_robustness_per_user_metrics_top10_1000_three_methods.json": {
+      "relative_path": "backend/app/data/processed/seed99_robustness_per_user_metrics_top10_1000_three_methods.json",
+      "exists": true,
+      "size_bytes": 549057,
+      "sha256": "1a6ad07e3185c9bd196e57ba76150cafff2257fa727b2392198336459fe69f1b"
+    },
+    "backend/app/data/processed/seed99_robustness_svd_baseline_validation_report_top10_1000.json": {
+      "relative_path": "backend/app/data/processed/seed99_robustness_svd_baseline_validation_report_top10_1000.json",
+      "exists": true,
+      "size_bytes": 1034,
+      "sha256": "8cb9d9c3e25b219fb44bae363d1580185a1d66603245d1a0e7379f6882cb5294"
+    },
+    "backend/app/data/processed/seed99_robustness_svd_recommendations_top10_1000.csv": {
+      "relative_path": "backend/app/data/processed/seed99_robustness_svd_recommendations_top10_1000.csv",
+      "exists": true,
+      "size_bytes": 2837348,
+      "sha256": "83428bc1230abc267fadcc890cb4ddb20271145d06ec6e0fd397b8e6b00cd4ed"
+    },
+    "backend/app/data/processed/seed99_robustness_svd_recommendations_top10_1000.json": {
+      "relative_path": "backend/app/data/processed/seed99_robustness_svd_recommendations_top10_1000.json",
+      "exists": true,
+      "size_bytes": 3779116,
+      "sha256": "c77a3d196b0112498ab6770f10dd680a54cce59985bf0bacebd9954c56bfe80b"
+    },
+    "backend/app/data/processed/seed99_robustness_validation_report_top10_1000_three_methods.json": {
+      "relative_path": "backend/app/data/processed/seed99_robustness_validation_report_top10_1000_three_methods.json",
+      "exists": true,
+      "size_bytes": 524,
+      "sha256": "631bc55c558eb4046e667d4749927d2c726ea3867c3e1bb45e60305d62d41ca4"
+    },
+    "backend/app/data/processed/svd_baseline_validation_report_top10_1000.json": {
+      "relative_path": "backend/app/data/processed/svd_baseline_validation_report_top10_1000.json",
+      "exists": true,
+      "size_bytes": 1034,
+      "sha256": "3f7c0e8d02f2964ad5a7e862621311c0d5a7587c7610c285c5efd826aba72a98"
+    },
+    "backend/app/data/processed/svd_recommendations_top10_1000.csv": {
+      "relative_path": "backend/app/data/processed/svd_recommendations_top10_1000.csv",
+      "exists": true,
+      "size_bytes": 2837911,
+      "sha256": "f21a61e6d5389c5d003fad2bcf4a0883cba70f90db8f833abce47193582fc667"
+    },
+    "backend/app/data/processed/svd_recommendations_top10_1000.json": {
+      "relative_path": "backend/app/data/processed/svd_recommendations_top10_1000.json",
+      "exists": true,
+      "size_bytes": 3779679,
+      "sha256": "d6634d92313fd60be17ada476f8f7875c9ae6517c3bbfca3ff9f6cea2f35c30a"
+    },
+    "experiments/experiment1_deterministic_replay/input/experiment1_original_frozen_input_1000.json": {
+      "relative_path": "experiments/experiment1_deterministic_replay/input/experiment1_original_frozen_input_1000.json",
+      "exists": true,
+      "size_bytes": 5621254,
+      "sha256": "427da0d55124107551602b12dad82ee05b0eae1e296ee9f612aea8326080d08e"
+    }
+  },
+  "protected_files_changed_pre_provenance": [],
+  "feedback_state_isolation": {
+    "override_path": "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke6_feedback_state.json",
+    "override_path_exists_before_run": false,
+    "shared_feedback_path_used_for_writes": false,
+    "expected_base_weights": {
+      "category_weight": 1.0,
+      "colour_weight": 1.0,
+      "product_type_weight": 1.0,
+      "appearance_weight": 1.0,
+      "diversity_penalty": 1.0
+    }
+  },
+  "openai_guard_result": {
+    "openai_api_key_existed_before_removal": false,
+    "openai_api_key_exists_during_execution": false,
+    "blocked_method_names": [
+      "infer_user_intent",
+      "generate_explanation",
+      "generate_for_user",
+      "build_candidate_pools",
+      "_request_structured_completion"
+    ],
+    "attempted_openai_call_count": 0,
+    "completed_openai_call_count": 0
+  },
+  "validation_result": {
+    "evaluation_rows": [
+      {
+        "customer_id": "08e5a409b104a26b85ed957286de5bc3ff21aea5e12f6c6ea3f1af6f3e9c3f14",
+        "customer_id_is_string": true,
+        "candidate_pool_size_is_100": true,
+        "candidate_pool_ids_are_strings": true,
+        "candidate_pool_has_unique_ids": true,
+        "ground_truth_matches_frozen_input": true,
+        "ground_truth_inside_candidate_pool": true
+      },
+      {
+        "customer_id": "0d784dd0de0aeb1e23101e2bad64b54ce6411a5ceb6d280517aae2b8b45ca54b",
+        "customer_id_is_string": true,
+        "candidate_pool_size_is_100": true,
+        "candidate_pool_ids_are_strings": true,
+        "candidate_pool_has_unique_ids": true,
+        "ground_truth_matches_frozen_input": true,
+        "ground_truth_inside_candidate_pool": true
+      },
+      {
+        "customer_id": "1b0d82881e5dacce207e6dbc0fb31afb20bec9d6a9d5757556d3334d239e2359",
+        "customer_id_is_string": true,
+        "candidate_pool_size_is_100": true,
+        "candidate_pool_ids_are_strings": true,
+        "candidate_pool_has_unique_ids": true,
+        "ground_truth_matches_frozen_input": true,
+        "ground_truth_inside_candidate_pool": true
+      }
+    ],
+    "svd_rows": [
+      {
+        "method": "svd",
+        "customer_id": "08e5a409b104a26b85ed957286de5bc3ff21aea5e12f6c6ea3f1af6f3e9c3f14",
+        "customer_id_is_string": true,
+        "ground_truth_matches_frozen_input": true,
+        "recommendation_count_is_10": true,
+        "recommendation_article_ids_are_strings": true,
+        "no_duplicate_recommendations": true,
+        "all_recommendations_inside_frozen_candidate_pool": true,
+        "users_match_frozen_input": true,
+        "direct_training_item_intersection": [],
+        "direct_training_item_leakage": false,
+        "saved_leakage_flag_present": true,
+        "saved_flag_consistent_with_direct_check": true
+      },
+      {
+        "method": "svd",
+        "customer_id": "0d784dd0de0aeb1e23101e2bad64b54ce6411a5ceb6d280517aae2b8b45ca54b",
+        "customer_id_is_string": true,
+        "ground_truth_matches_frozen_input": true,
+        "recommendation_count_is_10": true,
+        "recommendation_article_ids_are_strings": true,
+        "no_duplicate_recommendations": true,
+        "all_recommendations_inside_frozen_candidate_pool": true,
+        "users_match_frozen_input": true,
+        "direct_training_item_intersection": [],
+        "direct_training_item_leakage": false,
+        "saved_leakage_flag_present": true,
+        "saved_flag_consistent_with_direct_check": true
+      },
+      {
+        "method": "svd",
+        "customer_id": "1b0d82881e5dacce207e6dbc0fb31afb20bec9d6a9d5757556d3334d239e2359",
+        "customer_id_is_string": true,
+        "ground_truth_matches_frozen_input": true,
+        "recommendation_count_is_10": true,
+        "recommendation_article_ids_are_strings": true,
+        "no_duplicate_recommendations": true,
+        "all_recommendations_inside_frozen_candidate_pool": true,
+        "users_match_frozen_input": true,
+        "direct_training_item_intersection": [],
+        "direct_training_item_leakage": false,
+        "saved_leakage_flag_present": true,
+        "saved_flag_consistent_with_direct_check": true
+      }
+    ],
+    "agentic_rows": [
+      {
+        "method": "agentic",
+        "customer_id": "08e5a409b104a26b85ed957286de5bc3ff21aea5e12f6c6ea3f1af6f3e9c3f14",
+        "customer_id_is_string": true,
+        "ground_truth_matches_frozen_input": true,
+        "recommendation_count_is_10": true,
+        "recommendation_article_ids_are_strings": true,
+        "no_duplicate_recommendations": true,
+        "all_recommendations_inside_frozen_candidate_pool": true,
+        "users_match_frozen_input": true,
+        "direct_training_item_intersection": [],
+        "direct_training_item_leakage": false,
+        "saved_leakage_flag_present": true,
+        "saved_flag_consistent_with_direct_check": true
+      },
+      {
+        "method": "agentic",
+        "customer_id": "0d784dd0de0aeb1e23101e2bad64b54ce6411a5ceb6d280517aae2b8b45ca54b",
+        "customer_id_is_string": true,
+        "ground_truth_matches_frozen_input": true,
+        "recommendation_count_is_10": true,
+        "recommendation_article_ids_are_strings": true,
+        "no_duplicate_recommendations": true,
+        "all_recommendations_inside_frozen_candidate_pool": true,
+        "users_match_frozen_input": true,
+        "direct_training_item_intersection": [],
+        "direct_training_item_leakage": false,
+        "saved_leakage_flag_present": true,
+        "saved_flag_consistent_with_direct_check": true
+      },
+      {
+        "method": "agentic",
+        "customer_id": "1b0d82881e5dacce207e6dbc0fb31afb20bec9d6a9d5757556d3334d239e2359",
+        "customer_id_is_string": true,
+        "ground_truth_matches_frozen_input": true,
+        "recommendation_count_is_10": true,
+        "recommendation_article_ids_are_strings": true,
+        "no_duplicate_recommendations": true,
+        "all_recommendations_inside_frozen_candidate_pool": true,
+        "users_match_frozen_input": true,
+        "direct_training_item_intersection": [],
+        "direct_training_item_leakage": false,
+        "saved_leakage_flag_present": true,
+        "saved_flag_consistent_with_direct_check": true
+      }
+    ],
+    "hybrid_rows": [
+      {
+        "method": "hybrid",
+        "customer_id": "08e5a409b104a26b85ed957286de5bc3ff21aea5e12f6c6ea3f1af6f3e9c3f14",
+        "customer_id_is_string": true,
+        "ground_truth_matches_frozen_input": true,
+        "recommendation_count_is_10": true,
+        "recommendation_article_ids_are_strings": true,
+        "no_duplicate_recommendations": true,
+        "all_recommendations_inside_frozen_candidate_pool": true,
+        "users_match_frozen_input": true,
+        "direct_training_item_intersection": [],
+        "direct_training_item_leakage": false,
+        "saved_leakage_flag_present": true,
+        "saved_flag_consistent_with_direct_check": true
+      },
+      {
+        "method": "hybrid",
+        "customer_id": "0d784dd0de0aeb1e23101e2bad64b54ce6411a5ceb6d280517aae2b8b45ca54b",
+        "customer_id_is_string": true,
+        "ground_truth_matches_frozen_input": true,
+        "recommendation_count_is_10": true,
+        "recommendation_article_ids_are_strings": true,
+        "no_duplicate_recommendations": true,
+        "all_recommendations_inside_frozen_candidate_pool": true,
+        "users_match_frozen_input": true,
+        "direct_training_item_intersection": [],
+        "direct_training_item_leakage": false,
+        "saved_leakage_flag_present": true,
+        "saved_flag_consistent_with_direct_check": true
+      },
+      {
+        "method": "hybrid",
+        "customer_id": "1b0d82881e5dacce207e6dbc0fb31afb20bec9d6a9d5757556d3334d239e2359",
+        "customer_id_is_string": true,
+        "ground_truth_matches_frozen_input": true,
+        "recommendation_count_is_10": true,
+        "recommendation_article_ids_are_strings": true,
+        "no_duplicate_recommendations": true,
+        "all_recommendations_inside_frozen_candidate_pool": true,
+        "users_match_frozen_input": true,
+        "direct_training_item_intersection": [],
+        "direct_training_item_leakage": false,
+        "saved_leakage_flag_present": true,
+        "saved_flag_consistent_with_direct_check": true
+      }
+    ],
+    "summary_validation": {
+      "users_evaluated": 3,
+      "users_with_svd_metrics": 3,
+      "users_with_agentic_metrics": 3,
+      "users_with_hybrid_metrics": 3,
+      "svd_top_10_count_check": 3,
+      "agentic_top_10_count_check": 3,
+      "hybrid_top_10_count_check": 3,
+      "svd_recommendations_inside_candidate_pool_check": 3,
+      "agentic_recommendations_inside_candidate_pool_check": 3,
+      "hybrid_recommendations_inside_candidate_pool_check": 3,
+      "missing_metadata_for_diversity_count": 0,
+      "metric_calculation_errors": []
+    },
+    "failures": [],
+    "ok": true
+  },
+  "processed_output_paths": {
+    "evaluation_json": "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke6_processed_data/experiment1_deterministic_replay_smoke6_evaluation_base_table_top10_3.json",
+    "evaluation_csv": "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke6_processed_data/experiment1_deterministic_replay_smoke6_evaluation_base_table_top10_3.csv",
+    "candidate_pools_json": "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke6_processed_data/experiment1_deterministic_replay_smoke6_candidate_pools_top10_3.json",
+    "svd_json": "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke6_processed_data/experiment1_deterministic_replay_smoke6_svd_recommendations_top10_3.json",
+    "svd_csv": "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke6_processed_data/experiment1_deterministic_replay_smoke6_svd_recommendations_top10_3.csv",
+    "svd_validation_json": "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke6_processed_data/experiment1_deterministic_replay_smoke6_svd_baseline_validation_report_top10_3.json",
+    "agentic_json": "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke6_processed_data/experiment1_deterministic_replay_smoke6_agentic_recommendations_top10_3.json",
+    "agentic_csv": "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke6_processed_data/experiment1_deterministic_replay_smoke6_agentic_recommendations_top10_3.csv",
+    "agentic_validation_json": "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke6_processed_data/experiment1_deterministic_replay_smoke6_agentic_top10_validation_report_3.json",
+    "hybrid_json": "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke6_processed_data/experiment1_deterministic_replay_smoke6_hybrid_svd_agentic_recommendations_top10_3.json",
+    "hybrid_csv": "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke6_processed_data/experiment1_deterministic_replay_smoke6_hybrid_svd_agentic_recommendations_top10_3.csv",
+    "hybrid_validation_json": "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke6_processed_data/experiment1_deterministic_replay_smoke6_hybrid_svd_agentic_validation_report_top10_3.json",
+    "per_user_json": "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke6_processed_data/experiment1_deterministic_replay_smoke6_per_user_metrics_top10_3_three_methods.json",
+    "per_user_csv": "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke6_processed_data/experiment1_deterministic_replay_smoke6_per_user_metrics_top10_3_three_methods.csv",
+    "metric_summary_json": "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke6_processed_data/experiment1_deterministic_replay_smoke6_metric_summary_top10_3_three_methods.json",
+    "metric_summary_csv": "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke6_processed_data/experiment1_deterministic_replay_smoke6_metric_summary_top10_3_three_methods.csv",
+    "validation_json": "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke6_processed_data/experiment1_deterministic_replay_smoke6_validation_report_top10_3_three_methods.json",
+    "bootstrap_json": "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke6_processed_data/experiment1_deterministic_replay_smoke6_bootstrap_ci_report_top10_3_three_methods.json",
+    "experiment_report_md": "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke6_processed_data/experiment1_deterministic_replay_smoke6_experiment_report_top10_3.md"
+  },
+  "runner_output_paths": {
+    "run_configuration_json": "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke6_run_configuration.json",
+    "provenance_json": "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke6_provenance.json",
+    "openai_call_provenance_json": "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke6_openai_call_provenance.json",
+    "created_files_json": "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke6_created_files.json",
+    "pairwise_ci_json": "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke6_pairwise_ci_report_top10_3_three_methods.json"
+  }
+}

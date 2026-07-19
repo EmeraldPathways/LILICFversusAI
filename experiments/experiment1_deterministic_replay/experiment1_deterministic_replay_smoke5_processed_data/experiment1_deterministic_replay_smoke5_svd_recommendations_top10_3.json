@@ -1,0 +1,341 @@
+[
+  {
+    "customer_id": "08e5a409b104a26b85ed957286de5bc3ff21aea5e12f6c6ea3f1af6f3e9c3f14",
+    "method": "svd_matrix_factorisation",
+    "ground_truth_article_id": "0918292004",
+    "candidate_pool_size": 100,
+    "top_10_recommendations": [
+      {
+        "rank": 1,
+        "article_id": "0918292004",
+        "score": 0.227159,
+        "product_type_name": "Leggings/Tights",
+        "product_group_name": "Garment Lower body",
+        "colour_group_name": "Greenish Khaki",
+        "graphical_appearance_name": "Melange",
+        "garment_group_name": "Jersey Fancy"
+      },
+      {
+        "rank": 2,
+        "article_id": "0589017001",
+        "score": 0.021949,
+        "product_type_name": "Bra",
+        "product_group_name": "Underwear",
+        "colour_group_name": "Light Beige",
+        "graphical_appearance_name": "Solid",
+        "garment_group_name": "Under-, Nightwear"
+      },
+      {
+        "rank": 3,
+        "article_id": "0863000003",
+        "score": 0.019453,
+        "product_type_name": "Dress",
+        "product_group_name": "Garment Full body",
+        "colour_group_name": "White",
+        "graphical_appearance_name": "All over pattern",
+        "garment_group_name": "Dresses Ladies"
+      },
+      {
+        "rank": 4,
+        "article_id": "0685602005",
+        "score": 0.016969,
+        "product_type_name": "Swimwear bottom",
+        "product_group_name": "Swimwear",
+        "colour_group_name": "Black",
+        "graphical_appearance_name": "Solid",
+        "garment_group_name": "Swimwear"
+      },
+      {
+        "rank": 5,
+        "article_id": "0861514001",
+        "score": 0.01606,
+        "product_type_name": "Shorts",
+        "product_group_name": "Garment Lower body",
+        "colour_group_name": "Black",
+        "graphical_appearance_name": "Solid",
+        "garment_group_name": "Shorts"
+      },
+      {
+        "rank": 6,
+        "article_id": "0568013001",
+        "score": 0.013392,
+        "product_type_name": "Sweater",
+        "product_group_name": "Garment Upper body",
+        "colour_group_name": "Black",
+        "graphical_appearance_name": "Solid",
+        "garment_group_name": "Jersey Fancy"
+      },
+      {
+        "rank": 7,
+        "article_id": "0716670007",
+        "score": 0.012301,
+        "product_type_name": "Blouse",
+        "product_group_name": "Garment Upper body",
+        "colour_group_name": "Light Beige",
+        "graphical_appearance_name": "Solid",
+        "garment_group_name": "Blouses"
+      },
+      {
+        "rank": 8,
+        "article_id": "0767687004",
+        "score": 0.011444,
+        "product_type_name": "Bra",
+        "product_group_name": "Underwear",
+        "colour_group_name": "Dark Green",
+        "graphical_appearance_name": "Solid",
+        "garment_group_name": "Jersey Fancy"
+      },
+      {
+        "rank": 9,
+        "article_id": "0659854006",
+        "score": 0.010379,
+        "product_type_name": "Bikini top",
+        "product_group_name": "Swimwear",
+        "colour_group_name": "White",
+        "graphical_appearance_name": "All over pattern",
+        "garment_group_name": "Swimwear"
+      },
+      {
+        "rank": 10,
+        "article_id": "0797942001",
+        "score": 0.010033,
+        "product_type_name": "Blouse",
+        "product_group_name": "Garment Upper body",
+        "colour_group_name": "Black",
+        "graphical_appearance_name": "All over pattern",
+        "garment_group_name": "Blouses"
+      }
+    ],
+    "recommendation_count": 10,
+    "top_10_all_inside_candidate_pool": true,
+    "top_10_contains_training_items": false,
+    "svd_scoreable_candidate_count": 100,
+    "svd_unscoreable_candidate_count": 0
+  },
+  {
+    "customer_id": "0d784dd0de0aeb1e23101e2bad64b54ce6411a5ceb6d280517aae2b8b45ca54b",
+    "method": "svd_matrix_factorisation",
+    "ground_truth_article_id": "0907188001",
+    "candidate_pool_size": 100,
+    "top_10_recommendations": [
+      {
+        "rank": 1,
+        "article_id": "0879781001",
+        "score": 0.243645,
+        "product_type_name": "Top",
+        "product_group_name": "Garment Upper body",
+        "colour_group_name": "Black",
+        "graphical_appearance_name": "Solid",
+        "garment_group_name": "Knitwear"
+      },
+      {
+        "rank": 2,
+        "article_id": "0708432005",
+        "score": 0.169149,
+        "product_type_name": "Top",
+        "product_group_name": "Garment Upper body",
+        "colour_group_name": "Green",
+        "graphical_appearance_name": "Solid",
+        "garment_group_name": "Jersey Fancy"
+      },
+      {
+        "rank": 3,
+        "article_id": "0720100001",
+        "score": 0.082624,
+        "product_type_name": "Shorts",
+        "product_group_name": "Garment Lower body",
+        "colour_group_name": "Black",
+        "graphical_appearance_name": "Mixed solid/pattern",
+        "garment_group_name": "Unknown"
+      },
+      {
+        "rank": 4,
+        "article_id": "0685844002",
+        "score": 0.057328,
+        "product_type_name": "Cardigan",
+        "product_group_name": "Garment Upper body",
+        "colour_group_name": "Dark Pink",
+        "graphical_appearance_name": "Solid",
+        "garment_group_name": "Knitwear"
+      },
+      {
+        "rank": 5,
+        "article_id": "0730863018",
+        "score": 0.054344,
+        "product_type_name": "Trousers",
+        "product_group_name": "Garment Lower body",
+        "colour_group_name": "Black",
+        "graphical_appearance_name": "Denim",
+        "garment_group_name": "Trousers Denim"
+      },
+      {
+        "rank": 6,
+        "article_id": "0774546002",
+        "score": 0.042613,
+        "product_type_name": "Bikini top",
+        "product_group_name": "Swimwear",
+        "colour_group_name": "Black",
+        "graphical_appearance_name": "Solid",
+        "garment_group_name": "Swimwear"
+      },
+      {
+        "rank": 7,
+        "article_id": "0714730003",
+        "score": 0.032788,
+        "product_type_name": "Jumpsuit/Playsuit",
+        "product_group_name": "Garment Full body",
+        "colour_group_name": "Red",
+        "graphical_appearance_name": "All over pattern",
+        "garment_group_name": "Dresses Ladies"
+      },
+      {
+        "rank": 8,
+        "article_id": "0907188001",
+        "score": 0.030609,
+        "product_type_name": "Skirt",
+        "product_group_name": "Garment Lower body",
+        "colour_group_name": "Black",
+        "graphical_appearance_name": "Treatment",
+        "garment_group_name": "Skirts"
+      },
+      {
+        "rank": 9,
+        "article_id": "0469039034",
+        "score": 0.03016,
+        "product_type_name": "Ballerinas",
+        "product_group_name": "Shoes",
+        "colour_group_name": "Light Beige",
+        "graphical_appearance_name": "Solid",
+        "garment_group_name": "Shoes"
+      },
+      {
+        "rank": 10,
+        "article_id": "0815026003",
+        "score": 0.028338,
+        "product_type_name": "Dress",
+        "product_group_name": "Garment Full body",
+        "colour_group_name": "Off White",
+        "graphical_appearance_name": "Solid",
+        "garment_group_name": "Dressed"
+      }
+    ],
+    "recommendation_count": 10,
+    "top_10_all_inside_candidate_pool": true,
+    "top_10_contains_training_items": false,
+    "svd_scoreable_candidate_count": 100,
+    "svd_unscoreable_candidate_count": 0
+  },
+  {
+    "customer_id": "1b0d82881e5dacce207e6dbc0fb31afb20bec9d6a9d5757556d3334d239e2359",
+    "method": "svd_matrix_factorisation",
+    "ground_truth_article_id": "0851370002",
+    "candidate_pool_size": 100,
+    "top_10_recommendations": [
+      {
+        "rank": 1,
+        "article_id": "0820563003",
+        "score": 0.389614,
+        "product_type_name": "Sweater",
+        "product_group_name": "Garment Upper body",
+        "colour_group_name": "Black",
+        "graphical_appearance_name": "Melange",
+        "garment_group_name": "Knitwear"
+      },
+      {
+        "rank": 2,
+        "article_id": "0716671004",
+        "score": 0.074628,
+        "product_type_name": "Blouse",
+        "product_group_name": "Garment Upper body",
+        "colour_group_name": "Dark Green",
+        "graphical_appearance_name": "All over pattern",
+        "garment_group_name": "Blouses"
+      },
+      {
+        "rank": 3,
+        "article_id": "0662866003",
+        "score": 0.054649,
+        "product_type_name": "Sweater",
+        "product_group_name": "Garment Upper body",
+        "colour_group_name": "Light Blue",
+        "graphical_appearance_name": "Melange",
+        "garment_group_name": "Knitwear"
+      },
+      {
+        "rank": 4,
+        "article_id": "0726183002",
+        "score": 0.052319,
+        "product_type_name": "Top",
+        "product_group_name": "Garment Upper body",
+        "colour_group_name": "Light Beige",
+        "graphical_appearance_name": "All over pattern",
+        "garment_group_name": "Unknown"
+      },
+      {
+        "rank": 5,
+        "article_id": "0851370002",
+        "score": 0.025204,
+        "product_type_name": "Top",
+        "product_group_name": "Garment Upper body",
+        "colour_group_name": "Black",
+        "graphical_appearance_name": "Solid",
+        "garment_group_name": "Jersey Fancy"
+      },
+      {
+        "rank": 6,
+        "article_id": "0863587001",
+        "score": 0.023573,
+        "product_type_name": "T-shirt",
+        "product_group_name": "Garment Upper body",
+        "colour_group_name": "Black",
+        "graphical_appearance_name": "Solid",
+        "garment_group_name": "Jersey Basic"
+      },
+      {
+        "rank": 7,
+        "article_id": "0880001001",
+        "score": 0.023231,
+        "product_type_name": "T-shirt",
+        "product_group_name": "Garment Upper body",
+        "colour_group_name": "Black",
+        "graphical_appearance_name": "Solid",
+        "garment_group_name": "Jersey Basic"
+      },
+      {
+        "rank": 8,
+        "article_id": "0793851005",
+        "score": 0.023016,
+        "product_type_name": "Sweater",
+        "product_group_name": "Garment Upper body",
+        "colour_group_name": "Beige",
+        "graphical_appearance_name": "Melange",
+        "garment_group_name": "Jersey Fancy"
+      },
+      {
+        "rank": 9,
+        "article_id": "0920394003",
+        "score": 0.02262,
+        "product_type_name": "Dress",
+        "product_group_name": "Garment Full body",
+        "colour_group_name": "Light Beige",
+        "graphical_appearance_name": "Solid",
+        "garment_group_name": "Jersey Fancy"
+      },
+      {
+        "rank": 10,
+        "article_id": "0752471003",
+        "score": 0.022533,
+        "product_type_name": "Dress",
+        "product_group_name": "Garment Full body",
+        "colour_group_name": "Dark Blue",
+        "graphical_appearance_name": "All over pattern",
+        "garment_group_name": "Dresses Ladies"
+      }
+    ],
+    "recommendation_count": 10,
+    "top_10_all_inside_candidate_pool": true,
+    "top_10_contains_training_items": false,
+    "svd_scoreable_candidate_count": 100,
+    "svd_unscoreable_candidate_count": 0
+  }
+]

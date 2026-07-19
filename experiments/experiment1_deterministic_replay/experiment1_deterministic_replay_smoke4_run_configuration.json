@@ -1,0 +1,62 @@
+{
+  "config": {
+    "mode": "smoke",
+    "prefix": "experiment1_deterministic_replay_smoke4",
+    "sample_size": 3,
+    "candidate_pool_size": 100,
+    "top_k": 10,
+    "svd_random_state": 42,
+    "hybrid_random_state": 42,
+    "bootstrap_seed": 42,
+    "bootstrap_samples": 1000,
+    "allow_overwrite": false
+  },
+  "formal_sequence": [
+    "Validate frozen replay input file and hashes",
+    "Write replay-prefixed evaluation-base working copy from the frozen input rows",
+    "CollaborativeFilteringService.build_svd_top10_baseline(subset_size=3, random_state=42, artifact_prefix=experiment1_deterministic_replay_smoke4, allow_overwrite=False)",
+    "AgenticRecommendationService._build_top10_formal_experiment(subset_size=3, artifact_prefix=experiment1_deterministic_replay_smoke4, allow_overwrite=False)",
+    "HybridRecommendationService.build_hybrid_svd_agentic_reranker(subset_size=3, random_state=42, artifact_prefix=experiment1_deterministic_replay_smoke4, allow_overwrite=False)",
+    "EvaluationService.compute_three_method_top10_metrics_from_saved_artifacts(subset_size=3, bootstrap_samples=1000, random_seed=42, artifact_prefix=experiment1_deterministic_replay_smoke4, allow_overwrite=False)"
+  ],
+  "frozen_input": {
+    "frozen_source_path": "experiments/experiment1_deterministic_replay/input/experiment1_original_frozen_input_1000.json",
+    "frozen_source_size_bytes": 5621254,
+    "frozen_source_sha256": "427da0d55124107551602b12dad82ee05b0eae1e296ee9f612aea8326080d08e",
+    "ordered_customer_id_hash": "6c5f3e60c23ce9ed3cde1e5e8a9f791447be24f4e7f91cbd640df80a9f271262",
+    "training_history_mapping_hash": "5d0f1a50c9727f6ee69f256150f3e11168e1095144bd9b6ceacba4879579ecf7",
+    "ground_truth_mapping_hash": "e7fbd162160dc4c2aaf3dd26d2fd3c1be64ee9291c5f7508b6cce754f0d377c0",
+    "candidate_pool_mapping_hash": "cfb7d1d4be98ab3bf7625d7d626b59be15006d42fe641f841446d362b308e811"
+  },
+  "selected_user_ids": [
+    "08e5a409b104a26b85ed957286de5bc3ff21aea5e12f6c6ea3f1af6f3e9c3f14",
+    "0d784dd0de0aeb1e23101e2bad64b54ce6411a5ceb6d280517aae2b8b45ca54b",
+    "1b0d82881e5dacce207e6dbc0fb31afb20bec9d6a9d5757556d3334d239e2359"
+  ],
+  "write_allowlist": [
+    "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke4_created_files.json",
+    "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke4_openai_call_provenance.json",
+    "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke4_pairwise_ci_report_top10_3_three_methods.json",
+    "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke4_processed_data/experiment1_deterministic_replay_smoke4_agentic_recommendations_top10_3.csv",
+    "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke4_processed_data/experiment1_deterministic_replay_smoke4_agentic_recommendations_top10_3.json",
+    "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke4_processed_data/experiment1_deterministic_replay_smoke4_agentic_top10_validation_report_3.json",
+    "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke4_processed_data/experiment1_deterministic_replay_smoke4_bootstrap_ci_report_top10_3_three_methods.json",
+    "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke4_processed_data/experiment1_deterministic_replay_smoke4_candidate_pools_top10_3.json",
+    "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke4_processed_data/experiment1_deterministic_replay_smoke4_evaluation_base_table_top10_3.csv",
+    "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke4_processed_data/experiment1_deterministic_replay_smoke4_evaluation_base_table_top10_3.json",
+    "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke4_processed_data/experiment1_deterministic_replay_smoke4_experiment_report_top10_3.md",
+    "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke4_processed_data/experiment1_deterministic_replay_smoke4_hybrid_svd_agentic_recommendations_top10_3.csv",
+    "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke4_processed_data/experiment1_deterministic_replay_smoke4_hybrid_svd_agentic_recommendations_top10_3.json",
+    "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke4_processed_data/experiment1_deterministic_replay_smoke4_hybrid_svd_agentic_validation_report_top10_3.json",
+    "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke4_processed_data/experiment1_deterministic_replay_smoke4_metric_summary_top10_3_three_methods.csv",
+    "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke4_processed_data/experiment1_deterministic_replay_smoke4_metric_summary_top10_3_three_methods.json",
+    "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke4_processed_data/experiment1_deterministic_replay_smoke4_per_user_metrics_top10_3_three_methods.csv",
+    "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke4_processed_data/experiment1_deterministic_replay_smoke4_per_user_metrics_top10_3_three_methods.json",
+    "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke4_processed_data/experiment1_deterministic_replay_smoke4_svd_baseline_validation_report_top10_3.json",
+    "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke4_processed_data/experiment1_deterministic_replay_smoke4_svd_recommendations_top10_3.csv",
+    "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke4_processed_data/experiment1_deterministic_replay_smoke4_svd_recommendations_top10_3.json",
+    "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke4_processed_data/experiment1_deterministic_replay_smoke4_validation_report_top10_3_three_methods.json",
+    "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke4_provenance.json",
+    "experiments/experiment1_deterministic_replay/experiment1_deterministic_replay_smoke4_run_configuration.json"
+  ]
+}

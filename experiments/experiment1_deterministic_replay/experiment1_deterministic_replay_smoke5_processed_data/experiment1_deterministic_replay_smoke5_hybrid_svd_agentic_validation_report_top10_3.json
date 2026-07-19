@@ -1,0 +1,17 @@
+{
+  "users_evaluated": 3,
+  "users_with_hybrid_recommendations": 3,
+  "users_with_full_top_10": 3,
+  "users_where_top_10_all_inside_candidate_pool": 3,
+  "users_where_top_10_contains_training_items": 0,
+  "users_with_equal_svd_scores": 0,
+  "users_with_equal_agentic_scores": 0,
+  "missing_metadata_for_diversity_count": 0,
+  "average_top_10_length": 10.0,
+  "example_hybrid_recommendation_users": [
+    "08e5a409b104a26b85ed957286de5bc3ff21aea5e12f6c6ea3f1af6f3e9c3f14",
+    "0d784dd0de0aeb1e23101e2bad64b54ce6411a5ceb6d280517aae2b8b45ca54b",
+    "1b0d82881e5dacce207e6dbc0fb31afb20bec9d6a9d5757556d3334d239e2359"
+  ],
+  "example_hybrid_failure_users": []
+}
