@@ -1,0 +1,27 @@
+{
+  "evaluated_users_requested": 1000,
+  "users_with_svd_recommendations": 1000,
+  "users_without_svd_recommendations": 0,
+  "average_top_10_length": 10.0,
+  "users_with_full_top_10": 1000,
+  "users_where_top_10_all_inside_candidate_pool": 1000,
+  "users_where_top_10_contains_training_items": 0,
+  "users_with_unscoreable_candidates": 0,
+  "average_scoreable_candidate_count": 99.85,
+  "min_scoreable_candidate_count": 99,
+  "max_scoreable_candidate_count": 100,
+  "svd_matrix_shape": [
+    1335382,
+    72016
+  ],
+  "svd_n_components_used": 50,
+  "random_state": 42,
+  "example_svd_recommendation_users": [
+    "08e5a409b104a26b85ed957286de5bc3ff21aea5e12f6c6ea3f1af6f3e9c3f14",
+    "0d784dd0de0aeb1e23101e2bad64b54ce6411a5ceb6d280517aae2b8b45ca54b",
+    "1b0d82881e5dacce207e6dbc0fb31afb20bec9d6a9d5757556d3334d239e2359",
+    "26e237aa2bc47082d06d49af58bbd65785cb979daf3110313d1484b95adac609",
+    "3123f45973abbcb0ab8b5f5fcc1dd42b10da36b7aa2ef7b77933ee76da4e3b29"
+  ],
+  "example_svd_failure_users": []
+}

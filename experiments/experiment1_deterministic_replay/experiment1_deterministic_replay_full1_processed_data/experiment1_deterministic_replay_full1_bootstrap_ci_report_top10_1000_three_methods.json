@@ -1,0 +1,81 @@
+{
+  "bootstrap_samples": 1000,
+  "random_seed": 42,
+  "confidence_intervals": {
+    "svd_hit_rate_at_10": {
+      "mean": 0.500116,
+      "ci_95_lower": 0.467975,
+      "ci_95_upper": 0.529
+    },
+    "agentic_hit_rate_at_10": {
+      "mean": 0.274028,
+      "ci_95_lower": 0.247,
+      "ci_95_upper": 0.303
+    },
+    "hybrid_hit_rate_at_10": {
+      "mean": 0.497798,
+      "ci_95_lower": 0.466975,
+      "ci_95_upper": 0.527
+    },
+    "svd_ndcg_at_10": {
+      "mean": 0.295371,
+      "ci_95_lower": 0.272764,
+      "ci_95_upper": 0.317322
+    },
+    "agentic_ndcg_at_10": {
+      "mean": 0.15569,
+      "ci_95_lower": 0.138165,
+      "ci_95_upper": 0.173654
+    },
+    "hybrid_ndcg_at_10": {
+      "mean": 0.304259,
+      "ci_95_lower": 0.28105,
+      "ci_95_upper": 0.326226
+    },
+    "svd_ild_at_10": {
+      "mean": 0.7521,
+      "ci_95_lower": 0.747293,
+      "ci_95_upper": 0.756876
+    },
+    "agentic_ild_at_10": {
+      "mean": 0.544017,
+      "ci_95_lower": 0.537007,
+      "ci_95_upper": 0.550698
+    },
+    "hybrid_ild_at_10": {
+      "mean": 0.694626,
+      "ci_95_lower": 0.688822,
+      "ci_95_upper": 0.700097
+    },
+    "difference_hybrid_minus_svd_hit_rate_at_10": {
+      "mean": -0.002318,
+      "ci_95_lower": -0.023,
+      "ci_95_upper": 0.018025
+    },
+    "difference_hybrid_minus_svd_ndcg_at_10": {
+      "mean": 0.008888,
+      "ci_95_lower": -0.000764,
+      "ci_95_upper": 0.018136
+    },
+    "difference_hybrid_minus_svd_ild_at_10": {
+      "mean": -0.057473,
+      "ci_95_lower": -0.06255,
+      "ci_95_upper": -0.052856
+    },
+    "difference_hybrid_minus_agentic_hit_rate_at_10": {
+      "mean": 0.22377,
+      "ci_95_lower": 0.192975,
+      "ci_95_upper": 0.254025
+    },
+    "difference_hybrid_minus_agentic_ndcg_at_10": {
+      "mean": 0.148568,
+      "ci_95_lower": 0.124614,
+      "ci_95_upper": 0.169055
+    },
+    "difference_hybrid_minus_agentic_ild_at_10": {
+      "mean": 0.150609,
+      "ci_95_lower": 0.143954,
+      "ci_95_upper": 0.157482
+    }
+  }
+}

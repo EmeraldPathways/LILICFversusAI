@@ -1,0 +1,33 @@
+{
+  "evaluation_scope": {
+    "valid_evaluated_users": 1000,
+    "candidate_pool_size": 100,
+    "top_k": 10,
+    "experiment_subset_size": 1000,
+    "split_strategy": "leave_one_out"
+  },
+  "svd": {
+    "method": "SVD Matrix Factorisation",
+    "hit_rate_at_10": 0.5,
+    "hits_count": 500,
+    "miss_count": 500,
+    "ndcg_at_10": 0.295493,
+    "intra_list_diversity_at_10": 0.751933
+  },
+  "agentic": {
+    "method": "Standalone 3-Agent",
+    "hit_rate_at_10": 0.274,
+    "hits_count": 274,
+    "miss_count": 726,
+    "ndcg_at_10": 0.155365,
+    "intra_list_diversity_at_10": 0.5438
+  },
+  "hybrid": {
+    "method": "Hybrid SVD + 3-Agent Reranker",
+    "hit_rate_at_10": 0.498,
+    "hits_count": 498,
+    "miss_count": 502,
+    "ndcg_at_10": 0.304552,
+    "intra_list_diversity_at_10": 0.694481
+  }
+}

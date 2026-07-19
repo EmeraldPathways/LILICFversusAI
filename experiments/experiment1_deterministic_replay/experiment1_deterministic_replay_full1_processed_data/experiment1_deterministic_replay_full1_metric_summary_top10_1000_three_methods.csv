@@ -1,0 +1,2 @@
+valid_evaluated_users,candidate_pool_size,top_k,experiment_subset_size,split_strategy,svd_hit_rate_at_10,svd_hits_count,svd_miss_count,svd_ndcg_at_10,svd_intra_list_diversity_at_10,agentic_hit_rate_at_10,agentic_hits_count,agentic_miss_count,agentic_ndcg_at_10,agentic_intra_list_diversity_at_10,hybrid_hit_rate_at_10,hybrid_hits_count,hybrid_miss_count,hybrid_ndcg_at_10,hybrid_intra_list_diversity_at_10
+1000,100,10,1000,leave_one_out,0.5,500,500,0.295493,0.751933,0.274,274,726,0.155365,0.5438,0.498,498,502,0.304552,0.694481
